@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { catalog } from '../catalog'
+import { Icon } from '../components/Icon'
+import { Loading } from '../components/Loading'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { StatusBadge } from '../components/StatusBadge'
@@ -20,7 +22,7 @@ export function ParentRequest() {
   const { requests, loading } = useRequests(familyId)
   const req = requests.find((r) => r.id === id)
 
-  if (loading && !req) return <main className="page parent">読み込み中…</main>
+  if (loading && !req) return <main className="page parent"><Loading /></main>
   if (!req) return <main className="page parent">見つかりません。<Link to="/parent">一覧へ</Link></main>
   return <Detail key={req.id + req.updated_at} req={req} requests={requests} />
 }
@@ -78,14 +80,16 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
   return (
     <main className="page parent">
       <header className="parent-header">
-        <Link className="btn btn-ghost" to="/parent">
-          ← 一覧
+        <Link className="btn btn-ghost back" to="/parent">
+          <Icon name="back" size={18} />
+          一覧
         </Link>
         <StatusBadge status={req.status} parent auto={req.approved_by === 'auto'} />
       </header>
 
       <h1>
-        {total != null ? yen(total) : '価格不明あり'} <span className="muted small">送料別 · {new Date(req.created_at).toLocaleString('ja-JP')}</span>
+        <span className="num">{total != null ? yen(total) : '価格不明あり'}</span>{' '}
+        <span className="muted small">送料別 · {new Date(req.created_at).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
       </h1>
       {req.note && (
         <p className="note">
@@ -123,11 +127,11 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
               <span className="row small">
                 {i.shop_key && (
                   <a className="ext" href={productUrl(i.shop_key)} target="_blank" rel="noopener noreferrer">
-                    {SHOP.name}の商品ページ ↗
+                    {SHOP.name}の商品ページ <Icon name="external" size={14} />
                   </a>
                 )}
                 <a className="ext muted" href={bricklinkCatalogUrl(i.bl_id, i.bl_color_id)} target="_blank" rel="noopener noreferrer">
-                  BrickLink ↗
+                  BrickLink <Icon name="external" size={14} />
                 </a>
               </span>
             </div>
@@ -135,10 +139,25 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
           </li>
         ))}
       </ul>
-      <p className="muted">
-        {items.length} 種類 / {totalQty} 個
-        {total != null && ` · 小計 ${yen(total)} + 送料 ${yen(shippingFor(total))}${shippingFor(total) === 0 ? '（送料無料）' : ''}`}
-      </p>
+      {total != null ? (
+        <dl className="totals">
+          <dt className="label">
+            小計 · {items.length} 種類 / {totalQty} 個
+          </dt>
+          <dd className="val">{yen(total)}</dd>
+          <dt className="label">
+            送料
+            {shippingFor(total) === 0 ? `（${yen(SHOP.freeShippingFromYen)} 以上で無料）` : total < SHOP.smallOrderBelowYen ? `（${yen(SHOP.shippingYen)} + 少額手数料 ${yen(SHOP.smallOrderFeeYen)}）` : ''}
+          </dt>
+          <dd className="val">{yen(shippingFor(total))}</dd>
+          <dt className="label total">合計</dt>
+          <dd className="val total">{yen(total + shippingFor(total))}</dd>
+        </dl>
+      ) : (
+        <p className="muted">
+          {items.length} 種類 / {totalQty} 個 · 価格不明あり
+        </p>
+      )}
 
       {editable && (
         <section className="decide">
@@ -149,7 +168,8 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
           {err && <p className="error">{err}</p>}
           <div className="row">
             <button className="btn btn-big" disabled={busy || items.length === 0} onClick={() => void decide('approved')}>
-              ✅ 承認して支払いへ
+              <Icon name="check" size={18} />
+              承認して支払いへ
             </button>
             <button className="btn btn-big btn-danger" disabled={busy} onClick={() => void decide('rejected')}>
               今回は見送り
@@ -180,12 +200,14 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
         <li>
           {live ? (
             <a className="btn btn-big" href={permalink} target="_blank" rel="noopener noreferrer">
-              🛒 {SHOP.name}のカートに全部入れる
+              <Icon name="cart" size={18} />
+              カートに全部入れる
             </a>
           ) : (
             <>
               <button className="btn btn-big" disabled title={SHOP.sample ? '本物の価格データ（npm run shop-map）を取り込むと有効になります' : `${SHOP.name}に無い行があります`}>
-                🛒 {SHOP.name}のカートに全部入れる
+                <Icon name="cart" size={18} />
+              カートに全部入れる
               </button>
               <span className="muted small">
                 {SHOP.sample ? '価格がサンプルの間は無効です。本物のデータを取り込むと、このボタン 1 つでカートが埋まった状態の支払い画面が開きます。' : `${SHOP.name}に無い行を外すか、下の BrickLink に回してください。`}
@@ -201,7 +223,8 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
         <li>
           {req.status === 'approved' ? (
             <button className="btn" disabled={busy} onClick={onOrdered}>
-              📦 支払ったので「注文済み」にする
+              <Icon name="box" size={18} />
+              支払ったので「注文済み」にする
             </button>
           ) : (
             <span className="muted">注文済み</span>
@@ -213,10 +236,10 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
           <summary>手動で入れる場合（注文リストをコピー）</summary>
           <div className="row">
             <button className="btn btn-ghost" onClick={() => void copy('list', orderListText(inShop))}>
-              {copied === 'list' ? '✅ コピーした' : `📋 注文リストをコピー（${inShop.length} 行）`}
+              {copied === 'list' ? 'コピーした' : `注文リストをコピー（${inShop.length} 行）`}
             </button>
             <a className="btn btn-ghost" href={SHOP.listOrderUrl} target="_blank" rel="noopener noreferrer">
-              {SHOP.name}の「ファイル・リストで注文」↗
+              {SHOP.name}の「ファイル・リストで注文」 <Icon name="external" size={14} />
             </a>
           </div>
           <p className="muted small">品番-色ID と数量の行を貼り付けると一括でカートに入ります（受け付け形式はショップ側で確認）</p>
@@ -258,21 +281,22 @@ function BrickLinkSteps({ xml, reqId, copied, copy }: { xml: string; reqId: stri
     <ol className="steps">
       <li>
         <button className="btn btn-ghost" onClick={() => downloadText(`brick-wish-${reqId.slice(0, 8)}.xml`, xml, 'application/xml')}>
-          ⬇️ Wanted List XML
+          <Icon name="download" size={18} />
+          Wanted List XML
         </button>
         <button className="btn btn-ghost" onClick={() => void copy('xml', xml)}>
-          {copied === 'xml' ? '✅ コピーした' : '📋 XML をコピー'}
+          {copied === 'xml' ? 'コピーした' : 'XML をコピー'}
         </button>
       </li>
       <li>
         <a className="btn btn-ghost" href={BRICKLINK_WANTED_UPLOAD_URL} target="_blank" rel="noopener noreferrer">
-          BrickLink のアップロード画面 ↗
+          BrickLink のアップロード画面 <Icon name="external" size={14} />
         </a>
         <span className="muted small">ログイン →「Upload」タブに XML を貼り付け → Wanted List として保存</span>
       </li>
       <li>
         <a className="btn btn-ghost" href={BRICKLINK_WANTED_LIST_URL} target="_blank" rel="noopener noreferrer">
-          Wanted List 一覧 ↗
+          Wanted List 一覧 <Icon name="external" size={14} />
         </a>
         <span className="muted small">「Buy All」→ Auto-select で店を自動選択 → 店ごとに支払い</span>
       </li>
@@ -325,7 +349,8 @@ function PabExport({ items, id }: { items: CartItem[]; id: string }) {
         出力可能 {ok} 件 / 除外 {skipped.length} 件（element ID 未登録）。Pick a Brick のリストアップロードは米国・カナダ・英国・ドイツのみ。
       </p>
       <button className="btn btn-ghost" disabled={ok === 0} onClick={() => downloadText(`pick-a-brick-${id.slice(0, 8)}.csv`, csv, 'text/csv')}>
-        ⬇️ CSV をダウンロード
+        <Icon name="download" size={18} />
+        CSV をダウンロード
       </button>
     </div>
   )

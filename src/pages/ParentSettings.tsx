@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Icon } from '../components/Icon'
 import { catalog } from '../catalog'
 import { yen } from '../lib/budget'
 import { hasPush, hasSupabase } from '../lib/config'
@@ -77,8 +78,9 @@ export function ParentSettings() {
   return (
     <main className="page parent">
       <header className="parent-header">
-        <Link className="btn btn-ghost" to="/parent">
-          ← 一覧
+        <Link className="btn btn-ghost back" to="/parent">
+          <Icon name="back" size={18} />
+          一覧
         </Link>
         <h1>設定</h1>
       </header>
@@ -105,7 +107,8 @@ export function ParentSettings() {
           {hasPush && push === 'subscribed' && 'このスマホに届きます'}
           {hasPush && push !== 'subscribed' && (
             <button className="btn" onClick={() => settings.familyId && void subscribeParentPush(settings.familyId).then(setPush)}>
-              🔔 通知を許可する
+              <Icon name="bell" size={18} />
+              通知を許可する
             </button>
           )}
         </dd>
@@ -151,7 +154,8 @@ export function ParentSettings() {
       <section className="stack">
         <h2>この端末</h2>
         <button className="btn btn-ghost" onClick={() => { setParentUnlocked(false); location.hash = '#/kid' }}>
-          🔒 ロックして子ども画面へ
+          <Icon name="lock" size={18} />
+          ロックして子ども画面へ
         </button>
         <button
           className="btn btn-danger"

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, Outlet, useNavigate } from 'react-router-dom'
+import { Loading } from '../components/Loading'
 import { sha256Hex } from '../lib/ids'
 import { getStore } from '../store'
 import { useFamilyId } from '../store/family'
@@ -57,11 +58,12 @@ export function ParentGate() {
   }
 
   if (state === 'open') return <Outlet />
-  if (state === 'loading') return <main className="page center">{err ? <p className="error">{err}</p> : '…'}</main>
+  if (state === 'loading') return <main className="page center">{err ? <p className="error">{err}</p> : <Loading />}</main>
 
   const isSet = state === 'set-pin'
   return (
     <main className="page center">
+      <span className="eyebrow">Brick Wish</span>
       <h1>保護者の画面</h1>
       <p className="muted">{isSet ? '最初に、承認用の PIN（4 桁以上の数字）を決めてください' : 'PIN を入れてください'}</p>
       <form

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { blIdOf, getColor } from '../catalog'
 import { ColorSwatch } from '../components/ColorSwatch'
+import { Icon } from '../components/Icon'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { yen } from '../lib/budget'
@@ -44,7 +45,7 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={part.name_ja} onClick={(e) => e.stopPropagation()}>
         <button className="close" onClick={onClose} aria-label="閉じる">
-          ✕
+          <Icon name="close" size={18} />
         </button>
         <div className="picker-top">
           {sel?.color && (
@@ -79,7 +80,14 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
         <div className="picker-bottom">
           <QtyStepper value={qty} onChange={setQty} big />
           <button className={`btn btn-big btn-kid ${added ? 'done' : ''}`} onClick={add} disabled={added}>
-            {added ? '✓ 追加しました' : 'カートに入れる'}
+            {added ? (
+              <>
+                <Icon name="check" size={18} />
+                追加しました
+              </>
+            ) : (
+              'カートに入れる'
+            )}
           </button>
         </div>
       </div>

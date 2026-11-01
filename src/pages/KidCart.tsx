@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Icon } from '../components/Icon'
+import { KidNav } from '../components/KidNav'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { decideApproval, estimateTotal, yen } from '../lib/budget'
@@ -64,10 +66,14 @@ export function KidCart() {
   return (
     <main className="page kid">
       <header className="kid-header">
-        <Link className="btn btn-ghost" to="/kid">
-          ← 戻る
+        <div className="title">
+          <span className="eyebrow">Brick Wish</span>
+          <h1>カート（{total} 個）</h1>
+        </div>
+        <Link className="btn btn-ghost back" to="/kid">
+          <Icon name="back" size={18} />
+          パーツ一覧
         </Link>
-        <h1>カート（{total} 個）</h1>
       </header>
 
       {cart.length === 0 ? (
@@ -101,15 +107,15 @@ export function KidCart() {
             {family && family.auto_approve && family.monthly_budget_yen > 0 && (
               <div className="budget-row muted">
                 <span>今月の自動承認枠の残り</span>
-                <span>
+                <span className="num">
                   {yen(decision.remaining)} / {yen(family.monthly_budget_yen)}
                 </span>
               </div>
             )}
             <p className="budget-verdict">
-              {decision.status === 'approved' && '✅ 枠内なので、送るとすぐ OK になります。保護者は支払いだけ'}
-              {decision.status === 'pending' && decision.reason === 'over_budget' && `⚠ 今月の枠を ${yen((decision.total_yen ?? 0) - decision.remaining)} 超えるので、保護者の承認が必要です`}
-              {decision.status === 'pending' && decision.reason === 'unknown_price' && `⚠ ${SHOP.name}に在庫がないパーツがあるので、保護者の確認が必要です`}
+              {decision.status === 'approved' && '枠内なので、送るとすぐ OK になります。保護者は支払いだけ'}
+              {decision.status === 'pending' && decision.reason === 'over_budget' && `今月の枠を ${yen((decision.total_yen ?? 0) - decision.remaining)} 超えるので、保護者の承認が必要です`}
+              {decision.status === 'pending' && decision.reason === 'unknown_price' && `${SHOP.name}に在庫がないパーツがあるので、保護者の確認が必要です`}
               {decision.status === 'pending' && decision.reason === 'off' && '保護者の承認が必要です'}
             </p>
           </section>
@@ -123,6 +129,7 @@ export function KidCart() {
           </button>
         </div>
       )}
+      <KidNav />
     </main>
   )
 }
@@ -132,7 +139,9 @@ export function KidSent() {
   const auto = Boolean(state?.auto)
   return (
     <main className="page kid center">
-      <div className="big-emoji">{auto ? '✅' : '📨'}</div>
+      <div className={`sent-mark ${auto ? '' : 'pending'}`} aria-hidden="true">
+        <Icon name={auto ? 'check' : 'send'} size={32} />
+      </div>
       <h1>{auto ? 'OK！注文に進みます' : 'リクエストを送りました'}</h1>
       <p>
         {auto
@@ -145,6 +154,7 @@ export function KidSent() {
       <Link className="btn btn-ghost" to="/kid/history">
         履歴を見る
       </Link>
+      <KidNav />
     </main>
   )
 }
