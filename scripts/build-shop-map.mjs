@@ -1,19 +1,20 @@
 #!/usr/bin/env node
 /**
- * 国内ショップ（ブリッカーズ、Shopify）の在庫・価格を catalog.json の 品番×色 ごとに引いて
- * src/catalog/shop-map.json を作る。
+ * 国内ショップ（ブリッカーズ、Shopify）の在庫・価格を catalog.json の 品番×色 ごとに引いて shop-map を作る。
  *
- *   node scripts/build-shop-map.mjs                 # 本物を取得（要ネット。1 秒 1 件、結果は scripts/.cache/shop に保存）
- *   node scripts/build-shop-map.mjs --sample        # ダミー価格でプロトタイプ用に生成（ネット不要）
+ *   node scripts/build-shop-map.mjs --sample        # ダミー価格で src/catalog/shop-map.json を生成（ネット不要。リポジトリに入れるのはこれだけ）
+ *   node scripts/build-shop-map.mjs                 # 本物を取得して src/catalog/shop-map.local.json に書く（gitignore 対象。1 秒 1 件、scripts/.cache/shop にキャッシュ）
  *   node scripts/build-shop-map.mjs --shop https://starbrick37.com --id starbrick37 --name StarBrick37
+ *
+ * ⚠ ブリッカーズの利用規約（第4条、2026-11-01 確認）は、自動化された手段での価格・在庫情報の取得と、
+ *   取得したデータの大量保存・データベース化・自他サービスでの利用を禁じている（第5条にアクセス拒否・法的措置）。
+ *   本物の取得は先方の許可を得てから行うこと。取得したファイルはコミットしない。
  *
  * 商品キーは「品番-LEGO色ID3桁」（例 3024-026 = プレート1×1 黒）。ブリッカーズと StarBrick37 が同じ形式。
  * Shopify の公開 JSON `/products/<handle>.js` を読む。404 なら取り扱いなし。
  *
- * ⚠ 未検証事項（取得後に 1 件は商品ページと突き合わせること）:
- *   - `.js` の price は最小通貨単位×100 で返る想定（¥48 → 4800）。違えば --price-scale 1 を付ける
- *   - ショップの利用規約で自動取得が禁止されていないか。配布前に先方へ一言入れるのが無難
- *   - LEGO 色 ID（catalog.json の lego_id）は build-catalog.mjs が Rebrickable から埋める。starter カタログの値は記憶ベース
+ * 確認済み（2026-11-01、14417-199 の商品ページと突き合わせ）: `.js` の price は円×100（¥18 → 1800）。違う店なら --price-scale 1
+ * 未検証: LEGO 色 ID（catalog.json の lego_id）は build-catalog.mjs が Rebrickable から埋める。starter カタログの値は記憶ベース
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
@@ -21,12 +22,13 @@ import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const catalogPath = resolve(here, '../src/catalog/catalog.json')
-const outPath = resolve(here, '../src/catalog/shop-map.json')
 const cacheDir = resolve(here, '.cache/shop')
 const args = Object.fromEntries(
   process.argv.slice(2).map((a, i, arr) => (a.startsWith('--') ? [a.slice(2), arr[i + 1]?.startsWith('--') || arr[i + 1] == null ? 'true' : arr[i + 1]] : [])).filter((x) => x.length),
 )
 const SAMPLE = args.sample === 'true'
+// 本物は gitignore 対象の .local.json へ。リポジトリに入るのはサンプルだけ
+const outPath = resolve(here, SAMPLE ? '../src/catalog/shop-map.json' : '../src/catalog/shop-map.local.json')
 const SHOP_URL = (args.shop ?? 'https://brickers.jp').replace(/\/$/, '')
 const SHOP_ID = args.id ?? 'brickers'
 const SHOP_NAME = args.name ?? 'ブリッカーズ'

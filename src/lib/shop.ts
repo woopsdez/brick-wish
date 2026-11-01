@@ -1,13 +1,17 @@
 import { getColor } from '../catalog'
-import raw from '../catalog/shop-map.json'
+import sampleMap from '../catalog/shop-map.json'
 import type { CartItem, CatalogPart, ShopItem, ShopMap } from '../types'
 
 /**
  * 国内ショップ（ブリッカーズ）の在庫・価格と、カートへの誘導。
- * データは scripts/build-shop-map.mjs が作る shop-map.json（商品キーは「品番-LEGO色ID3桁」）。
+ * データは scripts/build-shop-map.mjs が作る（商品キーは「品番-LEGO色ID3桁」）。
+ * - shop-map.json: リポジトリに入っているサンプル価格（--sample）
+ * - shop-map.local.json: ショップから取得した本物。gitignore 対象で、手元にあるときだけビルドに入る
+ *   （ショップの利用規約がデータの転載・保存を禁じているため、リポジトリや公開サイトには出さない。README 参照）
  * 価格・在庫は取得時点のスナップショットで、注文時にはショップ側の表示が正。
  */
-export const shopMap = raw as ShopMap
+const localMaps = import.meta.glob<{ default: ShopMap }>('../catalog/shop-map.local.json', { eager: true })
+export const shopMap: ShopMap = Object.values(localMaps)[0]?.default ?? (sampleMap as ShopMap)
 
 export const SHOP = {
   id: shopMap.shop_id,

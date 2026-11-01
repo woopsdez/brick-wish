@@ -19,14 +19,17 @@
 
 ## 価格・在庫データと、取得に必要なこと
 
-価格と在庫は `src/catalog/shop-map.json`（商品キー「品番-LEGO色ID3桁」→ 単価・在庫・Shopify variant id）から引く。**同梱の shop-map.json はサンプル価格**で、画面にもその旨を出す。本物は手元の PC で取得する：
+価格と在庫は shop-map（商品キー「品番-LEGO色ID3桁」→ 単価・在庫・Shopify variant id）から引く。ファイルは 2 つある：
+
+- `src/catalog/shop-map.json` … **サンプル価格**（`npm run shop-map:sample` で生成）。リポジトリに入っているのはこれだけで、画面にもサンプルである旨を出す
+- `src/catalog/shop-map.local.json` … ショップから取得した本物。**gitignore 対象**で、手元にあるときだけビルドがこちらを優先する（`src/lib/shop.ts`）。公開サイト（GitHub Pages）は main から CI でビルドされるので、本物が載ることはない
 
 ```bash
-npm run shop-map            # ブリッカーズの /products/<品番-色ID>.js を 1 秒 1 件で読み、scripts/.cache/shop に保存
-npm run shop-map:sample     # ダミー価格で再生成（開発用）
+npm run shop-map:sample     # ダミー価格で shop-map.json を再生成（開発用）
+npm run shop-map            # ブリッカーズの /products/<品番-色ID>.js を 1 秒 1 件で読み shop-map.local.json に書く（scripts/.cache/shop にキャッシュ）。下の規約の件を読んでから
 ```
 
-取得に関する整理（法律助言ではなく一般的な理解）：価格・在庫は事実データで著作物ではなく、ログイン不要の公開ページを読むこと自体は不正アクセスにあたらない。ただしショップの利用規約で自動取得が禁止されていれば契約上の問題になり得る（ブリッカーズの規約本文はこの開発環境から到達できず未確認）。家庭内 1 件なら低頻度・キャッシュ前提で問題になる可能性は低いが、**他の家庭にも配るなら先方に一言入れる**（御社の在庫・価格を表示して御社のカートに誘導するアプリ、と伝えれば断られにくい）。
+**ブリッカーズの利用規約は自動取得を禁じている**（[利用規約](https://brickers.jp/policies/terms-of-service) 第4条、2026-11-01 確認）。禁止されているのは、(1) スクレイピング等の自動化された手段で価格情報・在庫情報などを取得・収集・解析すること、(3) 自動・手動を問わず価格データ等を大量に取得・保存・データベース化すること、(4) 取得した情報を自他のサービスのために利用・提供すること。第5条に IP ブロック・法的措置・損害賠償の記載がある。`npm run shop-map` は (1)(3) に、取得結果をアプリで表示することは (4) に当たるので、**先方の許可を得るまで実行しない**。取得済みのファイルはリポジトリに入れない（上記の gitignore）。許可を求めるときは「御社の在庫・価格を表示して御社のカートに誘導する家庭用アプリで、1 秒 1 件・キャッシュ前提・家庭内利用」と伝える。
 
 shop-map があると親画面に Shopify の[カート permalink](https://help.shopify.com/en/manual/checkout-settings/cart-permalink)（`/cart/variant:数量,…`）で「カートに全部入れる」ボタンが出る。無い／サンプルのときは「品番-色ID<TAB>数量」のリストをコピーして「ファイル・リストで注文」に貼る手順になる。
 
@@ -49,13 +52,13 @@ src/
   pages/        Kid / PartPicker / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
   store/        settings(端末設定) / family(ファミリー自動作成) / family-hooks(予算設定) / cart / localStore / supabaseStore / useRequests
   lib/          shop(ショップの価格・在庫・カートURL) / budget(月枠と自動承認の判定) / bricklink(XML・CSV生成) / push / images / ids / config
-  catalog/      catalog.json（パーツ・色・カテゴリ）/ shop-map.json（ショップの価格・在庫。同梱はサンプル）
+  catalog/      catalog.json（パーツ・色・カテゴリ）/ shop-map.json（サンプル価格）/ shop-map.local.json（本物。gitignore、手元にあるときだけ優先）
   sw.ts         Service Worker（プリキャッシュ + push 通知）
 scripts/
   curated-parts.mjs   ミニメカ向け厳選パーツリスト（カテゴリ・色・子ども向け名）
   build-catalog.mjs   厳選リストを Rebrickable のデータで検証し catalog.json を生成（要 API キー）
   starter-catalog.mjs 厳選リストから未検証のまま catalog.json を生成（現在同梱されているもの）
-  build-shop-map.mjs  ショップの商品 JSON を読んで shop-map.json を生成（--sample でダミー）
+  build-shop-map.mjs  ショップの商品 JSON を読んで shop-map.local.json を生成（--sample なら shop-map.json にダミー価格）
   check-catalog.mjs   catalog / shop-map の整合チェック（npm test）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
 supabase/
@@ -153,7 +156,7 @@ iPhone は **ホーム画面に追加（PWA としてインストール）して
 - Pick a Brick CSV は日本で使えるか未確認
 - BrickLink に「複数 Wanted List をまとめて買う」機能はあるが、アプリ側からの自動アップロードはできない（ログイン必須の Web フォームのみ）
 - 親画面の BrickLink リンク（`catalogitem.page?P=<番号>&C=<色ID>#T=P`）の `C=` / `#T=P` パラメータはこの開発環境から BrickLink に到達できず未検証。パーツページ自体は `P=` だけで開くはず
-- **同梱の shop-map.json はサンプル価格**（`npm run shop-map` で本物に差し替える）。Shopify の `.js` が返す price の単位（×100 想定）、ブリッカーズの「ファイル・リストで注文」の受け付け形式、利用規約での自動取得の可否は未確認
+- **同梱の shop-map.json はサンプル価格**。本物は shop-map.local.json（gitignore）に置く。Shopify の `.js` が返す price の単位は ×100 で確認済み、カート permalink が支払い画面に直行することも確認済み（2026-11-01、14417-199 = 18 円）。ブリッカーズの「ファイル・リストで注文」は告知ページが見つからず受け付け形式は未確認。利用規約は自動取得を禁じている（「価格・在庫データ」の節）ので、本物の再取得は先方の許可待ち
 - LEGO 色 ID は 1/26/194/199 以外が記憶ベース（`npm run catalog` で Rebrickable の値に上書き）
 - 自動承認の枠は「承認済み・注文済みの見積もり合計」で数える。ショップ側で価格が変わっていても、送信時点の見積もりで判定する
 - Web Push の文面（自動承認／承認待ち）は Edge Function を更新したが未デプロイ

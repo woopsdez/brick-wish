@@ -30,3 +30,6 @@ dist-ssr
 
 # catalog build cache
 scripts/.cache
+
+# real shop prices fetched from the shop (never commit; see README「価格・在庫データ」)
+src/catalog/shop-map.local.json
