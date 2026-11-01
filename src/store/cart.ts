@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { estimateTotal } from '../lib/budget'
 import type { CartItem } from '../types'
 
 const KEY = 'bw:cart:v1'
@@ -48,4 +49,13 @@ export function useCart(): CartItem[] {
     return () => void listeners.delete(l)
   }, [])
   return items
+}
+
+/** 個数と見積もり。total は価格未確認の行が 1 つでもあれば null、known は価格が分かる行だけの合計 */
+export function useCartSummary() {
+  const items = useCart()
+  const count = items.reduce((n, i) => n + i.qty, 0)
+  const { total, unknown } = estimateTotal(items)
+  const known = items.reduce((n, i) => n + (i.unit_yen ?? 0) * i.qty, 0)
+  return { items, count, total, known, unknown }
 }

@@ -1,24 +1,22 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { catalog, getColor, partsInCategory, searchParts } from '../catalog'
+import { CartButton } from '../components/CartButton'
 import { Icon } from '../components/Icon'
 import { KidNav } from '../components/KidNav'
 import { PartImage } from '../components/PartImage'
 import { yen } from '../lib/budget'
 import { SHOP, minPrice } from '../lib/shop'
-import { useCart } from '../store/cart'
 import type { CatalogPart } from '../types'
 import { PartPicker } from './PartPicker'
 
 export function Kid() {
-  const cart = useCart()
   const [cat, setCat] = useState(catalog.categories[0]?.id ?? '')
   const [q, setQ] = useState('')
   const [picking, setPicking] = useState<CatalogPart | null>(null)
 
   const query = q.trim()
   const parts = useMemo(() => (query ? searchParts(query) : partsInCategory(cat)), [cat, query])
-  const total = cart.reduce((n, i) => n + i.qty, 0)
   const current = catalog.categories.find((c) => c.id === cat)
   const fetched = new Date(SHOP.fetchedAt).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })
 
@@ -29,10 +27,7 @@ export function Kid() {
           <span className="eyebrow">Brick Wish</span>
           <h1>ほしいパーツ</h1>
         </div>
-        <Link className="btn btn-cart" to="/kid/cart" aria-label={`カートを見る、${total} 個`}>
-          <Icon name="cart" />
-          <span className="count">{total}</span>
-        </Link>
+        <CartButton />
       </header>
 
       <div className="search-wrap">

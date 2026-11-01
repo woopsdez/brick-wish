@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom'
-import { useCart } from '../store/cart'
+import { yen } from '../lib/budget'
+import { useCartSummary } from '../store/cart'
 import { Icon } from './Icon'
 
 /** 子ども画面の下タブ: パーツ / カート / 履歴 / ぜんぶ */
 export function KidNav() {
-  const cart = useCart()
-  const count = cart.reduce((n, i) => n + i.qty, 0)
+  const { count, total, known } = useCartSummary()
   return (
     <nav className="kid-nav" aria-label="メイン">
       <div className="kid-nav-inner">
@@ -15,7 +15,10 @@ export function KidNav() {
         </NavLink>
         <NavLink to="/kid/cart" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <Icon name="cart" size={22} />
-          カート
+          <span>
+            カート
+            {count > 0 && <span className="nav-amount"> {total != null ? yen(total) : `${yen(known)}〜`}</span>}
+          </span>
           {count > 0 && <span className="count">{count}</span>}
         </NavLink>
         <NavLink to="/kid/history" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>

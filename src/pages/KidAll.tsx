@@ -1,20 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { getColor } from '../catalog'
+import { CartButton } from '../components/CartButton'
 import { Icon } from '../components/Icon'
 import { KidNav } from '../components/KidNav'
 import { Loading } from '../components/Loading'
 import { PartImage } from '../components/PartImage'
 import { loadAllParts, searchAllParts, toCatalogPart, type AllPartsIndex } from '../lib/allParts'
 import { SHOP } from '../lib/shop'
-import { useCart } from '../store/cart'
 import type { CatalogPart } from '../types'
 import { PartPicker } from './PartPicker'
 
 /** 「ぜんぶ」タブ: 厳選カタログに無いふつうのパーツを、Rebrickable 由来の索引から探す。価格は持たない */
 export function KidAll() {
-  const cart = useCart()
-  const total = cart.reduce((n, i) => n + i.qty, 0)
   const [index, setIndex] = useState<AllPartsIndex | null>(null)
   const [err, setErr] = useState<string | null>(null)
   const [q, setQ] = useState('')
@@ -40,10 +37,7 @@ export function KidAll() {
           <span className="eyebrow">Brick Wish</span>
           <h1>ぜんぶのパーツ</h1>
         </div>
-        <Link className="btn btn-cart" to="/kid/cart" aria-label={`カートを見る、${total} 個`}>
-          <Icon name="cart" />
-          <span className="count">{total}</span>
-        </Link>
+        <CartButton />
       </header>
 
       <p className="cat-desc">カタログに無いふつうのパーツを、番号か英語の名前で探せます。価格は保護者が{SHOP.name}で確かめるので、送ると「承認待ち」になります。</p>
