@@ -5,4 +5,5 @@ alter table public.families
 
 alter table public.requests
   add column if not exists total_yen integer,
-  add column if not exists approved_by text check (approved_by in ('auto', 'parent'));
+  add column if not exists approved_by text check (approved_by in ('auto', 'parent')),
+  add column if not exists cart_url text;

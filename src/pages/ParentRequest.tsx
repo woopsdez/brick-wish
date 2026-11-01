@@ -169,28 +169,27 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
   const inShop = items.filter((i) => !missing.includes(i))
   const xml = buildWantedListXml(missing.length ? missing : items, { condition: null })
   const { total } = estimateTotal(inShop)
+  const live = permalink != null && !SHOP.sample
   return (
     <section className="order">
       <h2>{SHOP.name}で支払う</h2>
       <p className="muted">
         国内の専門店 1 店にまとめて注文します（決済 1 回、日本語、送料 {yen(SHOP.shippingYen)}、{yen(SHOP.freeShippingFromYen)} 以上で無料、PayPay・クレカ・後払い可）。
-        {SHOP.sample && <em className="warn"> いまは価格がサンプルなので、カートへのリンクは実際には開けません。</em>}
       </p>
       <ol className="steps">
         <li>
-          {permalink && !SHOP.sample ? (
+          {live ? (
             <a className="btn btn-big" href={permalink} target="_blank" rel="noopener noreferrer">
               🛒 {SHOP.name}のカートに全部入れる
             </a>
           ) : (
             <>
-              <button className="btn btn-big" disabled={SHOP.sample && !permalink} onClick={() => void copy('list', orderListText(inShop))}>
-                {copied === 'list' ? '✅ コピーした' : `📋 注文リストをコピー（${inShop.length} 行）`}
+              <button className="btn btn-big" disabled title={SHOP.sample ? '本物の価格データ（npm run shop-map）を取り込むと有効になります' : `${SHOP.name}に無い行があります`}>
+                🛒 {SHOP.name}のカートに全部入れる
               </button>
-              <a className="btn btn-ghost" href={SHOP.listOrderUrl} target="_blank" rel="noopener noreferrer">
-                {SHOP.name}の「ファイル・リストで注文」を開く ↗
-              </a>
-              <span className="muted small">品番-色ID と数量の行を貼り付けると一括でカートに入ります（受け付け形式はショップ側で確認）</span>
+              <span className="muted small">
+                {SHOP.sample ? '価格がサンプルの間は無効です。本物のデータを取り込むと、このボタン 1 つでカートが埋まった状態の支払い画面が開きます。' : `${SHOP.name}に無い行を外すか、下の BrickLink に回してください。`}
+              </span>
             </>
           )}
         </li>
@@ -209,6 +208,20 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
           )}
         </li>
       </ol>
+      {!live && inShop.length > 0 && (
+        <details className="fallback">
+          <summary>手動で入れる場合（注文リストをコピー）</summary>
+          <div className="row">
+            <button className="btn btn-ghost" onClick={() => void copy('list', orderListText(inShop))}>
+              {copied === 'list' ? '✅ コピーした' : `📋 注文リストをコピー（${inShop.length} 行）`}
+            </button>
+            <a className="btn btn-ghost" href={SHOP.listOrderUrl} target="_blank" rel="noopener noreferrer">
+              {SHOP.name}の「ファイル・リストで注文」↗
+            </a>
+          </div>
+          <p className="muted small">品番-色ID と数量の行を貼り付けると一括でカートに入ります（受け付け形式はショップ側で確認）</p>
+        </details>
+      )}
 
       {missing.length > 0 && (
         <details className="fallback" open>

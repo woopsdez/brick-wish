@@ -4,7 +4,7 @@ import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { decideApproval, estimateTotal, yen } from '../lib/budget'
 import { uuid } from '../lib/ids'
-import { SHOP } from '../lib/shop'
+import { SHOP, cartPermalink } from '../lib/shop'
 import { getStore } from '../store'
 import { clearCart, setCartQty, useCart } from '../store/cart'
 import { useFamily } from '../store/family-hooks'
@@ -44,6 +44,8 @@ export function KidCart() {
         status: d.status,
         approved_by: d.approved_by,
         total_yen: d.total_yen,
+        // サンプル価格のときは variant id が偽物なので URL を持たせない
+        cart_url: SHOP.sample ? null : cartPermalink(cart).url,
         parent_note: '',
         created_at: now,
         updated_at: now,

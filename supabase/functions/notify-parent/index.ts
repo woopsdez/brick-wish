@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
   // リクエストが本当に存在し、その家族のものであることを確認（コードを知らない人は呼べない）
   const { data: reqRow, error: reqErr } = await admin
     .from('requests')
-    .select('id, kid_name, note, items, status, approved_by, total_yen')
+    .select('id, kid_name, note, items, status, approved_by, total_yen, cart_url')
     .eq('id', body.request_id)
     .eq('family_id', body.family_id)
     .maybeSingle()
@@ -50,10 +50,12 @@ Deno.serve(async (req) => {
   const qty = items.reduce((n, i) => n + (i.qty ?? 0), 0)
   const auto = reqRow.status === 'approved' && reqRow.approved_by === 'auto'
   const total = reqRow.total_yen != null ? `¥${Number(reqRow.total_yen).toLocaleString('ja-JP')} ` : ''
+  // 自動承認でカート URL があるときは、通知のタップ先をショップのカート（支払い画面）そのものにする
+  const cartUrl = typeof reqRow.cart_url === 'string' && /^https:\/\//.test(reqRow.cart_url) ? reqRow.cart_url : null
   const payload = JSON.stringify({
-    title: auto ? `自動承認 ${total}→ 支払いへ` : `承認待ち ${total}`,
+    title: auto ? `自動承認 ${total}→ タップして支払い` : `承認待ち ${total}`,
     body: `${items.length} 種類 / ${qty} 個${reqRow.note ? ` 「${reqRow.note}」` : ''}`,
-    url: `${appUrl}#/parent/request/${reqRow.id}`,
+    url: auto && cartUrl ? cartUrl : `${appUrl}#/parent/request/${reqRow.id}`,
     tag: `req-${reqRow.id}`,
   })
 

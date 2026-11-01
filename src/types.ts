@@ -105,6 +105,8 @@ export interface WishRequest {
   total_yen?: number | null
   /** 自動承認（月予算内）か親の手動承認か */
   approved_by?: 'auto' | 'parent' | null
+  /** 全行がショップにあるときの「カートに全部入れる」URL（Shopify cart permalink）。通知のリンク先に使う */
+  cart_url?: string | null
   created_at: string
   updated_at: string
 }
