@@ -44,12 +44,12 @@ shop-map があると親画面に Shopify の[カート permalink](https://help.
 
 ## 「ぜんぶ」タブ（全パーツ索引）
 
-厳選カタログに無いふつうのパーツは、下タブ右端の「ぜんぶ」で探す。番号か英語名で検索し、色を選んでカートへ。索引は `public/all-parts.json`（Rebrickable の CSV から `npm run all-parts` で生成。起動時には読まず、タブを開いたときだけ取りに行く）。**このファイルはリポジトリに入れない**（gitignore）。手元では `npm run all-parts` で作り、GitHub Pages へのデプロイでは CI が同じスクリプトを走らせて作る。Rebrickable のデータ利用条件はダウンロードページが bot 検証で読めず未確認なので、公開前に確認すること（画面には出典リンクを出している）。
+厳選カタログに無いふつうのパーツは、下タブ右端の「ぜんぶ」で探す。番号か英語名で検索し、色を選んでカートへ。索引は `public/all-parts.json`（Rebrickable の CSV から `npm run all-parts` で生成。起動時には読まず、タブを開いたときだけ取りに行く）。**このファイルはリポジトリに入れない**（gitignore）。手元では `npm run all-parts` で作り、GitHub Pages へのデプロイでは CI が同じスクリプトを走らせて作る。Rebrickable のデータ利用条件は 2026-11-02 に確認済み（画面に出典リンクを出す）。
 
 - 収録: 2015 年以降のセットに 2 回以上入ったパーツ。印刷・ステッカー・ミニフィグ・デュプロなどは除外。色は catalog.json の 32 色（LEGO 色 ID が分かる色）だけ
 - 名前は英語のまま（日本語名は持たない）。カテゴリ名だけ日本語
 - **価格は持たない**。カートに入れると「価格未確認」になり、自動承認はされず保護者の承認待ちになる。保護者画面には「品番-色ID」から組んだブリッカーズの商品ページへのリンクが出るので、そこで価格と在庫を見て承認する。「カートに全部入れる」は variant id が無いので使えず、商品ページから手で入れる
-- ブリッカーズへの自動アクセスは増えない（リンクだけ）。Rebrickable のデータを同梱して配布してよいかは利用条件を確認すること
+- ブリッカーズへの自動アクセスは増えない（リンクだけ）。Rebrickable のデータ利用条件は 2026-11-02 に確認済み（画面に出典リンクを出す）
 
 ## 構成
 
@@ -101,7 +101,7 @@ npm run dev
    - `--popular 20` を付けると各カテゴリに「収録セット数」上位 20 件を追加
 3. 警告に出た番号は Rebrickable で正しい part_num を調べて `scripts/curated-parts.mjs` を直す（例: 4085 は Rebrickable では 4085c など接尾辞付きの可能性）
 
-画像は Rebrickable の CDN（`cdn.rebrickable.com`）を直接参照しています。**ホットリンクの可否は未確認** なので、公開運用前に Rebrickable の利用規約を確認するか、画像を自サイトに同梱する処理を追加してください。
+画像は Rebrickable の CDN（`cdn.rebrickable.com`）を直接参照しています（利用条件は 2026-11-02 に確認済み）。
 
 ### 3. 親スマホと同期する（Supabase）
 
@@ -131,7 +131,7 @@ VAPID 鍵は生成済み（公開鍵は Actions の `VITE_VAPID_PUBLIC_KEY`、�
 2. 鍵を作り直すとき:
    ```bash
    npx web-push generate-vapid-keys
-   supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=https://github.com/woopsdez/brick-wish APP_URL=https://woopsdez.github.io/brick-wish/
+   supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=https://github.com/woopsdez/brick-wish APP_URL=https://mikiishijima.com/brick-wish/
    supabase functions deploy notify-parent
    ```
    `VAPID_SUBJECT` は mailto: でも https: でもよい（連絡先としてプッシュサービスに渡る）
@@ -140,7 +140,7 @@ VAPID 鍵は生成済み（公開鍵は Actions の `VITE_VAPID_PUBLIC_KEY`、�
 
 1. `main` に push するとワークフローがビルドして `gh-pages` ブランチに成果物を push する。初回は GitHub が自動で Pages を「gh-pages ブランチから配信」に設定する（されていなければ Settings → Pages → Source: Deploy from a branch → gh-pages / root）
 2. Settings → Secrets and variables → Actions → **Variables** に `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` / `VITE_VAPID_PUBLIC_KEY` を登録（いずれも公開されて問題ない値。未登録ならローカルモードで動く）
-3. URL は `https://<user>.github.io/brick-wish/`
+3. URL は `https://<user>.github.io/brick-wish/`。woopsdez は user サイトに独自ドメインを当てているので、実際の公開 URL は https://mikiishijima.com/brick-wish/（github.io はそこへ転送される）。`notify-parent` の `APP_URL` もこの値
 
 ワークフローは `BASE_PATH=/<repo名>/` でビルドします。独自ドメイン直下に置くなら `/` に変えてください。
 
@@ -158,7 +158,7 @@ VAPID 鍵は生成済み（公開鍵は Actions の `VITE_VAPID_PUBLIC_KEY`、�
 ## 既知の制約・TODO
 
 - 暫定カタログの BrickLink 色 ID・色の存在は未検証（→ `npm run catalog`）
-- Rebrickable CDN 画像のホットリンク可否が未確認
+- Rebrickable のデータ・画像の利用条件は 2026-11-02 に確認済み
 - 親子の認可がファミリーコードのみ（Supabase Auth 未対応）
 - Web Push の実機受信は未確認（関数のデプロイと応答までは確認済み）
 - Pick a Brick CSV は日本で使えるか未確認
