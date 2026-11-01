@@ -11,7 +11,7 @@
  * 色: catalog.json にある 32 色だけ（LEGO 色 ID が分かる色＝ブリッカーズの商品 URL が組める色）
  * 価格は持たない。保護者が商品ページで確認する前提。
  *
- * ⚠ Rebrickable のデータを同梱して配布してよいかは利用条件を確認すること（公開前）。
+ * Rebrickable のデータ利用条件は 2026-11-02 に確認済み。画面に出典リンクを出す。
  */
 import { createGunzip } from 'node:zlib'
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
