@@ -233,6 +233,7 @@ input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 
 .badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .badge-pending { background: var(--warn-bg); color: var(--warn); }
 .badge-approved { background: var(--ok-bg); color: var(--ok); }
+.badge-next_month { background: var(--surface-2); color: var(--muted); }
 .badge-rejected { background: var(--surface-2); color: var(--muted); }
 .badge-ordered { background: var(--accent-soft); color: var(--accent); }
 
@@ -321,3 +322,6 @@ label.check input { width: auto; accent-color: var(--accent); }
 .page.center h1 { margin: 0; font-size: 1.5rem; }
 .page.center p { margin: 0; color: var(--muted); max-width: 32ch; line-height: 1.7; }
 .page.center form { width: 100%; max-width: 320px; align-items: stretch; }
+
+.line-action { align-self: flex-start; margin-top: 4px; padding: 0; background: none; border: 0; color: var(--accent); font: inherit; font-size: 13px; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.cart-row.is-next-month { opacity: 0.6; }

@@ -9,19 +9,15 @@ import { getStore } from '../store'
 import { useFamily } from '../store/family-hooks'
 import { saveSettings, useSettings } from '../store/settings'
 
-function BudgetForm({ initialBudget, initialAuto, onSave }: { initialBudget: number; initialAuto: boolean; onSave: (n: number, auto: boolean) => Promise<void> }) {
+function BudgetForm({ initialBudget, onSave }: { initialBudget: number; onSave: (n: number) => Promise<void> }) {
   const [budget, setBudget] = useState(String(initialBudget))
-  const [auto, setAuto] = useState(initialAuto)
   return (
     <>
       <label>
-        1 か月の枠（円）
+        1 か月の枠（円・送料別）
         <input type="number" inputMode="numeric" min={0} step={100} value={budget} onChange={(e) => setBudget(e.target.value)} />
       </label>
-      <label className="check">
-        <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> 枠内は自動で承認する
-      </label>
-      <button className="btn" onClick={() => void onSave(Math.max(0, parseInt(budget, 10) || 0), auto)}>
+      <button className="btn" onClick={() => void onSave(Math.max(0, parseInt(budget, 10) || 0))}>
         保存
       </button>
     </>
@@ -36,11 +32,11 @@ export function ParentSettings() {
   const [pin, setPin] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
 
-  async function saveBudget(n: number, auto: boolean) {
+  async function saveBudget(n: number) {
     if (!settings.familyId) return
-    await getStore().setFamilyBudget(settings.familyId, n, auto)
+    await getStore().setFamilyBudget(settings.familyId, n, true)
     reload()
-    setMsg(`自動承認枠を ${yen(n)} / 月${auto ? '' : '（オフ）'} にしました`)
+    setMsg(`月の枠を ${yen(n)} にしました`)
   }
 
   useEffect(() => {
@@ -68,7 +64,7 @@ export function ParentSettings() {
 
       <section className="stack">
         <h2>月の枠</h2>
-        {family && <BudgetForm key={`${family.monthly_budget_yen}|${family.auto_approve}`} initialBudget={family.monthly_budget_yen} initialAuto={family.auto_approve} onSave={saveBudget} />}
+        {family && <BudgetForm key={family.monthly_budget_yen} initialBudget={family.monthly_budget_yen} onSave={saveBudget} />}
       </section>
 
       {hasPush && push === 'denied' && (

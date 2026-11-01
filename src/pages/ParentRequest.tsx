@@ -7,11 +7,10 @@ import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { StatusBadge } from '../components/StatusBadge'
 import { bricklinkCatalogUrl, buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
-import { estimateTotal, spentThisMonth, yen } from '../lib/budget'
+import { estimateTotal, requestView, yen } from '../lib/budget'
 import { BRICKLINK_WANTED_LIST_URL, BRICKLINK_WANTED_UPLOAD_URL } from '../lib/config'
 import { SHOP, cartPermalink, orderListText, priceStatus, productUrl, shippingFor } from '../lib/shop'
 import { getStore } from '../store'
-import { useFamily } from '../store/family-hooks'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 import type { CartItem, WishRequest } from '../types'
@@ -19,20 +18,18 @@ import type { CartItem, WishRequest } from '../types'
 export function ParentRequest() {
   const { id } = useParams()
   const familyId = useFamilyId()
-  const { requests, loading } = useRequests(familyId)
+  const { requests, loading, reload } = useRequests(familyId)
   const req = requests.find((r) => r.id === id)
 
   if (loading && !req) return <main className="page parent"><Loading /></main>
   if (!req) return <main className="page parent">見つかりません。<Link to="/parent">一覧へ</Link></main>
-  return <Detail key={req.id + req.updated_at} req={req} requests={requests} />
+  return <Detail key={req.id + req.updated_at} req={req} reload={reload} />
 }
 
 const categoryDesc = new Map(catalog.categories.map((c) => [c.id, `${c.name_ja}：${c.description ?? ''}`]))
 
-function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }) {
+function Detail({ req, reload }: { req: WishRequest; reload: () => Promise<void> }) {
   const nav = useNavigate()
-  const familyId = useFamilyId()
-  const { family } = useFamily(familyId)
   const [items, setItems] = useState<CartItem[]>(() => mergeItems(req.items))
   const [parentNote, setParentNote] = useState(req.parent_note)
   const [busy, setBusy] = useState(false)
@@ -41,15 +38,18 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
 
   const totalQty = items.reduce((n, i) => n + i.qty, 0)
   const { total, unknown } = useMemo(() => estimateTotal(items), [items])
-  const editable = req.status === 'pending'
-  const remaining = family ? Math.max(0, family.monthly_budget_yen - spentThisMonth(requests)) : null
+  const view = requestView(req)
+  const editable = view === 'pending' || view === 'next_month'
 
   async function decide(status: 'approved' | 'rejected') {
     setBusy(true)
     setErr(null)
     try {
-      await getStore().update(req.family_id, req.id, { status, items, parent_note: parentNote.trim(), approved_by: status === 'approved' ? 'parent' : null, total_yen: total })
+      // 「今払う」は枠の外。来月の枠も減らさない
+      await getStore().update(req.family_id, req.id, { status, items, parent_note: parentNote.trim(), approved_by: status === 'approved' ? 'parent' : null, total_yen: total, pay_month: null })
       if (status === 'rejected') nav('/parent')
+      // 変更の Broadcast は送った本人には届かないので、自分で取り直して画面を進める
+      else await reload()
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
     } finally {
@@ -59,9 +59,12 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
 
   async function markOrdered() {
     setBusy(true)
+    setErr(null)
     try {
       await getStore().update(req.family_id, req.id, { status: 'ordered' })
       nav('/parent')
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e))
     } finally {
       setBusy(false)
     }
@@ -84,7 +87,7 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
           <Icon name="back" size={18} />
           一覧
         </Link>
-        <StatusBadge status={req.status} parent auto={req.approved_by === 'auto'} />
+        <StatusBadge status={view} parent />
       </header>
 
       <h1>
@@ -96,18 +99,14 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
           「<Linkified text={req.note} />」
         </p>
       )}
-      {req.status === 'approved' && req.approved_by === 'auto' && (
-        <p className="callout ok-callout">今月の枠内なので自動で承認されています。あとは下の手順で支払うだけです。</p>
-      )}
-      {editable && (
+      {view === 'next_month' && <p className="callout">来月の枠で買う分です（{req.pay_month}）。今払うと枠の外で買うので、今月と来月の枠は減りません。</p>}
+      {view === 'pending' && (
         <p className="callout">
-          {unknown.length > 0
-            ? unknown.some((u) => priceStatus(u.part_num, u.color_id) !== 'soldout')
-              ? `${unknown.length} 件は価格が未確認のため自動承認できませんでした。商品ページで価格と在庫を見て、数量を決めてください。`
-              : `${unknown.length} 件は${SHOP.name}に在庫がないため自動承認できませんでした。数量を 0 にして外すか、BrickLink で買うか決めてください。`
-            : remaining != null
-              ? `今月の自動承認枠の残り ${yen(remaining)} を超えるため、承認が必要です。`
-              : '承認が必要です。'}
+          {unknown.length === 0
+            ? '今払うか、見送るか決めてください。'
+            : unknown.some((u) => priceStatus(u.part_num, u.color_id) !== 'soldout')
+            ? `${unknown.length} 件は価格が未確認です。商品ページで価格と在庫を見て、数量を決めてください。`
+            : `${unknown.length} 件は${SHOP.name}に在庫がありません。数量を 0 にして外すか、BrickLink で買うか決めてください。`}
         </p>
       )}
 
@@ -161,27 +160,27 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
         </p>
       )}
 
+      {err && <p className="error">{err}</p>}
       {editable && (
         <section className="decide">
           <label>
             子どもへのメッセージ（任意）
             <input value={parentNote} onChange={(e) => setParentNote(e.target.value)} placeholder="例: 赤いのは今あるやつ使おう" />
           </label>
-          {err && <p className="error">{err}</p>}
           <div className="row">
             <button className="btn btn-big" disabled={busy || items.length === 0} onClick={() => void decide('approved')}>
               <Icon name="check" size={18} />
-              承認して支払いへ
+              今払う
             </button>
             <button className="btn btn-big btn-danger" disabled={busy} onClick={() => void decide('rejected')}>
               今回は見送り
             </button>
           </div>
-          <p className="muted small">承認しても請求はされません。次の画面で{SHOP.name}のカートに入れて、そこで支払います。</p>
+          <p className="muted small">押しても請求はされません。次の画面で{SHOP.name}のカートに入れて、そこで支払います。</p>
         </section>
       )}
 
-      {(req.status === 'approved' || req.status === 'ordered') && <OrderSection items={items} req={req} busy={busy} onOrdered={() => void markOrdered()} copied={copied} copy={copy} />}
+      {(view === 'approved' || view === 'ordered') && <OrderSection items={items} req={req} busy={busy} onOrdered={() => void markOrdered()} copied={copied} copy={copy} />}
     </main>
   )
 }
@@ -226,7 +225,7 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
           </span>
         </li>
         <li>
-          {req.status === 'approved' ? (
+          {req.status !== 'ordered' ? (
             <button className="btn" disabled={busy} onClick={onOrdered}>
               <Icon name="box" size={18} />
               支払ったので「注文済み」にする
@@ -330,7 +329,7 @@ function BrickLinkSteps({ xml, reqId, copied, copy }: { xml: string; reqId: stri
   )
 }
 
-/** レゴのパーツ売買を知らない親向けの説明。承認前だけ出す */
+/** レゴのパーツ売買を知らない親向けの説明。支払いを決める前だけ出す */
 function ParentHowto() {
   return (
     <details className="howto">
@@ -339,7 +338,7 @@ function ParentHowto() {
         <li>下の一覧が、子どもが欲しいと言っているレゴのパーツです。1 行が 1 種類で、単価 × 個数が出ています。</li>
         <li>各行の「{SHOP.name}の商品ページ」で写真と在庫を確認できます。</li>
         <li>多いと思ったら個数を減らせます。0 にするとその行は外れます。</li>
-        <li>「承認して支払いへ」を押すと、{SHOP.name}のカートに入れて支払う手順が出ます。請求は{SHOP.name}で支払ったときだけです。</li>
+        <li>「今払う」を押すと、{SHOP.name}のカートに入れて支払う手順が出ます。請求は{SHOP.name}で支払ったときだけです。</li>
       </ol>
       <p>
         <strong>{SHOP.name}とは</strong>：レゴのパーツを 1 個から売っている国内の専門店です。レゴ公式ショップは日本ではパーツの単品販売をしていないので、こうした店で買います。

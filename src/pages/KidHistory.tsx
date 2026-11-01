@@ -4,7 +4,7 @@ import { KidNav } from '../components/KidNav'
 import { Loading } from '../components/Loading'
 import { PartImage } from '../components/PartImage'
 import { StatusBadge } from '../components/StatusBadge'
-import { yen } from '../lib/budget'
+import { requestView, yen } from '../lib/budget'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 
@@ -30,7 +30,7 @@ export function KidHistory() {
         {requests.map((r) => (
           <li key={r.id} className={`req-card status-${r.status}`}>
             <div className="req-head">
-              <StatusBadge status={r.status} auto={r.approved_by === 'auto'} />
+              <StatusBadge status={requestView(r)} />
               <span className="muted small">
                 {r.total_yen != null && (
                   <>

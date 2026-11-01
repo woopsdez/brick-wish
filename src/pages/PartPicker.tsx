@@ -4,7 +4,7 @@ import { ColorSwatch } from '../components/ColorSwatch'
 import { Icon } from '../components/Icon'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
-import { decideApproval, estimateTotal, yen } from '../lib/budget'
+import { planCart, estimateTotal, yen } from '../lib/budget'
 import { SHOP, productUrl, shopKeyFor, unitPrice } from '../lib/shop'
 import { addToCart, cartKey, useCart } from '../store/cart'
 import { useFamily } from '../store/family-hooks'
@@ -33,7 +33,7 @@ function toCartItem(part: CatalogPart, sel: Choice, qty: number): CartItem {
 }
 
 /**
- * 色と数量を選んでカートへ。入れた後のカート合計と、今月の枠に収まるか（自動 OK になるか）もここで見せる。
+ * 色と数量を選んでカートへ。入れた後のカート合計と、今月の枠に収まるかもここで見せる。
  * priceless = 価格を取得していないパーツ（「ぜんぶ」タブ）。価格が分かる色はそのまま出し、分からない色は
  *             「在庫なし」ではなく「保護者が商品ページで確認」と案内する
  */
@@ -49,7 +49,7 @@ export function PartPicker({ part, onClose, priceless }: { part: CatalogPart; on
   const sel = colors[idx]
   const shopKey = sel ? shopKeyFor(part.num, sel.color.id) : null
 
-  // 入れた後のカートで、合計と自動承認の判定を先に見せる
+  // 入れた後のカートで、合計と枠の残りを先に見せる
   const cart = useCart()
   const familyId = useFamilyId()
   const { family } = useFamily(familyId)
@@ -59,7 +59,7 @@ export function PartPicker({ part, onClose, priceless }: { part: CatalogPart; on
     const item = toCartItem(part, sel, qty)
     const key = cartKey(item)
     const merged = cart.some((i) => cartKey(i) === key) ? cart.map((i) => (cartKey(i) === key ? { ...i, qty: Math.min(999, i.qty + qty) } : i)) : [...cart, item]
-    return { count: merged.reduce((n, i) => n + i.qty, 0), total: estimateTotal(merged).total, decision: decideApproval(family, requests, merged) }
+    return { count: merged.reduce((n, i) => n + i.qty, 0), total: estimateTotal(merged).total, plan: planCart(family, requests, merged) }
   })()
 
   function add() {
@@ -93,7 +93,7 @@ export function PartPicker({ part, onClose, priceless }: { part: CatalogPart; on
                 </p>
               ) : priceless ? (
                 <>
-                  <p className="muted small">この色の価格は未確認です。保護者が{SHOP.name}の商品ページで確かめるので、送ると「承認待ち」になります。</p>
+                  <p className="muted small">この色の価格は未確認です。保護者が{SHOP.name}の商品ページで確かめるので、送ると保護者の確認に回ります。</p>
                   {shopKey && (
                     <a className="ext" href={productUrl(shopKey)} target="_blank" rel="noopener noreferrer">
                       {SHOP.name}の商品ページ <Icon name="external" size={14} />
@@ -101,15 +101,12 @@ export function PartPicker({ part, onClose, priceless }: { part: CatalogPart; on
                   )}
                 </>
               ) : (
-                <p className="warn">{SHOP.name}に在庫なし。入れると保護者の確認が必要になります</p>
+                <p className="warn">{SHOP.name}に在庫なし。入れると保護者の確認に回ります</p>
               ))}
             {preview && (
-              <p className={`cart-preview ${preview.decision.status === 'approved' ? 'ok' : 'warn'}`}>
+              <p className={`cart-preview ${preview.plan.over > 0 ? 'warn' : 'ok'}`}>
                 入れるとカート {preview.count} 個・合計 <strong>{preview.total != null ? yen(preview.total) : '価格未確認あり'}</strong>
-                {preview.decision.status === 'approved' && ` · 枠の残り ${yen(preview.decision.remaining - preview.decision.total_yen)}、送るとすぐ OK`}
-                {preview.decision.status === 'pending' && preview.decision.reason === 'over_budget' && ` · 今月の枠を ${yen((preview.total ?? 0) - preview.decision.remaining)} 超えるので保護者の承認`}
-                {preview.decision.status === 'pending' && preview.decision.reason === 'unknown_price' && ' · 保護者が価格を確かめてから OK'}
-                {preview.decision.status === 'pending' && preview.decision.reason === 'off' && ' · 保護者の承認が必要'}
+                {preview.plan.over > 0 ? ` · 今月の枠を ${yen(preview.plan.over)} オーバー。カートで来月に回せます` : ` · 今月の枠の残り ${yen(preview.plan.remaining - preview.plan.currentTotal)}`}
               </p>
             )}
           </div>

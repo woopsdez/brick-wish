@@ -3,7 +3,7 @@ import type { WishRequest } from '../types'
 export interface FamilyInfo {
   code: string
   pin_hash: string | null
-  /** 月の自動承認枠（円、送料別）。0 なら自動承認しない */
+  /** 月の枠（円、送料別） */
   monthly_budget_yen: number
   /** 予算内なら親の承認なしで「承認済み」にする */
   auto_approve: boolean
