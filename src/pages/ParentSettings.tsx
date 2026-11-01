@@ -5,7 +5,7 @@ import { catalog } from '../catalog'
 import { yen } from '../lib/budget'
 import { hasPush, hasSupabase } from '../lib/config'
 import { normalizeFamilyCode, sha256Hex } from '../lib/ids'
-import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
+import { getPushState, resubscribeParentPush, subscribeParentPush, type PushState } from '../lib/push'
 import { SHOP, shopMap } from '../lib/shop'
 import { getStore } from '../store'
 import { useFamily } from '../store/family-hooks'
@@ -57,7 +57,17 @@ export function ParentSettings() {
     if (fam.pin_hash && fam.pin_hash !== h) return setJoinErr('PIN が違います')
     saveSettings({ familyId: c, localPinHash: fam.pin_hash ?? null })
     setParentUnlocked(true)
-    setMsg(`ファミリー ${c} につなぎました`)
+    // この端末が通知を許可済みなら、購読を新しい家族に付け替える（古い家族の行に残ると通知が来ない）
+    let note = ''
+    try {
+      const state = await resubscribeParentPush(c)
+      setPush(state)
+      if (state === 'subscribed') note = '。通知もこの家族に付け替えました'
+    } catch (e) {
+      console.warn('push resubscribe failed', e)
+      note = '。通知の付け替えに失敗したので、親画面の「通知を許可する」を押し直してください'
+    }
+    setMsg(`ファミリー ${c} につなぎました${note}`)
   }
 
   useEffect(() => {
