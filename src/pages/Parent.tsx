@@ -4,7 +4,10 @@ import { Icon } from '../components/Icon'
 import { ConnectParent } from '../components/ConnectParent'
 import { Loading } from '../components/Loading'
 import { StatusBadge } from '../components/StatusBadge'
-import { requestView, spentThisMonth, yen } from '../lib/budget'
+import { mergeItems } from '../lib/bricklink'
+import { estimateTotal, requestView, spentThisMonth, yen } from '../lib/budget'
+import { cartPermalink, shippingFor } from '../lib/shop'
+import { getStore } from '../store'
 import { hasPush, hasSupabase } from '../lib/config'
 import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
 import { useFamily } from '../store/family-hooks'
@@ -27,6 +30,11 @@ export function Parent() {
   const toPay = requests.filter((r) => requestView(r) === 'approved')
   const pending = requests.filter((r) => requestView(r) === 'pending')
   const nextMonth = requests.filter((r) => requestView(r) === 'next_month')
+  const [excluded, setExcluded] = useState<ReadonlySet<string>>(new Set())
+  const [included, setIncluded] = useState<ReadonlySet<string>>(new Set())
+  // 支払う分は最初から選び、来月の分は親が選んだものだけ足す。カートに入らない行があるものは詳細画面で個別に扱う
+  const selected = [...toPay.filter((r) => !excluded.has(r.id)), ...nextMonth.filter((r) => included.has(r.id))].filter(canBundle)
+  const picked = new Set(selected.map((r) => r.id))
   const others = requests.filter((r) => r.status === 'rejected' || r.status === 'ordered')
   const spent = spentThisMonth(requests)
   const open = pending.length + toPay.length
@@ -94,14 +102,6 @@ export function Parent() {
       {error && <p className="error">{error}</p>}
       {loading && <Loading inline />}
 
-      <h2>支払う {toPay.length > 0 && <span className="count">{toPay.length}</span>}</h2>
-      {toPay.length === 0 && !loading && <p className="empty small-empty">ありません</p>}
-      <ul className="req-list">
-        {toPay.map((r) => (
-          <RequestRow key={r.id} r={r} />
-        ))}
-      </ul>
-
       {pending.length > 0 && (
         <>
           <h2>確認が必要 <span className="count">{pending.length}</span></h2>
@@ -113,16 +113,26 @@ export function Parent() {
         </>
       )}
 
+      <h2>支払う {toPay.length > 0 && <span className="count">{toPay.length}</span>}</h2>
+      {toPay.length === 0 && !loading && <p className="empty small-empty">ありません</p>}
+      <ul className="req-list">
+        {toPay.map((r) => (
+          <RequestRow key={r.id} r={r} picked={picked.has(r.id)} onPick={canBundle(r) ? () => toggle(r.id, excluded, setExcluded) : undefined} />
+        ))}
+      </ul>
+
       {nextMonth.length > 0 && (
         <>
           <h2>来月の分</h2>
           <ul className="req-list">
             {nextMonth.map((r) => (
-              <RequestRow key={r.id} r={r} />
+              <RequestRow key={r.id} r={r} picked={picked.has(r.id)} onPick={canBundle(r) ? () => toggle(r.id, included, setIncluded) : undefined} />
             ))}
           </ul>
         </>
       )}
+
+      {familyId && selected.length > 0 && <PayTogether key={selected.map((r) => r.id).join()} selected={selected} onPaid={reload} />}
 
       {others.length > 0 && (
         <>
@@ -138,10 +148,80 @@ export function Parent() {
   )
 }
 
-function RequestRow({ r }: { r: WishRequest }) {
+function canBundle(r: WishRequest): boolean {
+  return cartPermalink(r.items).missing.length === 0
+}
+
+function toggle(id: string, cur: ReadonlySet<string>, set: (next: ReadonlySet<string>) => void) {
+  const next = new Set(cur)
+  if (next.has(id)) next.delete(id)
+  else next.add(id)
+  set(next)
+}
+
+/** 選んだリクエストを 1 つのカートにまとめて支払う。送料も 1 回で済む */
+function PayTogether({ selected, onPaid }: { selected: WishRequest[]; onPaid: () => Promise<void> }) {
+  const items = mergeItems(selected.flatMap((r) => r.items))
+  const { url } = cartPermalink(items)
+  const { total } = estimateTotal(items)
+  const [opened, setOpened] = useState(false)
+  const [busy, setBusy] = useState(false)
+  const [err, setErr] = useState<string | null>(null)
+
+  async function markPaid() {
+    setBusy(true)
+    setErr(null)
+    try {
+      for (const r of selected) {
+        // 来月の分を一緒に買ったら枠の外。来月の枠は減らさない
+        const early = requestView(r) === 'next_month'
+        await getStore().update(r.family_id, r.id, early ? { status: 'ordered', approved_by: 'parent', pay_month: null } : { status: 'ordered' })
+      }
+      await onPaid()
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e))
+      setBusy(false)
+    }
+  }
+
+  return (
+    <section className="pay-bar">
+      <div className="budget-row">
+        <span>
+          {selected.length} 件 · {items.length} 種類
+        </span>
+        {total != null && (
+          <strong>
+            {yen(total)} + 送料 {yen(shippingFor(total))}
+          </strong>
+        )}
+      </div>
+      {err && <p className="error">{err}</p>}
+      {url && (
+        <a className="btn btn-big" href={url} target="_blank" rel="noopener noreferrer" onClick={() => setOpened(true)}>
+          <Icon name="cart" size={18} />
+          カートにまとめて入れる
+        </a>
+      )}
+      {opened && (
+        <button className="btn" disabled={busy} onClick={() => void markPaid()}>
+          <Icon name="box" size={18} />
+          支払ったので {selected.length} 件を「注文済み」にする
+        </button>
+      )}
+    </section>
+  )
+}
+
+function RequestRow({ r, picked, onPick }: { r: WishRequest; picked?: boolean; onPick?: () => void }) {
   const qty = r.items.reduce((n, i) => n + i.qty, 0)
   return (
-    <li className={`req-card status-${r.status}`}>
+    <li className={`req-card status-${r.status} ${onPick ? 'pickable' : ''}`}>
+      {onPick && (
+        <label className="req-pick">
+          <input type="checkbox" checked={Boolean(picked)} onChange={onPick} aria-label="まとめて支払いに入れる" />
+        </label>
+      )}
       <Link to={`/parent/request/${r.id}`} className="req-link">
         <div className="req-head">
           <strong>{r.total_yen != null ? yen(r.total_yen) : '価格不明あり'}</strong>

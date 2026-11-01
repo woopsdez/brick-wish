@@ -325,3 +325,10 @@ label.check input { width: auto; accent-color: var(--accent); }
 
 .line-action { align-self: flex-start; margin-top: 4px; padding: 0; background: none; border: 0; color: var(--accent); font: inherit; font-size: 13px; font-weight: 700; text-decoration: underline; cursor: pointer; }
 .cart-row.is-next-month { opacity: 0.6; }
+
+.req-card.pickable { display: flex; align-items: flex-start; gap: 12px; }
+.req-card.pickable .req-link { flex: 1 1 auto; min-width: 0; }
+.req-pick { flex: 0 0 auto; display: flex; padding: 2px; margin: 0; cursor: pointer; }
+.req-pick input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent); }
+.pay-bar { position: sticky; bottom: 0; z-index: 5; display: flex; flex-direction: column; gap: 8px; margin: 14px 0; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.pay-bar .btn { width: 100%; }
