@@ -35,7 +35,7 @@ for (const [num, name, name_ja, category, colors, score] of PARTS) {
 const catalog = {
   generated_at: new Date().toISOString(),
   source: 'starter (curated list, unverified). Run scripts/build-catalog.mjs to verify against Rebrickable.',
-  colors: COLORS.map(([id, name, name_ja, rgb, is_trans, bl_id]) => ({ id, name, name_ja, rgb, is_trans, bl_id })),
+  colors: COLORS.map(([id, name, name_ja, rgb, is_trans, bl_id, lego_id]) => ({ id, name, name_ja, rgb, is_trans, bl_id, lego_id: lego_id ?? null })),
   categories: CATEGORIES.map(([id, name_ja, emoji, description]) => ({ id, name_ja, emoji, description })),
   parts,
 }

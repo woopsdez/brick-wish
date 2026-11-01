@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { catalog, getColor, partsInCategory, searchParts } from '../catalog'
 import { PartImage } from '../components/PartImage'
+import { yen } from '../lib/budget'
+import { SHOP, minPrice } from '../lib/shop'
 import { useCart } from '../store/cart'
 import type { CatalogPart } from '../types'
 import { PartPicker } from './PartPicker'
@@ -46,11 +48,13 @@ export function Kid() {
       <section className="grid">
         {parts.map((p) => {
           const c0 = p.colors[0]
+          const price = minPrice(p)
           return (
-            <button key={p.num} className="tile" onClick={() => setPicking(p)}>
+            <button key={p.num} className={`tile ${price == null ? 'soldout' : ''}`} onClick={() => setPicking(p)}>
               <PartImage partNum={p.num} colorId={c0?.color_id ?? 15} elementId={c0?.element_id ?? null} rgb={getColor(c0?.color_id ?? 15)?.rgb} isTrans={getColor(c0?.color_id ?? 15)?.is_trans} category={p.category} alt={p.name_ja} />
               <span className="tile-name">{p.name_ja}</span>
               <span className="tile-num">{p.num}</span>
+              <span className="tile-price">{price != null ? `${yen(price)}〜` : '在庫なし'}</span>
             </button>
           )
         })}
@@ -60,6 +64,7 @@ export function Kid() {
       {picking && <PartPicker part={picking} onClose={() => setPicking(null)} />}
 
       <footer className="kid-footer">
+        {SHOP.sample && <p className="muted small">価格はサンプルです（{SHOP.name}の実データは scripts/build-shop-map.mjs で取得）</p>}
         <Link to="/parent">保護者の方はこちら</Link>
       </footer>
     </main>

@@ -5,8 +5,11 @@ import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { StatusBadge } from '../components/StatusBadge'
 import { bricklinkCatalogUrl, buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
+import { estimateTotal, spentThisMonth, yen } from '../lib/budget'
 import { BRICKLINK_WANTED_LIST_URL, BRICKLINK_WANTED_UPLOAD_URL } from '../lib/config'
+import { SHOP, cartPermalink, orderListText, productUrl, shippingFor } from '../lib/shop'
 import { getStore } from '../store'
+import { useFamily } from '../store/family-hooks'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 import type { CartItem, WishRequest } from '../types'
@@ -19,29 +22,31 @@ export function ParentRequest() {
 
   if (loading && !req) return <main className="page parent">読み込み中…</main>
   if (!req) return <main className="page parent">見つかりません。<Link to="/parent">一覧へ</Link></main>
-  return <Detail key={req.id + req.updated_at} req={req} />
+  return <Detail key={req.id + req.updated_at} req={req} requests={requests} />
 }
 
 const categoryDesc = new Map(catalog.categories.map((c) => [c.id, `${c.name_ja}：${c.description ?? ''}`]))
 
-function Detail({ req }: { req: WishRequest }) {
+function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }) {
   const nav = useNavigate()
+  const familyId = useFamilyId()
+  const { family } = useFamily(familyId)
   const [items, setItems] = useState<CartItem[]>(() => mergeItems(req.items))
   const [parentNote, setParentNote] = useState(req.parent_note)
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState<string | null>(null)
 
-  const xml = useMemo(() => buildWantedListXml(items, { condition: null }), [items])
   const totalQty = items.reduce((n, i) => n + i.qty, 0)
-  const missingColor = items.filter((i) => i.bl_color_id == null)
+  const { total, unknown } = useMemo(() => estimateTotal(items), [items])
   const editable = req.status === 'pending'
+  const remaining = family ? Math.max(0, family.monthly_budget_yen - spentThisMonth(requests)) : null
 
   async function decide(status: 'approved' | 'rejected') {
     setBusy(true)
     setErr(null)
     try {
-      await getStore().update(req.family_id, req.id, { status, items, parent_note: parentNote.trim() })
+      await getStore().update(req.family_id, req.id, { status, items, parent_note: parentNote.trim(), approved_by: status === 'approved' ? 'parent' : null, total_yen: total })
       if (status === 'rejected') nav('/parent')
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
@@ -64,10 +69,10 @@ function Detail({ req }: { req: WishRequest }) {
     setItems((cur) => (qty <= 0 ? cur.filter((x) => x !== it) : cur.map((x) => (x === it ? { ...x, qty } : x))))
   }
 
-  async function copyXml() {
-    await navigator.clipboard.writeText(xml)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 1500)
+  async function copy(label: string, text: string) {
+    await navigator.clipboard.writeText(text)
+    setCopied(label)
+    setTimeout(() => setCopied(null), 1500)
   }
 
   return (
@@ -76,15 +81,27 @@ function Detail({ req }: { req: WishRequest }) {
         <Link className="btn btn-ghost" to="/parent">
           ← 一覧
         </Link>
-        <StatusBadge status={req.status} parent />
+        <StatusBadge status={req.status} parent auto={req.approved_by === 'auto'} />
       </header>
 
       <h1>
-        リクエスト <span className="muted">({new Date(req.created_at).toLocaleString('ja-JP')})</span>
+        {total != null ? yen(total) : '価格不明あり'} <span className="muted small">送料別 · {new Date(req.created_at).toLocaleString('ja-JP')}</span>
       </h1>
       {req.note && (
         <p className="note">
           「<Linkified text={req.note} />」
+        </p>
+      )}
+      {req.status === 'approved' && req.approved_by === 'auto' && (
+        <p className="callout ok-callout">今月の枠内なので自動で承認されています。あとは下の手順で支払うだけです。</p>
+      )}
+      {editable && (
+        <p className="callout">
+          {unknown.length > 0
+            ? `${unknown.length} 件は${SHOP.name}に在庫がないため自動承認できませんでした。数量を 0 にして外すか、BrickLink で買うか決めてください。`
+            : remaining != null
+              ? `今月の自動承認枠の残り ${yen(remaining)} を超えるため、承認が必要です。`
+              : '承認が必要です。'}
         </p>
       )}
 
@@ -95,15 +112,24 @@ function Detail({ req }: { req: WishRequest }) {
           <li key={`${i.part_num}|${i.color_id}`} className="cart-row">
             <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
             <div className="cart-info">
-              <strong>{i.part_name_ja}</strong>
+              <strong>
+                {i.part_name_ja} <span className="muted small">{i.part_num}</span>
+              </strong>
               <span className="muted">
-                {i.part_name} · 番号 {i.bl_id} · <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
-                {i.bl_color_id == null && <em className="warn"> 色ID不明</em>}
+                <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name} ·{' '}
+                {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : <em className="warn">{SHOP.name}に在庫なし</em>}
               </span>
               {i.category && categoryDesc.has(i.category) && i.category !== 'basic' && <span className="muted small">{categoryDesc.get(i.category)}</span>}
-              <a className="ext" href={bricklinkCatalogUrl(i.bl_id, i.bl_color_id)} target="_blank" rel="noopener noreferrer">
-                BrickLink で写真と相場を見る ↗
-              </a>
+              <span className="row small">
+                {i.shop_key && (
+                  <a className="ext" href={productUrl(i.shop_key)} target="_blank" rel="noopener noreferrer">
+                    {SHOP.name}の商品ページ ↗
+                  </a>
+                )}
+                <a className="ext muted" href={bricklinkCatalogUrl(i.bl_id, i.bl_color_id)} target="_blank" rel="noopener noreferrer">
+                  BrickLink ↗
+                </a>
+              </span>
             </div>
             {editable ? <QtyStepper value={i.qty} onChange={(n) => setQty(i, n)} min={0} /> : <span className="qty-static">× {i.qty}</span>}
           </li>
@@ -111,6 +137,7 @@ function Detail({ req }: { req: WishRequest }) {
       </ul>
       <p className="muted">
         {items.length} 種類 / {totalQty} 個
+        {total != null && ` · 小計 ${yen(total)} + 送料 ${yen(shippingFor(total))}${shippingFor(total) === 0 ? '（送料無料）' : ''}`}
       </p>
 
       {editable && (
@@ -122,66 +149,121 @@ function Detail({ req }: { req: WishRequest }) {
           {err && <p className="error">{err}</p>}
           <div className="row">
             <button className="btn btn-big" disabled={busy || items.length === 0} onClick={() => void decide('approved')}>
-              ✅ 承認して注文へ
+              ✅ 承認して支払いへ
             </button>
             <button className="btn btn-big btn-danger" disabled={busy} onClick={() => void decide('rejected')}>
               今回は見送り
             </button>
           </div>
-          <p className="muted small">「承認」はまだ支払いではありません。次の画面で BrickLink に注文する手順が出ます。</p>
+          <p className="muted small">承認しても請求はされません。次の画面で{SHOP.name}のカートに入れて、そこで支払います。</p>
         </section>
       )}
 
-      {(req.status === 'approved' || req.status === 'ordered') && (
-        <section className="order">
-          <h2>BrickLink で注文する</h2>
-          <p className="muted">
-            このアプリには価格のデータがありません。合計金額は BrickLink のカート画面で確認してください。パーツが複数の店に分かれると、送料もそれぞれの店にかかります。
-          </p>
-          {missingColor.length > 0 && (
-            <p className="callout">
-              {missingColor.length} 件は BrickLink の色 ID が未登録のため「色指定なし」で出力されます。scripts/build-catalog.mjs を API キー付きで実行すると解消します。
-            </p>
+      {(req.status === 'approved' || req.status === 'ordered') && <OrderSection items={items} req={req} busy={busy} onOrdered={() => void markOrdered()} copied={copied} copy={copy} />}
+    </main>
+  )
+}
+
+function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: CartItem[]; req: WishRequest; busy: boolean; onOrdered: () => void; copied: string | null; copy: (label: string, text: string) => Promise<void> }) {
+  const { url: permalink, missing } = cartPermalink(items)
+  const inShop = items.filter((i) => !missing.includes(i))
+  const xml = buildWantedListXml(missing.length ? missing : items, { condition: null })
+  const { total } = estimateTotal(inShop)
+  return (
+    <section className="order">
+      <h2>{SHOP.name}で支払う</h2>
+      <p className="muted">
+        国内の専門店 1 店にまとめて注文します（決済 1 回、日本語、送料 {yen(SHOP.shippingYen)}、{yen(SHOP.freeShippingFromYen)} 以上で無料、PayPay・クレカ・後払い可）。
+        {SHOP.sample && <em className="warn"> いまは価格がサンプルなので、カートへのリンクは実際には開けません。</em>}
+      </p>
+      <ol className="steps">
+        <li>
+          {permalink && !SHOP.sample ? (
+            <a className="btn btn-big" href={permalink} target="_blank" rel="noopener noreferrer">
+              🛒 {SHOP.name}のカートに全部入れる
+            </a>
+          ) : (
+            <>
+              <button className="btn btn-big" disabled={SHOP.sample && !permalink} onClick={() => void copy('list', orderListText(inShop))}>
+                {copied === 'list' ? '✅ コピーした' : `📋 注文リストをコピー（${inShop.length} 行）`}
+              </button>
+              <a className="btn btn-ghost" href={SHOP.listOrderUrl} target="_blank" rel="noopener noreferrer">
+                {SHOP.name}の「ファイル・リストで注文」を開く ↗
+              </a>
+              <span className="muted small">品番-色ID と数量の行を貼り付けると一括でカートに入ります（受け付け形式はショップ側で確認）</span>
+            </>
           )}
-          <ol className="steps">
-            <li>
-              <button className="btn" onClick={() => downloadText(`brick-wish-${req.id.slice(0, 8)}.xml`, xml, 'application/xml')}>
-                ⬇️ Wanted List XML をダウンロード
-              </button>
-              <button className="btn btn-ghost" onClick={() => void copyXml()}>
-                {copied ? '✅ コピーした' : '📋 XML をコピー'}
-              </button>
-              <span className="muted">（注文したいパーツの一覧を BrickLink が読める形にしたファイルです）</span>
-            </li>
-            <li>
-              <a className="btn" href={BRICKLINK_WANTED_UPLOAD_URL} target="_blank" rel="noopener noreferrer">
-                🔗 BrickLink のアップロード画面を開く
-              </a>
-              <span className="muted"> → BrickLink のアカウントでログイン →「Upload」タブで XML を貼り付け（またはファイル選択）→ 新しい Wanted List として保存</span>
-            </li>
-            <li>
-              <a className="btn btn-ghost" href={BRICKLINK_WANTED_LIST_URL} target="_blank" rel="noopener noreferrer">
-                Wanted List 一覧
-              </a>
-              <span className="muted"> → 作ったリストの「Buy All」を押すと、全部そろう店の組み合わせを BrickLink が提案します → カートに入れて BrickLink 上で支払い</span>
-            </li>
-          </ol>
+        </li>
+        <li>
+          <span>
+            {SHOP.name}でそのまま支払い{total != null && `（小計 ${yen(total)} + 送料 ${yen(shippingFor(total))}）`}
+          </span>
+        </li>
+        <li>
+          {req.status === 'approved' ? (
+            <button className="btn" disabled={busy} onClick={onOrdered}>
+              📦 支払ったので「注文済み」にする
+            </button>
+          ) : (
+            <span className="muted">注文済み</span>
+          )}
+        </li>
+      </ol>
+
+      {missing.length > 0 && (
+        <details className="fallback" open>
+          <summary>
+            {SHOP.name}に無い {missing.length} 件を BrickLink（海外）で買う
+          </summary>
+          <p className="muted small">BrickLink は世界中の個人店が出品するサイトで、店ごとに決済と送料がかかり、英語で、海外発送に 2〜3 週間かかります。急がなければ次回に回すのも手です。</p>
+          <ul className="muted small">
+            {missing.map((i) => (
+              <li key={`${i.part_num}|${i.color_id}`}>
+                {i.part_name_ja} {i.color_name} × {i.qty}
+              </li>
+            ))}
+          </ul>
+          <BrickLinkSteps xml={xml} reqId={req.id} copied={copied} copy={copy} />
+        </details>
+      )}
+      {missing.length === 0 && (
+        <details className="fallback">
+          <summary>BrickLink（海外）で買う場合</summary>
+          <BrickLinkSteps xml={buildWantedListXml(items, { condition: null })} reqId={req.id} copied={copied} copy={copy} />
           <details>
-            <summary>XML を表示</summary>
-            <pre className="xml">{xml}</pre>
-          </details>
-          <details>
-            <summary>LEGO Pick a Brick 用 CSV（element ID があるパーツのみ）</summary>
+            <summary>LEGO Pick a Brick 用 CSV（日本ではオンライン未提供）</summary>
             <PabExport items={items} id={req.id} />
           </details>
-          {req.status === 'approved' && (
-            <button className="btn btn-big" disabled={busy} onClick={() => void markOrdered()}>
-              📦 注文したことにする
-            </button>
-          )}
-        </section>
+        </details>
       )}
-    </main>
+    </section>
+  )
+}
+
+function BrickLinkSteps({ xml, reqId, copied, copy }: { xml: string; reqId: string; copied: string | null; copy: (label: string, text: string) => Promise<void> }) {
+  return (
+    <ol className="steps">
+      <li>
+        <button className="btn btn-ghost" onClick={() => downloadText(`brick-wish-${reqId.slice(0, 8)}.xml`, xml, 'application/xml')}>
+          ⬇️ Wanted List XML
+        </button>
+        <button className="btn btn-ghost" onClick={() => void copy('xml', xml)}>
+          {copied === 'xml' ? '✅ コピーした' : '📋 XML をコピー'}
+        </button>
+      </li>
+      <li>
+        <a className="btn btn-ghost" href={BRICKLINK_WANTED_UPLOAD_URL} target="_blank" rel="noopener noreferrer">
+          BrickLink のアップロード画面 ↗
+        </a>
+        <span className="muted small">ログイン →「Upload」タブに XML を貼り付け → Wanted List として保存</span>
+      </li>
+      <li>
+        <a className="btn btn-ghost" href={BRICKLINK_WANTED_LIST_URL} target="_blank" rel="noopener noreferrer">
+          Wanted List 一覧 ↗
+        </a>
+        <span className="muted small">「Buy All」→ Auto-select で店を自動選択 → 店ごとに支払い</span>
+      </li>
+    </ol>
   )
 }
 
@@ -191,19 +273,19 @@ function ParentHowto() {
     <details className="howto">
       <summary>はじめての方へ：この画面でやること</summary>
       <ol>
-        <li>下の一覧が、子どもが欲しいと言っているレゴのパーツです。1 行が 1 種類で、右の数字が個数です。</li>
-        <li>各行の「BrickLink で写真と相場を見る」を押すと、そのパーツの写真と 1 個あたりのだいたいの価格が見られます。</li>
+        <li>下の一覧が、子どもが欲しいと言っているレゴのパーツです。1 行が 1 種類で、単価 × 個数が出ています。</li>
+        <li>各行の「{SHOP.name}の商品ページ」で写真と在庫を確認できます。</li>
         <li>多いと思ったら個数を減らせます。0 にするとその行は外れます。</li>
-        <li>「承認して注文へ」を押すと、注文用ファイルの作り方と BrickLink での手順が出ます。支払いはこのアプリではなく BrickLink のサイトで行います。</li>
+        <li>「承認して支払いへ」を押すと、{SHOP.name}のカートに入れて支払う手順が出ます。請求は{SHOP.name}で支払ったときだけです。</li>
       </ol>
       <p>
-        <strong>BrickLink とは</strong>：世界中のレゴ販売店（個人の店が多い）が出品している、レゴ専門の通販サイトです。レゴ公式ショップでは売っていない 1 個単位のパーツや古いパーツが買えます。店ごとに送料がかかるので、少ない店数でまとまる組み合わせを選ぶと安く済みます。海外の店だと届くまで日数がかかります。
+        <strong>{SHOP.name}とは</strong>：レゴのパーツを 1 個から売っている国内の専門店です。レゴ公式ショップは日本ではパーツの単品販売をしていないので、こうした店で買います。
       </p>
     </details>
   )
 }
 
-/** メモ内の URL（brickmecha の作例ページなど）をリンクにする */
+/** メモ内の URL をリンクにする */
 function Linkified({ text }: { text: string }) {
   const parts = text.split(/(https?:\/\/[^\s「」"]+)/g)
   return (
@@ -227,7 +309,7 @@ function PabExport({ items, id }: { items: CartItem[]; id: string }) {
   return (
     <div className="stack">
       <p className="muted">
-        出力可能 {ok} 件 / 除外 {skipped.length} 件（element ID 未登録）。Pick a Brick のリストアップロード対応地域は公式ページで確認してください。
+        出力可能 {ok} 件 / 除外 {skipped.length} 件（element ID 未登録）。Pick a Brick のリストアップロードは米国・カナダ・英国・ドイツのみ。
       </p>
       <button className="btn btn-ghost" disabled={ok === 0} onClick={() => downloadText(`pick-a-brick-${id.slice(0, 8)}.csv`, csv, 'text/csv')}>
         ⬇️ CSV をダウンロード

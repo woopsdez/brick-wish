@@ -1,20 +1,50 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { catalog } from '../catalog'
+import { yen } from '../lib/budget'
 import { hasPush, hasSupabase } from '../lib/config'
 import { normalizeFamilyCode, sha256Hex } from '../lib/ids'
 import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
+import { SHOP, shopMap } from '../lib/shop'
 import { getStore } from '../store'
+import { useFamily } from '../store/family-hooks'
 import { saveSettings, setParentUnlocked, useSettings } from '../store/settings'
-import { catalog } from '../catalog'
+
+function BudgetForm({ initialBudget, initialAuto, onSave }: { initialBudget: number; initialAuto: boolean; onSave: (n: number, auto: boolean) => Promise<void> }) {
+  const [budget, setBudget] = useState(String(initialBudget))
+  const [auto, setAuto] = useState(initialAuto)
+  return (
+    <>
+      <label>
+        1 か月の枠（円）
+        <input type="number" inputMode="numeric" min={0} step={100} value={budget} onChange={(e) => setBudget(e.target.value)} />
+      </label>
+      <label className="check">
+        <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} /> 枠内は自動で承認する
+      </label>
+      <button className="btn" onClick={() => void onSave(Math.max(0, parseInt(budget, 10) || 0), auto)}>
+        保存
+      </button>
+    </>
+  )
+}
 
 export function ParentSettings() {
   const settings = useSettings()
+  const { family, reload } = useFamily(settings.familyId)
   const [push, setPush] = useState<PushState>('disabled')
   const [pin, setPin] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
   const [joinCode, setJoinCode] = useState('')
   const [joinPin, setJoinPin] = useState('')
   const [joinErr, setJoinErr] = useState<string | null>(null)
+
+  async function saveBudget(n: number, auto: boolean) {
+    if (!settings.familyId) return
+    await getStore().setFamilyBudget(settings.familyId, n, auto)
+    reload()
+    setMsg(`自動承認枠を ${yen(n)} / 月${auto ? '' : '（オフ）'} にしました`)
+  }
 
   async function joinFamily() {
     setJoinErr(null)
@@ -42,6 +72,8 @@ export function ParentSettings() {
     setMsg('PIN を変更しました')
   }
 
+  const shopCount = Object.values(shopMap.items).filter((i) => i.available).length
+
   return (
     <main className="page parent">
       <header className="parent-header">
@@ -50,6 +82,15 @@ export function ParentSettings() {
         </Link>
         <h1>設定</h1>
       </header>
+
+      <section className="stack">
+        <h2>自動承認（月の枠）</h2>
+        <p className="muted">
+          枠内のリクエストは承認なしで「支払い待ち」になり、通知が来ます。枠は送料を含みません。月が変わるとリセットされます。
+        </p>
+        {family && <BudgetForm key={`${family.monthly_budget_yen}|${family.auto_approve}`} initialBudget={family.monthly_budget_yen} initialAuto={family.auto_approve} onSave={saveBudget} />}
+        {msg && <p className="ok">{msg}</p>}
+      </section>
 
       <dl className="kv">
         <dt>モード</dt>
@@ -74,6 +115,16 @@ export function ParentSettings() {
           <br />
           <span className="muted">{catalog.source}</span>
         </dd>
+        <dt>価格・在庫</dt>
+        <dd>
+          {SHOP.name}：{shopCount} 品が在庫あり（{new Date(SHOP.fetchedAt).toLocaleDateString('ja-JP')} 取得）
+          {SHOP.sample && (
+            <>
+              <br />
+              <em className="warn">サンプルデータです。本物は `node scripts/build-shop-map.mjs` で取得してください</em>
+            </>
+          )}
+        </dd>
       </dl>
 
       <section className="stack">
@@ -82,7 +133,6 @@ export function ParentSettings() {
         <button className="btn" onClick={() => void changePin()} disabled={pin.length < 4}>
           変更
         </button>
-        {msg && <p className="ok">{msg}</p>}
       </section>
 
       {hasSupabase && (

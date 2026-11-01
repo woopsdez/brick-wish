@@ -3,11 +3,17 @@ import { blIdOf, getColor } from '../catalog'
 import { ColorSwatch } from '../components/ColorSwatch'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
+import { yen } from '../lib/budget'
+import { SHOP, shopKeyFor, unitPrice } from '../lib/shop'
 import { addToCart } from '../store/cart'
 import type { CatalogPart } from '../types'
 
 export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () => void }) {
-  const colors = part.colors.map((pc) => ({ pc, color: getColor(pc.color_id) })).filter((x) => x.color)
+  const colors = part.colors
+    .map((pc) => ({ pc, color: getColor(pc.color_id), price: unitPrice(part.num, pc.color_id) }))
+    .filter((x) => x.color)
+    // 買える色を先に並べる
+    .sort((a, b) => (a.price == null ? 1 : 0) - (b.price == null ? 1 : 0))
   const [idx, setIdx] = useState(0)
   const [qty, setQty] = useState(4)
   const [added, setAdded] = useState(false)
@@ -26,6 +32,8 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
       bl_color_id: sel.color.bl_id,
       element_id: sel.pc.element_id,
       category: part.category,
+      shop_key: shopKeyFor(part.num, sel.color.id),
+      unit_yen: sel.price,
       qty,
     })
     setAdded(true)
@@ -48,12 +56,23 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
               {part.name} · {part.num}
             </p>
             {sel?.color && <p className="color-name">色：{sel.color.name_ja}</p>}
+            {sel &&
+              (sel.price != null ? (
+                <p className="price">
+                  {yen(sel.price)} / 個 × {qty} = <strong>{yen(sel.price * qty)}</strong>
+                </p>
+              ) : (
+                <p className="warn">{SHOP.name}に在庫なし。入れると保護者の確認が必要になります</p>
+              ))}
           </div>
         </div>
 
         <div className="swatches">
           {colors.map((x, i) => (
-            <ColorSwatch key={x.color!.id} color={x.color!} selected={i === idx} onClick={() => setIdx(i)} />
+            <div key={x.color!.id} className={`swatch-wrap ${x.price == null ? 'soldout' : ''}`}>
+              <ColorSwatch color={x.color!} selected={i === idx} onClick={() => setIdx(i)} />
+              <span className="swatch-price">{x.price != null ? yen(x.price) : '×'}</span>
+            </div>
           ))}
         </div>
 

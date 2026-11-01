@@ -1,6 +1,8 @@
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 import type { WishRequest } from '../types'
-import type { FamilyInfo, RequestStore } from './types'
+import { DEFAULT_BUDGET_YEN, type FamilyInfo, type RequestStore } from './types'
+
+const FAMILY_COLUMNS = 'code,pin_hash,monthly_budget_yen,auto_approve'
 
 /**
  * Supabase 実装。
@@ -90,21 +92,29 @@ export class SupabaseStore implements RequestStore {
   }
 
   async getFamily(code: string) {
-    const { data, error } = await this.client(code).from('families').select('code,pin_hash').eq('code', code).maybeSingle()
+    const { data, error } = await this.client(code).from('families').select(FAMILY_COLUMNS).eq('code', code).maybeSingle()
     if (error) throw error
-    return (data as FamilyInfo | null) ?? null
+    if (!data) return null
+    const d = data as Partial<FamilyInfo>
+    return { code, pin_hash: d.pin_hash ?? null, monthly_budget_yen: d.monthly_budget_yen ?? DEFAULT_BUDGET_YEN, auto_approve: d.auto_approve ?? true }
   }
 
   async ensureFamily(code: string, pinHash: string | null) {
     const cur = await this.getFamily(code)
     if (cur) return cur
-    const { error } = await this.client(code).from('families').insert({ code, pin_hash: pinHash })
+    const fam: FamilyInfo = { code, pin_hash: pinHash, monthly_budget_yen: DEFAULT_BUDGET_YEN, auto_approve: true }
+    const { error } = await this.client(code).from('families').insert(fam)
     if (error) throw error
-    return { code, pin_hash: pinHash }
+    return fam
   }
 
   async setFamilyPin(code: string, pinHash: string) {
     const { error } = await this.client(code).from('families').update({ pin_hash: pinHash }).eq('code', code)
+    if (error) throw error
+  }
+
+  async setFamilyBudget(code: string, monthlyBudgetYen: number, autoApprove: boolean) {
+    const { error } = await this.client(code).from('families').update({ monthly_budget_yen: monthlyBudgetYen, auto_approve: autoApprove }).eq('code', code)
     if (error) throw error
   }
 

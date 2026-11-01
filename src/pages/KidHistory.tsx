@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { PartImage } from '../components/PartImage'
 import { StatusBadge } from '../components/StatusBadge'
+import { yen } from '../lib/budget'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 
@@ -22,8 +23,11 @@ export function KidHistory() {
         {requests.map((r) => (
           <li key={r.id} className={`req-card status-${r.status}`}>
             <div className="req-head">
-              <StatusBadge status={r.status} />
-              <span className="muted">{new Date(r.created_at).toLocaleDateString('ja-JP')}</span>
+              <StatusBadge status={r.status} auto={r.approved_by === 'auto'} />
+              <span className="muted">
+                {r.total_yen != null && `${yen(r.total_yen)} · `}
+                {new Date(r.created_at).toLocaleDateString('ja-JP')}
+              </span>
             </div>
             {r.note && <p className="note">「{r.note}」</p>}
             {r.parent_note && <p className="parent-note">💬 {r.parent_note}</p>}

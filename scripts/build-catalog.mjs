@@ -143,6 +143,8 @@ async function api(path) {
 async function main() {
   const prev = existsSync(outPath) ? JSON.parse(readFileSync(outPath, 'utf8')) : null
   const prevBlColor = new Map((prev?.colors ?? []).map((c) => [c.id, c.bl_id]))
+  const prevLegoColor = new Map((prev?.colors ?? []).map((c) => [c.id, c.lego_id ?? null]))
+  const curatedLego = new Map(CURATED_COLORS.map((c) => [c[0], c[6] ?? null]))
 
   // 1. カテゴリ
   const catNameById = new Map()
@@ -153,7 +155,7 @@ async function main() {
   for await (const r of rows(await download('colors'))) {
     if (r.id === '-1' || r.id === '9999') continue
     if (!COLOR_ALLOW.has(r.name)) continue
-    colors.set(Number(r.id), { id: Number(r.id), name: r.name, name_ja: COLOR_JA[r.name] ?? r.name, rgb: r.rgb, is_trans: r.is_trans === 'True' || r.is_trans === 't', bl_id: prevBlColor.get(Number(r.id)) ?? null })
+    colors.set(Number(r.id), { id: Number(r.id), name: r.name, name_ja: COLOR_JA[r.name] ?? r.name, rgb: r.rgb, is_trans: r.is_trans === 'True' || r.is_trans === 't', bl_id: prevBlColor.get(Number(r.id)) ?? null, lego_id: prevLegoColor.get(Number(r.id)) ?? curatedLego.get(Number(r.id)) ?? null })
   }
   const curatedColorBl = new Map(CURATED_COLORS.map((c) => [c[0], c[5]]))
   for (const c of colors.values()) if (c.bl_id == null && curatedColorBl.has(c.id)) c.bl_id = curatedColorBl.get(c.id)
@@ -231,6 +233,9 @@ async function main() {
         const col = colors.get(c.id)
         const bl = c.external_ids?.BrickLink?.ext_ids?.[0]
         if (col && bl != null) col.bl_id = Number(bl)
+        // LEGO 社の色 ID（国内ショップの商品キー「品番-色ID」に使う）。複数あれば先頭
+        const lego = c.external_ids?.LEGO?.ext_ids?.[0]
+        if (col && lego != null) col.lego_id = Number(lego)
       }
       if (!data.next) break
       page++
@@ -270,6 +275,8 @@ async function main() {
   console.log(`wrote ${outPath}: ${outParts.length} parts, ${catalog.colors.length} colors`)
   const noBl = catalog.colors.filter((c) => c.bl_id == null).length
   if (noBl) console.warn(`${noBl} colors have no BrickLink id`)
+  const noLego = catalog.colors.filter((c) => c.lego_id == null).length
+  if (noLego) console.warn(`${noLego} colors have no LEGO color id (shop-map will skip them)`)
 }
 
 main().catch((e) => {

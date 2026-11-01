@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
   // リクエストが本当に存在し、その家族のものであることを確認（コードを知らない人は呼べない）
   const { data: reqRow, error: reqErr } = await admin
     .from('requests')
-    .select('id, kid_name, note, items')
+    .select('id, kid_name, note, items, status, approved_by, total_yen')
     .eq('id', body.request_id)
     .eq('family_id', body.family_id)
     .maybeSingle()
@@ -48,8 +48,10 @@ Deno.serve(async (req) => {
 
   const items = (reqRow.items as Array<{ qty: number }>) ?? []
   const qty = items.reduce((n, i) => n + (i.qty ?? 0), 0)
+  const auto = reqRow.status === 'approved' && reqRow.approved_by === 'auto'
+  const total = reqRow.total_yen != null ? `¥${Number(reqRow.total_yen).toLocaleString('ja-JP')} ` : ''
   const payload = JSON.stringify({
-    title: '新しいリクエスト',
+    title: auto ? `自動承認 ${total}→ 支払いへ` : `承認待ち ${total}`,
     body: `${items.length} 種類 / ${qty} 個${reqRow.note ? ` 「${reqRow.note}」` : ''}`,
     url: `${appUrl}#/parent/request/${reqRow.id}`,
     tag: `req-${reqRow.id}`,
