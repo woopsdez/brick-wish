@@ -1,0 +1,5 @@
+# Supabase CLI 用の最小設定。`supabase link --project-ref <ref>` 後に `supabase db push` / `supabase functions deploy notify-parent`
+project_id = "brick-wish"
+
+[functions.notify-parent]
+verify_jwt = false
