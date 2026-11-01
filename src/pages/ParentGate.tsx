@@ -25,7 +25,7 @@ export function ParentGate() {
 
   useEffect(() => {
     if (!familyId) return
-    if (settings.parentUnlocked) {
+    if (settings.parentUnlocked || settings.parentDevice) {
       setState('open')
       return
     }
@@ -37,7 +37,7 @@ export function ParentGate() {
         setState(h ? 'enter-pin' : 'set-pin')
       })
       .catch((e) => setErr(e instanceof Error ? e.message : String(e)))
-  }, [familyId, settings.parentUnlocked, settings.localPinHash])
+  }, [familyId, settings.parentUnlocked, settings.parentDevice, settings.localPinHash])
 
   async function submitSet() {
     if (!familyId) return

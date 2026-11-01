@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../components/Icon'
+import { JoinQr } from '../components/JoinQr'
 import { Loading } from '../components/Loading'
 import { StatusBadge } from '../components/StatusBadge'
 import { spentThisMonth, yen } from '../lib/budget'
@@ -8,12 +9,13 @@ import { hasPush, hasSupabase } from '../lib/config'
 import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
 import { useFamily } from '../store/family-hooks'
 import { useFamilyId } from '../store/family'
-import { setParentUnlocked } from '../store/settings'
+import { setParentUnlocked, useSettings } from '../store/settings'
 import { useRequests } from '../store/useRequests'
 import type { WishRequest } from '../types'
 
 export function Parent() {
   const familyId = useFamilyId()
+  const settings = useSettings()
   const { family } = useFamily(familyId)
   const { requests, loading, error, reload } = useRequests(familyId)
   const [push, setPush] = useState<PushState>('disabled')
@@ -72,12 +74,7 @@ export function Parent() {
         </div>
       )}
 
-      {hasSupabase && (
-        <p className="family-code">
-          ファミリーコード <code>{familyId}</code>
-          <span className="muted"> — 親スマホの「設定 → 別の端末とつなぐ」でこのコードを入力</span>
-        </p>
-      )}
+      {hasSupabase && familyId && <JoinQr familyId={familyId} collapsed={settings.parentDevice} />}
 
       {hasPush && push !== 'subscribed' && (
         <div className="callout">
