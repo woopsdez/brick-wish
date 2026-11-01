@@ -69,6 +69,7 @@ input:focus, textarea:focus { outline: 3px solid var(--yellow); border-color: va
   padding: 10px 12px; border-radius: 16px; border: 3px solid transparent; background: #fff; font-weight: 800; cursor: pointer; box-shadow: var(--shadow);
 }
 .cat .emoji { font-size: 1.6rem; }
+.cat-desc { margin: 0 0 12px; color: var(--muted); font-weight: 700; }
 .cat.active { border-color: var(--red); background: #fff3f3; }
 
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }

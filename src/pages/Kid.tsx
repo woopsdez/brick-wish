@@ -45,6 +45,9 @@ export function Kid() {
           ))}
         </nav>
       )}
+      {!q.trim() && catalog.categories.find((c) => c.id === cat)?.description && (
+        <p className="cat-desc">{catalog.categories.find((c) => c.id === cat)?.description}</p>
+      )}
 
       <section className="grid">
         {parts.map((p) => {

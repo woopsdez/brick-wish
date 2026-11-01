@@ -15,6 +15,8 @@ export interface CatalogCategory {
   id: string
   name_ja: string
   emoji: string
+  /** 子ども向けの一言説明 */
+  description?: string
 }
 
 export interface CatalogPartColor {

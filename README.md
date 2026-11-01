@@ -19,6 +19,14 @@
 
 つまり親の操作は「アプリで承認 → BrickLink でアップロード → Buy All → 決済」の 4 手順まで減ります。ゼロにはなりません。
 
+## カタログの方針（ミニメカ向け）
+
+子どもの用途が「Mechabrick / brickmecha 系のミニトランスフォーマー・ミニメカ」なので、同梱カタログは **関節・クリップ・ヒンジ・横向きポッチ・小さいプレート** を中心にした厳選リスト（`scripts/curated-parts.mjs`、167 パーツ）です。カテゴリは「かんせつ」「クリップ・バー」「ヒンジ」「よこむき」「ちいさいプレート」「タイル・スロープ」「まるいの」「テクニック（ちいさい）」「ロボットのぶひん」「タイヤ」「ふつうのブロック」。
+
+関節は Mixel 系ボールジョイント（14417 ボール横 / 14418 受け端 / 14704 受け横）を主軸にしています。ミニメカ向けには Mixel ジョイントが定番という記述は [htbi-moc のガイド](https://htbi-moc.com/blogs/guides/lego-moc-mechs-from-tiny-walkers-to-giant-titans) や [Eurobricks のスレッド](https://www.eurobricks.com/forum/forums/topic/183461-building-a-mech/) にあります。パーツ番号の意味は [BrickOwl 14418](https://www.brickowl.com/catalog/779982) / [BrickOwl 14704](https://www.brickowl.com/catalog/lego-plate-1-x-2-with-middle-ball-joint-socket-14704/comesin) で確認済み。それ以外の番号・色の有無は未検証で、`npm run catalog` が Rebrickable の CSV で実在確認し、無い番号は警告して除外します。
+
+リストを増減したいときは `scripts/curated-parts.mjs` を編集 → `npm run catalog:starter`（即時・未検証）または `npm run catalog`（要 API キー・検証つき）。
+
 ## 構成
 
 ```
@@ -29,8 +37,9 @@ src/
   catalog/      catalog.json（パーツ・色・カテゴリ）と検索ヘルパー
   sw.ts         Service Worker（プリキャッシュ + push 通知）
 scripts/
-  build-catalog.mjs   Rebrickable のデータから catalog.json を生成（要 API キー）
-  starter-catalog.mjs 手書きの暫定カタログを生成（現在同梱されているもの）
+  curated-parts.mjs   ミニメカ向け厳選パーツリスト（カテゴリ・色・子ども向け名）
+  build-catalog.mjs   厳選リストを Rebrickable のデータで検証し catalog.json を生成（要 API キー）
+  starter-catalog.mjs 厳選リストから未検証のまま catalog.json を生成（現在同梱されているもの）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
 supabase/
   migrations/0001_init.sql        テーブル・RLS
@@ -56,12 +65,13 @@ npm run dev
 1. [Rebrickable](https://rebrickable.com/) でアカウントを作り、[API キー](https://rebrickable.com/api/)を取得
 2. 実行:
    ```bash
-   REBRICKABLE_API_KEY=xxxx npm run catalog -- --top 40 --min-sets 30
+   REBRICKABLE_API_KEY=xxxx npm run catalog
    ```
    - CSV（parts / colors / elements / inventory_parts など）を `scripts/.cache/` にダウンロード。inventory_parts は数十 MB
-   - カテゴリごとに「収録セット数」上位 `--top` 件を選ぶ
+   - 厳選リストの番号を parts.csv で実在確認し、色は「希望色 ∩ 実際に存在する色」に絞る。無い番号は警告して除外
    - API から BrickLink のパーツ ID と色 ID を取得（レート制限対策で 1 秒待ちを入れている）
-3. `name_ja`（子ども向け名）は暫定カタログにあるものを引き継ぎ、それ以外は英名のまま。必要なら JSON を直接編集
+   - `--popular 20` を付けると各カテゴリに「収録セット数」上位 20 件を追加
+3. 警告に出た番号は Rebrickable で正しい part_num を調べて `scripts/curated-parts.mjs` を直す（例: 4085 は Rebrickable では 4085c など接尾辞付きの可能性）
 
 画像は Rebrickable の CDN（`cdn.rebrickable.com`）を直接参照しています。**ホットリンクの可否は未確認** なので、公開運用前に Rebrickable の利用規約を確認するか、画像を自サイトに同梱する処理を追加してください。
 

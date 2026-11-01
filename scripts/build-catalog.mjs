@@ -2,7 +2,11 @@
 /**
  * Rebrickable の公開データからカタログ (src/catalog/catalog.json) を生成する。
  *
- *   REBRICKABLE_API_KEY=xxxx node scripts/build-catalog.mjs [--top 40] [--min-sets 30]
+ *   REBRICKABLE_API_KEY=xxxx node scripts/build-catalog.mjs [--popular 20] [--min-sets 30]
+ *
+ * 選抜方針:
+ *   - 基本は scripts/curated-parts.mjs の厳選リスト（ミニメカ向け）。CSV で実在確認し、無い番号は警告して除外
+ *   - --popular N を付けると、各カテゴリに「収録セット数」上位 N 件を追加で足す
  *
  * データソース:
  *   1. CSV ダウンロード（キー不要） https://rebrickable.com/downloads/
@@ -24,6 +28,7 @@ import { createInterface } from 'node:readline'
 import { createReadStream } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { CATEGORIES as CURATED_CATEGORIES, COLORS as CURATED_COLORS, PARTS as CURATED_PARTS } from './curated-parts.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const cacheDir = resolve(here, '.cache')
@@ -31,27 +36,25 @@ const outPath = resolve(here, '../src/catalog/catalog.json')
 const args = Object.fromEntries(
   process.argv.slice(2).map((a, i, arr) => (a.startsWith('--') ? [a.slice(2), arr[i + 1] ?? 'true'] : [])).filter((x) => x.length),
 )
-const TOP_PER_CATEGORY = Number(args.top ?? 40)
+const POPULAR_PER_CATEGORY = Number(args.popular ?? 0)
 const MIN_SETS = Number(args['min-sets'] ?? 30)
 const API_KEY = process.env.REBRICKABLE_API_KEY
 const CDN = 'https://cdn.rebrickable.com/media/downloads/'
 
 mkdirSync(cacheDir, { recursive: true })
 
-// --- 子ども向けカテゴリ: Rebrickable の part_categories.name を割り当てる -------------------------
-const CATEGORY_MAP = [
-  ['brick', 'ブロック', '🧱', ['Bricks', 'Bricks Special', 'Bricks Round and Cones', 'Bricks Curved']],
-  ['plate', 'プレート', '▬', ['Plates', 'Plates Special', 'Plates Round Curved and Dishes', 'Plates Angled']],
-  ['tile', 'タイル', '◻️', ['Tiles', 'Tiles Special', 'Tiles Round and Curved']],
-  ['slope', 'スロープ', '📐', ['Bricks Sloped', 'Bricks Wedged', 'Wedges']],
-  ['technic', 'テクニック', '⚙️', ['Technic Bricks', 'Technic Beams', 'Technic Pins', 'Technic Axles', 'Technic Gears', 'Technic Connectors', 'Technic Bushes', 'Technic Beams Special', 'Technic Panels', 'Technic Steering, Suspension and Engine', 'Technic Special']],
-  ['wheel', 'タイヤ・くるま', '🚗', ['Wheels and Tyres', 'Vehicle', 'Transportation - Land', 'Windscreens and Fuselage']],
-  ['window', 'まど・ドア', '🚪', ['Windows and Doors', 'Baseplates', 'Panels', 'Supports, Girders and Cranes', 'Fences, Ladders and Trellises', 'Stairs']],
-  ['nature', 'はな・き', '🌳', ['Plants and Animals', 'Rock']],
-  ['minifig', 'ミニフィグ', '🧑', ['Minifig Accessories', 'Minifig Heads', 'Minifig Headwear', 'Minifig Upper Body', 'Minifig Lower Body', 'Minifigs', 'Tools', 'Weapons', 'Flags, Signs, Plastics and Cloth', 'Containers', 'Food']],
-  ['special', 'とくべつ', '✨', ['Hinges, Arms and Turntables', 'Clips', 'Bars, Ladders and Fences', 'Magnets and Holders', 'Other', 'Non-LEGO']],
-]
-const EXCLUDE_CATEGORY = new Set(['Stickers', 'Duplo, Quatro and Primo', 'Non-Buildable Figures (Duplo, Fabuland, etc)', 'Large Buildable Figures', 'Electronics', 'Mindstorms', 'Power Functions', 'Pneumatics', 'Modulex', 'Znap', 'HO Scale', 'Belville, Scala and Fabuland', 'Clikits', 'String, Bands and Reels', 'Hinges, Arms and Turntables'])
+// --- 子ども向けカテゴリ（厳選リストと共通）。--popular 用に Rebrickable の part_categories.name を割り当てる ---
+const RB_CATEGORY_TO_KID = {
+  'Bricks': 'basic', 'Bricks Special': 'snot', 'Bricks Round and Cones': 'round', 'Bricks Curved': 'small-tile',
+  'Plates': 'small-plate', 'Plates Special': 'clip', 'Plates Round Curved and Dishes': 'round', 'Plates Angled': 'small-plate',
+  'Tiles': 'small-tile', 'Tiles Special': 'small-tile', 'Tiles Round and Curved': 'round',
+  'Bricks Sloped': 'small-tile', 'Bricks Wedged': 'small-tile', 'Wedges': 'small-tile',
+  'Technic Bricks': 'technic', 'Technic Beams': 'technic', 'Technic Pins': 'technic', 'Technic Axles': 'technic', 'Technic Connectors': 'technic',
+  'Technic Bushes': 'technic', 'Technic Beams Special': 'technic', 'Technic Special': 'joint',
+  'Wheels and Tyres': 'wheel', 'Hinges, Arms and Turntables': 'hinge', 'Clips': 'clip', 'Bars, Ladders and Fences': 'clip',
+  'Minifig Accessories': 'robot', 'Tools': 'robot', 'Weapons': 'robot',
+}
+const CATEGORY_MAP = CURATED_CATEGORIES.map(([id, name_ja, emoji, description]) => [id, name_ja, emoji, description])
 
 // --- 色の子ども向け表示名（分からない色は英名のまま） ----------------------------------------------
 const COLOR_JA = {
@@ -69,7 +72,8 @@ const COLOR_JA = {
 }
 
 // 子ども向けカタログに入れる色（Rebrickable 名）。無指定なら elements にある色をすべて採用
-const COLOR_ALLOW = new Set(Object.keys(COLOR_JA))
+const COLOR_ALLOW = new Set([...Object.keys(COLOR_JA), ...CURATED_COLORS.map((c) => c[1])])
+for (const [, name, name_ja] of CURATED_COLORS) COLOR_JA[name] ??= name_ja
 
 async function download(name) {
   const gz = resolve(cacheDir, `${name}.csv.gz`)
@@ -143,7 +147,6 @@ async function main() {
   // 1. カテゴリ
   const catNameById = new Map()
   for await (const r of rows(await download('part_categories'))) catNameById.set(r.id, r.name)
-  const kidCatOf = (rbCatName) => CATEGORY_MAP.find(([, , , names]) => names.includes(rbCatName))?.[0] ?? null
 
   // 2. 色
   const colors = new Map()
@@ -152,16 +155,30 @@ async function main() {
     if (!COLOR_ALLOW.has(r.name)) continue
     colors.set(Number(r.id), { id: Number(r.id), name: r.name, name_ja: COLOR_JA[r.name] ?? r.name, rgb: r.rgb, is_trans: r.is_trans === 'True' || r.is_trans === 't', bl_id: prevBlColor.get(Number(r.id)) ?? null })
   }
+  const curatedColorBl = new Map(CURATED_COLORS.map((c) => [c[0], c[5]]))
+  for (const c of colors.values()) if (c.bl_id == null && curatedColorBl.has(c.id)) c.bl_id = curatedColorBl.get(c.id)
 
-  // 3. パーツと人気度（収録セット数 = inventory_parts の distinct inventory_id 数）
+  // 3. 厳選リストを parts.csv で実在確認
+  const curated = new Map(CURATED_PARTS.map(([num, name, name_ja, category, colorPref, score]) => [num, { num, name, name_ja, category, colorPref: new Set(colorPref), score }]))
   const parts = new Map()
+  const allParts = new Map()
   for await (const r of rows(await download('parts'))) {
     const catName = catNameById.get(r.part_cat_id)
-    if (!catName || EXCLUDE_CATEGORY.has(catName)) continue
-    const kidCat = kidCatOf(catName)
-    if (!kidCat) continue
-    parts.set(r.part_num, { num: r.part_num, name: r.name, name_ja: r.name, category: kidCat, rb_category: catName, bl_id: null, colors: new Map(), score: 0, _invs: new Set() })
+    allParts.set(r.part_num, { num: r.part_num, name: r.name, catName })
+    const cur = curated.get(r.part_num)
+    if (cur) {
+      parts.set(r.part_num, { num: r.part_num, name: r.name, name_ja: cur.name_ja, category: cur.category, rb_category: catName, bl_id: null, colors: new Map(), score: cur.score, curated: true, colorPref: cur.colorPref, _invs: new Set() })
+    } else if (POPULAR_PER_CATEGORY > 0 && catName && RB_CATEGORY_TO_KID[catName] && !EXCLUDE_CATEGORY.has(catName)) {
+      parts.set(r.part_num, { num: r.part_num, name: r.name, name_ja: r.name, category: RB_CATEGORY_TO_KID[catName], rb_category: catName, bl_id: null, colors: new Map(), score: 0, curated: false, colorPref: null, _invs: new Set() })
+    }
   }
+  const missing = [...curated.keys()].filter((n) => !parts.has(n))
+  if (missing.length) {
+    console.warn(`⚠ 厳選リストのうち parts.csv に無い番号 (${missing.length}): ${missing.join(', ')}`)
+    console.warn('   Rebrickable で正しい part_num を調べて scripts/curated-parts.mjs を直してください（例: 4085 → 4085c など）')
+  }
+
+  // 4. 色の実在と人気度（収録セット数 = inventory_parts の distinct inventory_id 数）
   console.log(`${parts.size} candidate parts; scanning inventory_parts (large file)...`)
   for await (const r of rows(await download('inventory_parts'))) {
     if (r.is_spare === 'True' || r.is_spare === 't') continue
@@ -172,29 +189,39 @@ async function main() {
     if (colors.has(cid)) p.colors.set(cid, p.colors.get(cid) ?? null)
   }
   for (const p of parts.values()) {
-    p.score = p._invs.size
+    p.popularity = p._invs.size
+    if (!p.curated) p.score = p.popularity
     delete p._invs
+    // 厳選パーツは「希望色 ∩ 実在色」。実在色が 1 つも無ければ実在色すべて
+    if (p.curated && p.colorPref?.size) {
+      const inter = [...p.colors.keys()].filter((c) => p.colorPref.has(c))
+      if (inter.length) for (const c of [...p.colors.keys()]) if (!p.colorPref.has(c)) p.colors.delete(c)
+    }
   }
 
-  // 4. element_id（画像・Pick a Brick 用）
+  // 5. element_id（画像・Pick a Brick 用）
   for await (const r of rows(await download('elements'))) {
     const p = parts.get(r.part_num)
     const cid = Number(r.color_id)
     if (p && p.colors.has(cid) && !p.colors.get(cid)) p.colors.set(cid, r.element_id)
   }
 
-  // 5. カテゴリごとに上位を選抜
-  const selected = []
-  for (const [kidCat] of CATEGORY_MAP) {
-    const list = [...parts.values()]
-      .filter((p) => p.category === kidCat && p.score >= MIN_SETS && p.colors.size > 0)
-      .sort((a, b) => b.score - a.score)
-      .slice(0, TOP_PER_CATEGORY)
-    selected.push(...list)
+  // 6. 選抜: 厳選リスト全部 + （--popular 指定時）カテゴリごとの人気上位
+  const selected = [...parts.values()].filter((p) => p.curated && p.colors.size > 0)
+  const noColor = [...parts.values()].filter((p) => p.curated && p.colors.size === 0).map((p) => p.num)
+  if (noColor.length) console.warn(`⚠ 色データが見つからず除外 (${noColor.length}): ${noColor.join(', ')}`)
+  if (POPULAR_PER_CATEGORY > 0) {
+    for (const [kidCat] of CATEGORY_MAP) {
+      const list = [...parts.values()]
+        .filter((p) => !p.curated && p.category === kidCat && p.popularity >= MIN_SETS && p.colors.size > 0)
+        .sort((a, b) => b.popularity - a.popularity)
+        .slice(0, POPULAR_PER_CATEGORY)
+      selected.push(...list)
+    }
   }
   console.log(`selected ${selected.length} parts`)
 
-  // 6. API で BrickLink ID を補完
+  // 7. API で BrickLink ID を補完
   if (API_KEY) {
     console.log('fetching BrickLink ids from Rebrickable API...')
     let page = 1
@@ -222,20 +249,21 @@ async function main() {
     console.warn('REBRICKABLE_API_KEY が無いため BrickLink ID は part_num を流用します（色 ID は既存値を引き継ぎ）')
   }
 
-  // 7. 以前の手書き日本語名があれば引き継ぐ
+  // 8. 出力
   const prevJa = new Map((prev?.parts ?? []).map((p) => [p.num, p.name_ja]))
   const usedColorIds = new Set()
   const outParts = selected.map((p) => {
     const cols = [...p.colors.entries()].map(([color_id, element_id]) => ({ color_id, element_id }))
     cols.forEach((c) => usedColorIds.add(c.color_id))
-    return { num: p.num, name: p.name, name_ja: prevJa.get(p.num) && prevJa.get(p.num) !== p.name ? prevJa.get(p.num) : p.name, category: p.category, bl_id: p.bl_id, colors: cols, score: p.score }
+    const ja = p.curated ? p.name_ja : prevJa.get(p.num) && prevJa.get(p.num) !== p.name ? prevJa.get(p.num) : p.name
+    return { num: p.num, name: p.name, name_ja: ja, category: p.category, bl_id: p.bl_id, colors: cols, score: p.score }
   })
 
   const catalog = {
     generated_at: new Date().toISOString(),
     source: `Rebrickable CSV downloads${API_KEY ? ' + API v3 external_ids' : ' (no API key: BrickLink ids unverified)'}`,
     colors: [...colors.values()].filter((c) => usedColorIds.has(c.id)).sort((a, b) => a.id - b.id),
-    categories: CATEGORY_MAP.map(([id, name_ja, emoji]) => ({ id, name_ja, emoji })),
+    categories: CATEGORY_MAP.map(([id, name_ja, emoji, description]) => ({ id, name_ja, emoji, description })),
     parts: outParts,
   }
   writeFileSync(outPath, JSON.stringify(catalog, null, 1))
