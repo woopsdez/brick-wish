@@ -1,17 +1,15 @@
 import { useEffect, useState } from 'react'
-import type { Role } from '../types'
 
-/** この端末だけに保存する設定（役割・ファミリーコード・名前） */
+/** この端末だけに保存する設定 */
 export interface DeviceSettings {
-  role: Role | null
   familyId: string | null
-  kidName: string
   /** ローカルモード時の親PIN（SHA-256）。Supabase モードでは families テーブル側を使う */
   localPinHash: string | null
 }
 
-const KEY = 'bw:settings:v1'
-const DEFAULT: DeviceSettings = { role: null, familyId: null, kidName: '', localPinHash: null }
+const KEY = 'bw:settings:v2'
+const UNLOCK_KEY = 'bw:parent-unlocked'
+const DEFAULT: DeviceSettings = { familyId: null, localPinHash: null }
 const listeners = new Set<() => void>()
 
 export function loadSettings(): DeviceSettings {
@@ -29,10 +27,29 @@ export function saveSettings(patch: Partial<DeviceSettings>) {
   listeners.forEach((l) => l())
 }
 
-export function useSettings(): DeviceSettings {
-  const [s, setS] = useState(loadSettings)
+/** 親画面のロック解除はタブ（セッション）単位。アプリを閉じると再びロックされる */
+export function isParentUnlocked(): boolean {
+  try {
+    return sessionStorage.getItem(UNLOCK_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function setParentUnlocked(v: boolean) {
+  try {
+    if (v) sessionStorage.setItem(UNLOCK_KEY, '1')
+    else sessionStorage.removeItem(UNLOCK_KEY)
+  } catch {
+    /* ignore */
+  }
+  listeners.forEach((l) => l())
+}
+
+export function useSettings(): DeviceSettings & { parentUnlocked: boolean } {
+  const [s, setS] = useState(() => ({ ...loadSettings(), parentUnlocked: isParentUnlocked() }))
   useEffect(() => {
-    const l = () => setS(loadSettings())
+    const l = () => setS({ ...loadSettings(), parentUnlocked: isParentUnlocked() })
     listeners.add(l)
     window.addEventListener('storage', l)
     return () => {

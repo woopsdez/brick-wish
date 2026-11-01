@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { hasPush, hasSupabase } from '../lib/config'
-import { sha256Hex } from '../lib/ids'
+import { normalizeFamilyCode, sha256Hex } from '../lib/ids'
 import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
 import { getStore } from '../store'
-import { saveSettings, useSettings } from '../store/settings'
+import { saveSettings, setParentUnlocked, useSettings } from '../store/settings'
 import { catalog } from '../catalog'
 
 export function ParentSettings() {
@@ -12,6 +12,22 @@ export function ParentSettings() {
   const [push, setPush] = useState<PushState>('disabled')
   const [pin, setPin] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
+  const [joinCode, setJoinCode] = useState('')
+  const [joinPin, setJoinPin] = useState('')
+  const [joinErr, setJoinErr] = useState<string | null>(null)
+
+  async function joinFamily() {
+    setJoinErr(null)
+    const c = normalizeFamilyCode(joinCode)
+    if (c.length !== 6) return setJoinErr('コードは 6 文字です')
+    const fam = await getStore().getFamily(c)
+    if (!fam) return setJoinErr('そのコードは見つかりません')
+    const h = await sha256Hex(joinPin)
+    if (fam.pin_hash && fam.pin_hash !== h) return setJoinErr('PIN が違います')
+    saveSettings({ familyId: c, localPinHash: fam.pin_hash ?? null })
+    setParentUnlocked(true)
+    setMsg(`ファミリー ${c} につなぎました`)
+  }
 
   useEffect(() => {
     void getPushState().then(setPush)
@@ -69,22 +85,30 @@ export function ParentSettings() {
         {msg && <p className="ok">{msg}</p>}
       </section>
 
+      {hasSupabase && (
+        <section className="stack">
+          <h2>別の端末とつなぐ</h2>
+          <p className="muted">子どものタブレットの親画面に出ているファミリーコードと、そこで決めた PIN を入れると、このスマホで承認できるようになります。</p>
+          <input value={joinCode} onChange={(e) => setJoinCode(normalizeFamilyCode(e.target.value))} placeholder="ファミリーコード（6 文字）" autoCapitalize="characters" />
+          <input type="password" inputMode="numeric" value={joinPin} onChange={(e) => setJoinPin(e.target.value.replace(/\D/g, ''))} placeholder="PIN" />
+          {joinErr && <p className="error">{joinErr}</p>}
+          <button className="btn" onClick={() => void joinFamily()} disabled={joinCode.length !== 6}>
+            つなぐ
+          </button>
+        </section>
+      )}
+
       <section className="stack">
-        <h2>この端末の役割を変える</h2>
-        <p className="muted">子ども用タブレットに切り替えるときはこちら。もう一度親にするにはファミリーコードと PIN が必要です。</p>
+        <h2>この端末</h2>
+        <button className="btn btn-ghost" onClick={() => { setParentUnlocked(false); location.hash = '#/kid' }}>
+          🔒 ロックして こども画面へ
+        </button>
         <button
           className="btn btn-danger"
           onClick={() => {
-            if (confirm('この端末を「こども」モードにしますか？')) saveSettings({ role: 'kid' })
-          }}
-        >
-          こどもモードにする
-        </button>
-        <button
-          className="btn btn-ghost"
-          onClick={() => {
             if (confirm('この端末の設定をすべて消しますか？（おねがいの履歴はローカルモードの場合のみ消えます）')) {
               localStorage.clear()
+              sessionStorage.clear()
               location.hash = '#/'
               location.reload()
             }

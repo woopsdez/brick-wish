@@ -3,12 +3,10 @@ import { Link } from 'react-router-dom'
 import { catalog, partsInCategory, searchParts } from '../catalog'
 import { PartImage } from '../components/PartImage'
 import { useCart } from '../store/cart'
-import { useSettings } from '../store/settings'
 import type { CatalogPart } from '../types'
 import { PartPicker } from './PartPicker'
 
 export function Kid() {
-  const settings = useSettings()
   const cart = useCart()
   const [cat, setCat] = useState(catalog.categories[0]?.id ?? '')
   const [q, setQ] = useState('')
@@ -20,9 +18,7 @@ export function Kid() {
   return (
     <main className="page kid">
       <header className="kid-header">
-        <h1>
-          🧱 {settings.kidName || 'こども'}の ほしいもの
-        </h1>
+        <h1>🧱 ほしいもの</h1>
         <div className="kid-header-actions">
           <Link className="btn btn-ghost" to="/kid/history">
             📜 まえの おねがい
@@ -64,6 +60,10 @@ export function Kid() {
       </section>
 
       {picking && <PartPicker part={picking} onClose={() => setPicking(null)} />}
+
+      <footer className="kid-footer">
+        <Link to="/parent">👩‍👧 おうちの人はこちら</Link>
+      </footer>
     </main>
   )
 }

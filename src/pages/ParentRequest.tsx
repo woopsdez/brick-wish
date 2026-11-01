@@ -5,16 +5,15 @@ import { QtyStepper } from '../components/QtyStepper'
 import { StatusBadge } from '../components/StatusBadge'
 import { buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
 import { BRICKLINK_WANTED_LIST_URL, BRICKLINK_WANTED_UPLOAD_URL } from '../lib/config'
-import { sha256Hex } from '../lib/ids'
 import { getStore } from '../store'
-import { useSettings } from '../store/settings'
+import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 import type { CartItem, WishRequest } from '../types'
 
 export function ParentRequest() {
   const { id } = useParams()
-  const settings = useSettings()
-  const { requests, loading } = useRequests(settings.familyId)
+  const familyId = useFamilyId()
+  const { requests, loading } = useRequests(familyId)
   const req = requests.find((r) => r.id === id)
 
   if (loading && !req) return <main className="page parent">読み込み中…</main>
@@ -24,10 +23,8 @@ export function ParentRequest() {
 
 function Detail({ req }: { req: WishRequest }) {
   const nav = useNavigate()
-  const settings = useSettings()
   const [items, setItems] = useState<CartItem[]>(() => mergeItems(req.items))
   const [parentNote, setParentNote] = useState(req.parent_note)
-  const [pin, setPin] = useState('')
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -37,19 +34,10 @@ function Detail({ req }: { req: WishRequest }) {
   const missingColor = items.filter((i) => i.bl_color_id == null)
   const editable = req.status === 'pending'
 
-  async function verifyPin(): Promise<boolean> {
-    if (!settings.familyId) return false
-    const fam = await getStore().getFamily(settings.familyId)
-    const hash = fam?.pin_hash ?? settings.localPinHash
-    if (!hash) return true
-    return (await sha256Hex(pin)) === hash
-  }
-
   async function decide(status: 'approved' | 'rejected') {
     setBusy(true)
     setErr(null)
     try {
-      if (!(await verifyPin())) throw new Error('PIN が違います')
       await getStore().update(req.family_id, req.id, { status, items, parent_note: parentNote.trim() })
       if (status === 'rejected') nav('/parent')
     } catch (e) {
@@ -89,7 +77,7 @@ function Detail({ req }: { req: WishRequest }) {
       </header>
 
       <h1>
-        {req.kid_name} のおねがい <span className="muted">({new Date(req.created_at).toLocaleString('ja-JP')})</span>
+        おねがい <span className="muted">({new Date(req.created_at).toLocaleString('ja-JP')})</span>
       </h1>
       {req.note && <p className="note">「{req.note}」</p>}
 
@@ -117,10 +105,6 @@ function Detail({ req }: { req: WishRequest }) {
           <label>
             子どもへのひとこと（任意）
             <input value={parentNote} onChange={(e) => setParentNote(e.target.value)} placeholder="例: 赤いのは今あるやつ使おう" />
-          </label>
-          <label>
-            PIN
-            <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value)} placeholder="••••" />
           </label>
           {err && <p className="error">{err}</p>}
           <div className="row">

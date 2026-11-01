@@ -5,12 +5,12 @@ import { QtyStepper } from '../components/QtyStepper'
 import { uuid } from '../lib/ids'
 import { getStore } from '../store'
 import { clearCart, setCartQty, useCart } from '../store/cart'
-import { useSettings } from '../store/settings'
+import { useFamilyId } from '../store/family'
 import type { WishRequest } from '../types'
 
 export function KidCart() {
   const cart = useCart()
-  const settings = useSettings()
+  const familyId = useFamilyId()
   const nav = useNavigate()
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)
@@ -18,14 +18,14 @@ export function KidCart() {
   const total = cart.reduce((n, i) => n + i.qty, 0)
 
   async function send() {
-    if (!settings.familyId || cart.length === 0) return
+    if (!familyId || cart.length === 0) return
     setBusy(true)
     setErr(null)
     const now = new Date().toISOString()
     const req: WishRequest = {
       id: uuid(),
-      family_id: settings.familyId,
-      kid_name: settings.kidName || 'こども',
+      family_id: familyId,
+      kid_name: '',
       note: note.trim(),
       items: cart,
       status: 'pending',

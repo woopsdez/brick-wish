@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom'
 import { PartImage } from '../components/PartImage'
 import { StatusBadge } from '../components/StatusBadge'
-import { useSettings } from '../store/settings'
+import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 
 export function KidHistory() {
-  const settings = useSettings()
-  const { requests, loading } = useRequests(settings.familyId)
+  const familyId = useFamilyId()
+  const { requests, loading } = useRequests(familyId)
 
   return (
     <main className="page kid">

@@ -145,3 +145,5 @@ input:focus, textarea:focus { outline: 3px solid var(--yellow); border-color: va
 .kv dt { font-weight: 800; }
 .kv dd { margin: 0; }
 details summary { cursor: pointer; font-weight: 700; }
+.kid-footer { margin-top: 40px; text-align: center; }
+.kid-footer a { color: var(--muted); font-size: 0.9rem; text-decoration: none; }

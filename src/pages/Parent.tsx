@@ -3,12 +3,13 @@ import { Link } from 'react-router-dom'
 import { StatusBadge } from '../components/StatusBadge'
 import { hasPush, hasSupabase } from '../lib/config'
 import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
-import { useSettings } from '../store/settings'
+import { useFamilyId } from '../store/family'
+import { setParentUnlocked } from '../store/settings'
 import { useRequests } from '../store/useRequests'
 
 export function Parent() {
-  const settings = useSettings()
-  const { requests, loading, error, reload } = useRequests(settings.familyId)
+  const familyId = useFamilyId()
+  const { requests, loading, error, reload } = useRequests(familyId)
   const [push, setPush] = useState<PushState>('disabled')
 
   useEffect(() => {
@@ -29,20 +30,25 @@ export function Parent() {
           <Link className="btn btn-ghost" to="/parent/settings">
             ⚙️ 設定
           </Link>
+          <Link className="btn btn-ghost" to="/kid" onClick={() => setParentUnlocked(false)}>
+            🔒 こども画面へ
+          </Link>
         </div>
       </header>
 
-      <p className="family-code">
-        ファミリーコード <code>{settings.familyId}</code>
-        <span className="muted"> — 子どものタブレットでこのコードを入力</span>
-      </p>
+      {hasSupabase && (
+        <p className="family-code">
+          ファミリーコード <code>{familyId}</code>
+          <span className="muted"> — 親スマホの「設定 → 別の端末とつなぐ」でこのコードを入力</span>
+        </p>
+      )}
 
       {hasPush && push !== 'subscribed' && (
         <div className="callout">
           {push === 'prompt' && (
             <>
               このスマホに通知を届けるには許可が必要です。
-              <button className="btn" onClick={() => settings.familyId && void subscribeParentPush(settings.familyId).then(setPush)}>
+              <button className="btn" onClick={() => familyId && void subscribeParentPush(familyId).then(setPush)}>
                 🔔 通知を許可する
               </button>
             </>
@@ -51,7 +57,7 @@ export function Parent() {
           {push === 'unsupported' && 'このブラウザは Web Push に対応していません。iPhone はホーム画面に追加（PWA）してから開いてください。'}
         </div>
       )}
-      {!hasSupabase && <div className="callout muted">ローカルモード：同じ端末内の「こども」画面から送られたおねがいだけが表示されます。</div>}
+      {!hasSupabase && <div className="callout muted">ローカルモード：この端末の「ほしいもの」画面から送られたおねがいだけが表示されます。</div>}
 
       {error && <p className="error">{error}</p>}
       {loading && <p className="muted">読み込み中…</p>}
@@ -83,11 +89,11 @@ function RequestRow({ r }: { r: import('../types').WishRequest }) {
     <li className={`req-card status-${r.status}`}>
       <Link to={`/parent/request/${r.id}`} className="req-link">
         <div className="req-head">
-          <strong>{r.kid_name}</strong>
+          <strong>{new Date(r.created_at).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</strong>
           <StatusBadge status={r.status} parent />
         </div>
         <div className="muted">
-          {r.items.length} 種類 / {qty} 個 · {new Date(r.created_at).toLocaleString('ja-JP')}
+          {r.items.length} 種類 / {qty} 個
         </div>
         {r.note && <p className="note">「{r.note}」</p>}
       </Link>
