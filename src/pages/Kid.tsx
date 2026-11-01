@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { catalog, getColor, partsInCategory, searchParts } from '../catalog'
 import { PartImage } from '../components/PartImage'
+import { looksLikePartNum } from '../lib/partsImport'
 import { useCart } from '../store/cart'
 import type { CatalogPart } from '../types'
 import { PartPicker } from './PartPicker'
@@ -12,16 +13,22 @@ export function Kid() {
   const [q, setQ] = useState('')
   const [picking, setPicking] = useState<CatalogPart | null>(null)
 
-  const parts = useMemo(() => (q.trim() ? searchParts(q) : partsInCategory(cat)), [cat, q])
+  const query = q.trim()
+  const parts = useMemo(() => (query ? searchParts(query) : partsInCategory(cat)), [cat, query])
   const total = cart.reduce((n, i) => n + i.qty, 0)
+  // 番号っぽい検索語でカタログに完全一致が無ければ、番号のまま追加できる導線を出す
+  const offerNumber = query && looksLikePartNum(query) && !parts.some((p) => p.num.toLowerCase() === query.toLowerCase())
 
   return (
     <main className="page kid">
       <header className="kid-header">
         <h1>ほしいパーツ</h1>
         <div className="kid-header-actions">
+          <Link className="btn btn-ghost" to="/kid/add">
+            ＋ 番号・リスト
+          </Link>
           <Link className="btn btn-ghost" to="/kid/history">
-            リクエスト履歴
+            履歴
           </Link>
           <Link className="btn btn-cart" to="/kid/cart" aria-label="カートを見る">
             🛒 カート <span className="count">{total}</span>
@@ -29,9 +36,9 @@ export function Kid() {
         </div>
       </header>
 
-      <input className="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="パーツ名や番号で検索" />
+      <input className="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="パーツ名や番号で検索（例: 14417、クリップ）" autoCapitalize="none" />
 
-      {!q.trim() && (
+      {!query && (
         <nav className="cats" aria-label="カテゴリ">
           {catalog.categories.map((c) => (
             <button key={c.id} className={`cat ${c.id === cat ? 'active' : ''}`} onClick={() => setCat(c.id)}>
@@ -40,6 +47,15 @@ export function Kid() {
             </button>
           ))}
         </nav>
+      )}
+
+      {offerNumber && (
+        <div className="cta">
+          <span>カタログに無い番号でも頼めます。</span>
+          <Link className="btn" to={`/kid/add?num=${encodeURIComponent(query)}`}>
+            「{query}」を番号として追加
+          </Link>
+        </div>
       )}
 
       <section className="grid">
@@ -53,8 +69,17 @@ export function Kid() {
             </button>
           )
         })}
-        {parts.length === 0 && <p className="muted">見つかりませんでした</p>}
       </section>
+      {parts.length === 0 && (
+        <div className="empty">
+          <p>カタログには見つかりませんでした</p>
+          {!offerNumber && (
+            <Link className="btn btn-ghost" to="/kid/add">
+              番号やリストで追加する
+            </Link>
+          )}
+        </div>
+      )}
 
       {picking && <PartPicker part={picking} onClose={() => setPicking(null)} />}
 

@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { catalog } from '../catalog'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { StatusBadge } from '../components/StatusBadge'
-import { buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
+import { bricklinkCatalogUrl, buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
 import { BRICKLINK_WANTED_LIST_URL, BRICKLINK_WANTED_UPLOAD_URL } from '../lib/config'
+import { isAnyColor } from '../lib/partsImport'
 import { getStore } from '../store'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
@@ -21,6 +23,8 @@ export function ParentRequest() {
   return <Detail key={req.id + req.updated_at} req={req} />
 }
 
+const categoryDesc = new Map(catalog.categories.map((c) => [c.id, `${c.name_ja}：${c.description ?? ''}`]))
+
 function Detail({ req }: { req: WishRequest }) {
   const nav = useNavigate()
   const [items, setItems] = useState<CartItem[]>(() => mergeItems(req.items))
@@ -31,7 +35,7 @@ function Detail({ req }: { req: WishRequest }) {
 
   const xml = useMemo(() => buildWantedListXml(items, { condition: null }), [items])
   const totalQty = items.reduce((n, i) => n + i.qty, 0)
-  const missingColor = items.filter((i) => i.bl_color_id == null)
+  const missingColor = items.filter((i) => i.bl_color_id == null && !isAnyColor(i))
   const editable = req.status === 'pending'
 
   async function decide(status: 'approved' | 'rejected') {
@@ -79,7 +83,13 @@ function Detail({ req }: { req: WishRequest }) {
       <h1>
         リクエスト <span className="muted">({new Date(req.created_at).toLocaleString('ja-JP')})</span>
       </h1>
-      {req.note && <p className="note">「{req.note}」</p>}
+      {req.note && (
+        <p className="note">
+          「<Linkified text={req.note} />」
+        </p>
+      )}
+
+      {editable && <ParentHowto />}
 
       <ul className="cart-list">
         {items.map((i) => (
@@ -88,9 +98,13 @@ function Detail({ req }: { req: WishRequest }) {
             <div className="cart-info">
               <strong>{i.part_name_ja}</strong>
               <span className="muted">
-                {i.part_name} · BL {i.bl_id} · <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
-                {i.bl_color_id == null && <em className="warn"> 色ID不明</em>}
+                {i.part_name} · 番号 {i.bl_id} · <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
+                {!isAnyColor(i) && i.bl_color_id == null && <em className="warn"> 色ID不明</em>}
               </span>
+              {i.category && categoryDesc.has(i.category) && i.category !== 'basic' && <span className="muted small">{categoryDesc.get(i.category)}</span>}
+              <a className="ext" href={bricklinkCatalogUrl(i.bl_id, i.bl_color_id)} target="_blank" rel="noopener noreferrer">
+                BrickLink で写真と相場を見る ↗
+              </a>
             </div>
             {editable ? <QtyStepper value={i.qty} onChange={(n) => setQty(i, n)} min={0} /> : <span className="qty-static">× {i.qty}</span>}
           </li>
@@ -115,12 +129,16 @@ function Detail({ req }: { req: WishRequest }) {
               今回は見送り
             </button>
           </div>
+          <p className="muted small">「承認」はまだ支払いではありません。次の画面で BrickLink に注文する手順が出ます。</p>
         </section>
       )}
 
       {(req.status === 'approved' || req.status === 'ordered') && (
         <section className="order">
           <h2>BrickLink で注文する</h2>
+          <p className="muted">
+            このアプリには価格のデータがありません。合計金額は BrickLink のカート画面で確認してください。パーツが複数の店に分かれると、送料もそれぞれの店にかかります。
+          </p>
           {missingColor.length > 0 && (
             <p className="callout">
               {missingColor.length} 件は BrickLink の色 ID が未登録のため「色指定なし」で出力されます。scripts/build-catalog.mjs を API キー付きで実行すると解消します。
@@ -134,18 +152,19 @@ function Detail({ req }: { req: WishRequest }) {
               <button className="btn btn-ghost" onClick={() => void copyXml()}>
                 {copied ? '✅ コピーした' : '📋 XML をコピー'}
               </button>
+              <span className="muted">（注文したいパーツの一覧を BrickLink が読める形にしたファイルです）</span>
             </li>
             <li>
               <a className="btn" href={BRICKLINK_WANTED_UPLOAD_URL} target="_blank" rel="noopener noreferrer">
                 🔗 BrickLink のアップロード画面を開く
               </a>
-              <span className="muted"> → 「Upload」タブで XML を貼り付け（またはファイル選択）し、新しい Wanted List として保存</span>
+              <span className="muted"> → BrickLink のアカウントでログイン →「Upload」タブで XML を貼り付け（またはファイル選択）→ 新しい Wanted List として保存</span>
             </li>
             <li>
               <a className="btn btn-ghost" href={BRICKLINK_WANTED_LIST_URL} target="_blank" rel="noopener noreferrer">
                 Wanted List 一覧
               </a>
-              <span className="muted"> → 作ったリストの「Buy All」で店舗を自動選択し、カートへ。決済は BrickLink 上で行います</span>
+              <span className="muted"> → 作ったリストの「Buy All」を押すと、全部そろう店の組み合わせを BrickLink が提案します → カートに入れて BrickLink 上で支払い</span>
             </li>
           </ol>
           <details>
@@ -164,6 +183,42 @@ function Detail({ req }: { req: WishRequest }) {
         </section>
       )}
     </main>
+  )
+}
+
+/** レゴのパーツ売買を知らない親向けの説明。承認前だけ出す */
+function ParentHowto() {
+  return (
+    <details className="howto">
+      <summary>はじめての方へ：この画面でやること</summary>
+      <ol>
+        <li>下の一覧が、子どもが欲しいと言っているレゴのパーツです。1 行が 1 種類で、右の数字が個数です。</li>
+        <li>各行の「BrickLink で写真と相場を見る」を押すと、そのパーツの写真と 1 個あたりのだいたいの価格が見られます。</li>
+        <li>多いと思ったら個数を減らせます。0 にするとその行は外れます。</li>
+        <li>「承認して注文へ」を押すと、注文用ファイルの作り方と BrickLink での手順が出ます。支払いはこのアプリではなく BrickLink のサイトで行います。</li>
+      </ol>
+      <p>
+        <strong>BrickLink とは</strong>：世界中のレゴ販売店（個人の店が多い）が出品している、レゴ専門の通販サイトです。レゴ公式ショップでは売っていない 1 個単位のパーツや古いパーツが買えます。店ごとに送料がかかるので、少ない店数でまとまる組み合わせを選ぶと安く済みます。海外の店だと届くまで日数がかかります。
+      </p>
+    </details>
+  )
+}
+
+/** メモ内の URL（brickmecha の作例ページなど）をリンクにする */
+function Linkified({ text }: { text: string }) {
+  const parts = text.split(/(https?:\/\/[^\s「」"]+)/g)
+  return (
+    <>
+      {parts.map((p, i) =>
+        /^https?:\/\//.test(p) ? (
+          <a key={i} href={p} target="_blank" rel="noopener noreferrer">
+            {p}
+          </a>
+        ) : (
+          <span key={i}>{p}</span>
+        ),
+      )}
+    </>
   )
 }
 

@@ -1,9 +1,9 @@
 # Brick Wish 🧱
 
-子どもがタブレットで欲しいレゴパーツを選んで「おねがい」し、親がスマホで承認すると、そのまま BrickLink の Wanted List に流して「Buy All」でまとめ買いできる家庭用アプリ。
+レゴでミニメカを作る中高生が、公式ショップに無い関節や 1×1 などの小さいパーツを選んで「リクエスト」し、レゴに詳しくない親がスマホで中身を確認して承認すると、そのまま BrickLink の Wanted List に流して「Buy All」でまとめ買いできる家庭用アプリ。
 
-- **子ども画面**: ひらがな・大きなタイル・色スウォッチ・数量ステッパー。検索はパーツ名/番号。
-- **親画面**: 承認待ち一覧 → 内容を数量調整しつつ PIN で承認/見送り → BrickLink Wanted List XML を出力。
+- **ビルダー（子ども）画面**: ミニメカ向け厳選カタログから選ぶ / BrickLink の番号を直接入力 / パーツリストを貼り付け（BrickLink XML・Rebrickable CSV・1 行 1 パーツ）。カタログに無い番号もそのまま頼める。
+- **親画面**: 承認待ち一覧 → 各パーツの説明と BrickLink の写真・相場リンク、初めての人向けの手順説明 → 数量を調整して承認/見送り → BrickLink Wanted List XML を出力。
 - **同期**: Supabase を設定すると親スマホと子タブレットが同期し、Web Push で親に通知。未設定なら 1 台の端末内で完結する「ローカルモード」。
 - **ホスティング**: 静的サイト（PWA）。GitHub Pages 用のワークフロー同梱。
 
@@ -27,13 +27,26 @@
 
 リストを増減したいときは `scripts/curated-parts.mjs` を編集 → `npm run catalog:starter`（即時・未検証）または `npm run catalog`（要 API キー・検証つき）。
 
+### カタログに無いパーツ（brickmecha などの作例を作るとき）
+
+作例サイトのパーツリストはカタログの 167 種で収まらないので、子ども画面の「＋ 番号・リスト」から次の 2 通りで追加できます（`src/pages/KidAdd.tsx`、解析は `src/lib/partsImport.ts`）。
+
+- **番号で 1 個ずつ**: BrickLink / LEGO のパーツ番号（例 `14417`、`3070b`）と色、数量。番号は Rebrickable の画像で軽く確認できる（画像が出れば実在。出なくても BrickLink には存在することがある）
+- **リストを貼り付け**: BrickLink Wanted List XML、Rebrickable の `Part,Color,Quantity` CSV、または 1 行 1 パーツの自由形式（`14417 黒 4` / `3070b Dark Bluish Gray x6` / `4x 14418 Red`）。色は英語名・BrickLink 略称（DBG, LBG, Dk. Bluish Gray）・日本語（黒、濃いグレー、ダークグレー）を解決。読めない行は取り込まず、理由を表示
+
+カタログ外の番号は名前が「パーツ 14417」のようになり、BrickLink の番号としてそのまま XML に出ます。親画面の「BrickLink で写真と相場を見る」で実物を確認してください。検索欄に番号を入れてカタログに無い場合も、同じ導線が出ます。
+
+> ⚠ 例として挙がった [brickmecha.net の作例 #403](https://brickmecha.net/index.php?moc-no=403&lng=ja&min_parts=10&max_parts=100) は、この開発環境からサイトに到達できず **ページ構造・パーツ表記は未確認** です。サイト側がパーツ番号を BrickLink 形式で表示している前提で、番号のコピペか手入力を想定しています。別形式（独自表記や画像のみ）なら `partsImport.ts` のパーサーに追加が必要です。
+
+解析のテスト: `npm test`（`scripts/test-parts-import.ts`、Node 22.18 以降で .ts を直接実行）。
+
 ## 構成
 
 ```
 src/
-  pages/        Kid / PartPicker / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
+  pages/        Kid / PartPicker / KidAdd(番号・リスト追加) / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
   store/        settings(端末設定) / family(ファミリー自動作成) / cart / localStore / supabaseStore / useRequests
-  lib/          bricklink(XML・CSV生成) / push(Web Push 購読) / images / ids / config
+  lib/          bricklink(XML・CSV生成・カタログURL) / partsImport(リスト解析) / push(Web Push 購読) / images / ids / config
   catalog/      catalog.json（パーツ・色・カテゴリ）と検索ヘルパー
   sw.ts         Service Worker（プリキャッシュ + push 通知）
 scripts/
@@ -41,6 +54,7 @@ scripts/
   build-catalog.mjs   厳選リストを Rebrickable のデータで検証し catalog.json を生成（要 API キー）
   starter-catalog.mjs 厳選リストから未検証のまま catalog.json を生成（現在同梱されているもの）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
+  test-parts-import.ts  partsImport の単体テスト（npm test）
 supabase/
   migrations/0001_init.sql        テーブル・RLS
   functions/notify-parent/        Web Push 送信 Edge Function
@@ -56,7 +70,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで開くと、いきなり子ども用の「ほしいもの」画面です。パーツを選んで「おねがい」 → 画面下の「おうちの人はこちら」 → 初回だけ PIN を決める → 承認、の順で一通り試せます。PIN は親画面を開くときだけ必要で、タブを閉じるまでは再入力不要です。
+ブラウザで開くと、いきなり子ども用の「ほしいパーツ」画面です。カタログから選ぶか「＋ 番号・リスト」で番号を入れて → カートから「保護者にリクエストを送る」 → 画面下の「保護者の方はこちら」 → 初回だけ PIN を決める → 承認、の順で一通り試せます。PIN は親画面を開くときだけ必要で、タブを閉じるまでは再入力不要です。
 
 ### 2. カタログを本物にする（15 分 + ダウンロード時間）
 
@@ -117,11 +131,11 @@ iPhone は **ホーム画面に追加（PWA としてインストール）して
 
 ## 親の注文手順（BrickLink）
 
-1. 親画面でおねがいを開き、数量を調整して「承認して注文へ」
+1. 親画面でリクエストを開き、各行の「BrickLink で写真と相場を見る」で中身を確認、数量を調整して「承認して注文へ」
 2. 「Wanted List XML をダウンロード」または「XML をコピー」
 3. 「BrickLink のアップロード画面を開く」→ Upload タブに XML を貼り付け → 新しい Wanted List として保存
 4. Wanted List 一覧 → そのリストの **Buy All** → 店舗の組み合わせが自動提案されるのでカートへ → BrickLink で決済
-5. アプリに戻り「注文したことにする」（子ども画面に「ちゅうもんした」と表示される）
+5. アプリに戻り「注文したことにする」（子ども画面に「注文済み」と表示される）
 
 XML の仕様: [BrickLink Help – Wanted List Upload](https://www.bricklink.com/help.asp?helpID=207)。`COLOR` は省略可で、省略すると色指定なし。
 
@@ -133,6 +147,9 @@ XML の仕様: [BrickLink Help – Wanted List Upload](https://www.bricklink.com
 - `notify-parent` Edge Function は未デプロイ・未実行
 - Pick a Brick CSV は日本で使えるか未確認
 - BrickLink に「複数 Wanted List をまとめて買う」機能はあるが、アプリ側からの自動アップロードはできない（ログイン必須の Web フォームのみ）
+- 親画面の BrickLink リンク（`catalogitem.page?P=<番号>&C=<色ID>#T=P`）の `C=` / `#T=P` パラメータはこの開発環境から BrickLink に到達できず未検証。パーツページ自体は `P=` だけで開くはず
+- カタログ外の番号は存在確認をしない（BrickLink のアップロード時に「Item not found」になる可能性がある）。価格データも無いので合計金額は BrickLink のカートで確認
+- brickmecha.net のパーツ表記は未確認（上記）
 
 ## ライセンス
 

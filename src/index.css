@@ -57,6 +57,7 @@ input:focus, textarea:focus { outline: 3px solid var(--lego-yellow); border-colo
   padding: 10px 16px; border-radius: var(--radius); border: 2px solid var(--outline); background: var(--lego-blue); color: #fff; font-weight: 700; font-size: 1rem;
   cursor: pointer; text-decoration: none; box-shadow: 0 2px 0 var(--outline); transition: transform 0.08s, box-shadow 0.08s;
 }
+.btn { white-space: nowrap; }
 .btn:active { transform: translateY(2px); box-shadow: 0 0 0 var(--outline); }
 .btn:disabled { opacity: 0.5; cursor: default; }
 .btn-big { font-size: 1.15rem; padding: 14px 22px; min-height: 56px; }
@@ -133,6 +134,12 @@ input:focus, textarea:focus { outline: 3px solid var(--lego-yellow); border-colo
 .cart-list, .req-list { list-style: none; padding: 0; margin: 12px 0; display: flex; flex-direction: column; gap: 10px; }
 .cart-row { display: flex; align-items: center; gap: 12px; background: #fff; border-radius: var(--radius); border: 1px solid var(--line); padding: 10px 12px; }
 .cart-info { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+/* スマホ幅では数量を 2 行目に回して、パーツ名・説明の幅を確保する */
+@media (max-width: 560px) {
+  .cart-row { flex-wrap: wrap; }
+  .cart-row .cart-info { flex-basis: calc(100% - 76px); }
+  .cart-row .qty, .cart-row .qty-static { margin-left: auto; }
+}
 .dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.2); vertical-align: -2px; }
 
 .req-card { background: #fff; border-radius: var(--radius); padding: 14px; border: 1px solid var(--line); border-left: 6px solid #ccc; }
@@ -169,6 +176,35 @@ input:focus, textarea:focus { outline: 3px solid var(--lego-yellow); border-colo
 .kv dt { font-weight: 800; }
 .kv dd { margin: 0; }
 details summary { cursor: pointer; font-weight: 700; }
+/* 番号・リストで追加 */
+.small { font-size: 0.8rem; }
+.stack-tight { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tabs { display: flex; gap: 6px; border-bottom: 2px solid var(--outline); margin: 8px 0 16px; }
+.tab {
+  padding: 10px 16px; border: 2px solid transparent; border-bottom: 0; background: transparent; font-weight: 700; cursor: pointer;
+  border-radius: var(--radius) var(--radius) 0 0; color: var(--muted); margin-bottom: -2px;
+}
+.tab.active { background: #fff; border-color: var(--outline); color: var(--ink); border-bottom: 2px solid #fff; }
+.add-section { background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; }
+.add-preview { display: flex; gap: 16px; align-items: center; }
+.label { font-weight: 700; display: block; margin-bottom: 6px; }
+.swatch.any { background: repeating-linear-gradient(45deg, #fff 0 6px, #e6e6e6 6px 12px); font-weight: 800; color: var(--muted); }
+.swatch.any::after { display: none; }
+.import-rows { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.import-row { display: flex; align-items: center; gap: 12px; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 8px 12px; }
+.import-row.bad { border-color: var(--lego-red); background: #fff5f5; }
+.import-row .part-img, .import-noimg { width: 56px; height: 56px; flex: 0 0 auto; }
+.import-noimg { display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #eee; font-weight: 800; color: var(--muted); }
+.cta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #fff; border: 2px dashed var(--outline); border-radius: var(--radius); padding: 10px 12px; margin: 0 0 12px; }
+.empty .btn { margin-top: 10px; }
+.empty p { margin: 0; }
+
+/* 親向け説明 */
+.howto { background: #fff8d6; border: 2px solid var(--lego-yellow); border-radius: var(--radius); padding: 12px 14px; margin: 10px 0; }
+.howto ol { padding-left: 20px; margin: 8px 0; display: flex; flex-direction: column; gap: 6px; }
+.howto p { margin: 8px 0 0; }
+.ext { font-size: 0.9rem; align-self: flex-start; }
+
 .kid-footer { margin-top: 40px; text-align: center; }
 .kid-footer a { color: var(--muted); font-size: 0.85rem; text-decoration: none; border-bottom: 1px dotted var(--muted); }
 .parent-header .count { background: var(--lego-yellow); color: var(--ink); }
