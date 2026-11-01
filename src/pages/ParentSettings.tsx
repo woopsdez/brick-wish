@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../components/Icon'
-import { catalog } from '../catalog'
 import { yen } from '../lib/budget'
 import { hasPush, hasSupabase } from '../lib/config'
 import { normalizeFamilyCode, sha256Hex } from '../lib/ids'
-import { getPushState, resubscribeParentPush, subscribeParentPush, type PushState } from '../lib/push'
-import { SHOP, shopMap } from '../lib/shop'
+import { getPushState, resubscribeParentPush, type PushState } from '../lib/push'
 import { getStore } from '../store'
 import { useFamily } from '../store/family-hooks'
 import { joinFamily as joinFamilyByCode } from '../store/family'
-import { saveSettings, setParentUnlocked, useSettings } from '../store/settings'
+import { saveSettings, useSettings } from '../store/settings'
 
 function BudgetForm({ initialBudget, initialAuto, onSave }: { initialBudget: number; initialAuto: boolean; onSave: (n: number, auto: boolean) => Promise<void> }) {
   const [budget, setBudget] = useState(String(initialBudget))
@@ -31,6 +29,7 @@ function BudgetForm({ initialBudget, initialAuto, onSave }: { initialBudget: num
   )
 }
 
+/** 設定。ユーザーが手を打てるものだけ置く（見ても何もできない情報は出さない） */
 export function ParentSettings() {
   const settings = useSettings()
   const { family, reload } = useFamily(settings.familyId)
@@ -56,17 +55,13 @@ export function ParentSettings() {
     } catch (e) {
       return setJoinErr(e instanceof Error ? e.message : String(e))
     }
-    // この端末が通知を許可済みなら、購読を新しい家族に付け替える（古い家族の行に残ると通知が来ない）
-    let note = ''
+    // 通知を許可済みの端末なら、購読を新しい家族に付け替える
     try {
-      const state = await resubscribeParentPush(c)
-      setPush(state)
-      if (state === 'subscribed') note = '。通知もこの家族に付け替えました'
+      setPush(await resubscribeParentPush(c))
     } catch (e) {
       console.warn('push resubscribe failed', e)
-      note = '。通知の付け替えに失敗したので、親画面の「通知を許可する」を押し直してください'
     }
-    setMsg(`ファミリー ${c} につなぎました${note}`)
+    setMsg(`つなぎました（${c}）`)
   }
 
   useEffect(() => {
@@ -82,8 +77,6 @@ export function ParentSettings() {
     setMsg('PIN を変更しました')
   }
 
-  const shopCount = Object.values(shopMap.items).filter((i) => i.available).length
-
   return (
     <main className="page parent">
       <header className="parent-header">
@@ -95,79 +88,45 @@ export function ParentSettings() {
       </header>
 
       <section className="stack">
-        <h2>自動承認（月の枠）</h2>
-        <p className="muted">
-          枠内のリクエストは承認なしで「支払い待ち」になり、通知が来ます。枠は送料を含みません。月が変わるとリセットされます。
-        </p>
+        <h2>月の枠</h2>
         {family && <BudgetForm key={`${family.monthly_budget_yen}|${family.auto_approve}`} initialBudget={family.monthly_budget_yen} initialAuto={family.auto_approve} onSave={saveBudget} />}
-        {msg && <p className="ok">{msg}</p>}
       </section>
 
-      <dl className="kv">
-        <dt>モード</dt>
-        <dd>{hasSupabase ? 'オンライン（Supabase）' : 'ローカル'}</dd>
-        <dt>ファミリーコード</dt>
-        <dd>
-          <code>{settings.familyId}</code>
-        </dd>
-        <dt>通知</dt>
-        <dd>
-          {!hasPush && '未設定（VITE_VAPID_PUBLIC_KEY が無い）'}
-          {hasPush && push === 'subscribed' && 'このスマホに届きます'}
-          {hasPush && push !== 'subscribed' && (
-            <button className="btn" onClick={() => settings.familyId && void subscribeParentPush(settings.familyId).then(setPush)}>
-              <Icon name="bell" size={18} />
-              通知を許可する
-            </button>
-          )}
-        </dd>
-        <dt>カタログ</dt>
-        <dd>
-          {catalog.parts.length} パーツ / {catalog.colors.length} 色
-          <br />
-          <span className="muted">{catalog.source}</span>
-        </dd>
-        <dt>価格・在庫</dt>
-        <dd>
-          {SHOP.name}：{shopCount} 品が在庫あり（{new Date(SHOP.fetchedAt).toLocaleDateString('ja-JP')} 取得）
-          {SHOP.sample && (
-            <>
-              <br />
-              <em className="warn">サンプルデータです。本物は `node scripts/build-shop-map.mjs` で取得してください</em>
-            </>
-          )}
-        </dd>
-      </dl>
-
-      <section className="stack">
-        <h2>PIN を変える</h2>
-        <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} placeholder="新しい PIN（4 桁以上）" />
-        <button className="btn" onClick={() => void changePin()} disabled={pin.length < 4}>
-          変更
-        </button>
-      </section>
-
-      {hasSupabase && (
+      {hasSupabase && settings.familyId && !settings.parentDevice && (
         <section className="stack">
-          <h2>別の端末とつなぐ</h2>
-          <p className="muted">子どものタブレットの親画面に出ている QR をカメラで読むのがいちばん簡単です。読めないときは、そこに出ているファミリーコード（6 文字）を入れてください。PIN は要りません。</p>
-          <input value={joinCode} onChange={(e) => setJoinCode(normalizeFamilyCode(e.target.value))} placeholder="ファミリーコード（6 文字）" autoCapitalize="characters" />
+          <h2>コードで入れる</h2>
+          <p className="muted small">リンクも QR も使えないときだけ。子の端末の「親スマホとつなぐ › QR」に出ているコード</p>
+          <div className="row">
+            <input value={joinCode} onChange={(e) => setJoinCode(normalizeFamilyCode(e.target.value))} placeholder="6 文字" autoCapitalize="characters" aria-label="コード" />
+            <button className="btn btn-ghost" onClick={() => void joinFamily()} disabled={joinCode.length !== 6}>
+              つなぐ
+            </button>
+          </div>
           {joinErr && <p className="error">{joinErr}</p>}
-          <button className="btn" onClick={() => void joinFamily()} disabled={joinCode.length !== 6}>
-            つなぐ
-          </button>
+        </section>
+      )}
+
+      {hasPush && push === 'denied' && (
+        <section className="stack">
+          <h2>通知</h2>
+          <p className="muted">ブロックされています。ブラウザ（ホーム画面に追加したアプリ）の設定で許可すると届きます。</p>
         </section>
       )}
 
       <section className="stack">
-        <h2>この端末</h2>
-        <label className="check">
-          <input type="checkbox" checked={settings.parentDevice} onChange={(e) => saveSettings({ parentDevice: e.target.checked })} /> 親の端末（親画面を PIN なしで開く）
+        <h2>PIN</h2>
+        <label>
+          新しい PIN（4 桁以上）
+          <input type="password" inputMode="numeric" value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} />
         </label>
-        <button className="btn btn-ghost" onClick={() => { setParentUnlocked(false); location.hash = '#/kid' }}>
-          <Icon name="lock" size={18} />
-          ロックして子ども画面へ
+        <button className="btn btn-ghost" onClick={() => void changePin()} disabled={pin.length < 4}>
+          変更
         </button>
+      </section>
+
+      {msg && <p className="ok">{msg}</p>}
+
+      <section className="stack" style={{ marginTop: 32 }}>
         <button
           className="btn btn-danger"
           onClick={() => {
@@ -179,7 +138,7 @@ export function ParentSettings() {
             }
           }}
         >
-          初期化
+          この端末を初期化
         </button>
       </section>
     </main>
