@@ -1,23 +1,23 @@
 import { Link } from 'react-router-dom'
 import { PartImage } from '../components/PartImage'
 import { StatusBadge } from '../components/StatusBadge'
-import { useSettings } from '../store/settings'
+import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
 
 export function KidHistory() {
-  const settings = useSettings()
-  const { requests, loading } = useRequests(settings.familyId)
+  const familyId = useFamilyId()
+  const { requests, loading } = useRequests(familyId)
 
   return (
     <main className="page kid">
       <header className="kid-header">
         <Link className="btn btn-ghost" to="/kid">
-          ← もどる
+          ← 戻る
         </Link>
-        <h1>📜 おねがいの きろく</h1>
+        <h1>リクエスト履歴</h1>
       </header>
-      {loading && <p className="muted">よみこみ中…</p>}
-      {!loading && requests.length === 0 && <p className="empty">まだ おねがいは ないよ</p>}
+      {loading && <p className="muted">読み込み中…</p>}
+      {!loading && requests.length === 0 && <p className="empty">まだリクエストはありません</p>}
       <ul className="req-list">
         {requests.map((r) => (
           <li key={r.id} className={`req-card status-${r.status}`}>
@@ -29,7 +29,7 @@ export function KidHistory() {
             {r.parent_note && <p className="parent-note">💬 {r.parent_note}</p>}
             <div className="thumbs">
               {r.items.slice(0, 8).map((i) => (
-                <PartImage key={`${i.part_num}|${i.color_id}`} partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} alt={i.part_name_ja} />
+                <PartImage key={`${i.part_num}|${i.color_id}`} partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
               ))}
               {r.items.length > 8 && <span className="more">+{r.items.length - 8}</span>}
             </div>

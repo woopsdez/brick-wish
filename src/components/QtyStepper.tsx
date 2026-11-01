@@ -8,8 +8,8 @@ interface Props {
 
 export function QtyStepper({ value, onChange, min = 1, max = 999, big }: Props) {
   return (
-    <div className={`qty ${big ? 'qty-big' : ''}`} role="group" aria-label="かず">
-      <button type="button" className="qty-btn" onClick={() => onChange(Math.max(min, value - 1))} aria-label="へらす">
+    <div className={`qty ${big ? 'qty-big' : ''}`} role="group" aria-label="数量">
+      <button type="button" className="qty-btn" onClick={() => onChange(Math.max(min, value - 1))} aria-label="減らす">
         −
       </button>
       <input
@@ -24,7 +24,7 @@ export function QtyStepper({ value, onChange, min = 1, max = 999, big }: Props) 
           if (!Number.isNaN(n)) onChange(Math.min(max, Math.max(min, n)))
         }}
       />
-      <button type="button" className="qty-btn" onClick={() => onChange(Math.min(max, value + 1))} aria-label="ふやす">
+      <button type="button" className="qty-btn" onClick={() => onChange(Math.min(max, value + 1))} aria-label="増やす">
         ＋
       </button>
     </div>

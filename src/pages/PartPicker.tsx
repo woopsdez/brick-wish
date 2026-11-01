@@ -21,10 +21,11 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
       part_name_ja: part.name_ja,
       bl_id: blIdOf(part),
       color_id: sel.color.id,
-      color_name: sel.color.name,
+      color_name: sel.color.name_ja,
       color_rgb: sel.color.rgb,
       bl_color_id: sel.color.bl_id,
       element_id: sel.pc.element_id,
+      category: part.category,
       qty,
     })
     setAdded(true)
@@ -34,19 +35,19 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
   return (
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" role="dialog" aria-modal="true" aria-label={part.name_ja} onClick={(e) => e.stopPropagation()}>
-        <button className="close" onClick={onClose} aria-label="とじる">
+        <button className="close" onClick={onClose} aria-label="閉じる">
           ✕
         </button>
         <div className="picker-top">
           {sel?.color && (
-            <PartImage partNum={part.num} colorId={sel.color.id} elementId={sel.pc.element_id} rgb={sel.color.rgb} alt={part.name_ja} className="big" />
+            <PartImage partNum={part.num} colorId={sel.color.id} elementId={sel.pc.element_id} rgb={sel.color.rgb} isTrans={sel.color.is_trans} category={part.category} alt={part.name_ja} className="big" />
           )}
           <div>
             <h2>{part.name_ja}</h2>
             <p className="muted">
               {part.name} · {part.num}
             </p>
-            {sel?.color && <p className="color-name">いろ：{sel.color.name_ja}</p>}
+            {sel?.color && <p className="color-name">色：{sel.color.name_ja}</p>}
           </div>
         </div>
 
@@ -59,7 +60,7 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
         <div className="picker-bottom">
           <QtyStepper value={qty} onChange={setQty} big />
           <button className={`btn btn-big btn-kid ${added ? 'done' : ''}`} onClick={add} disabled={added}>
-            {added ? '✅ いれた！' : '🛒 かごに いれる'}
+            {added ? '✓ 追加しました' : 'カートに入れる'}
           </button>
         </div>
       </div>

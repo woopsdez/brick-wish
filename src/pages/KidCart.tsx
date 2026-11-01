@@ -5,12 +5,12 @@ import { QtyStepper } from '../components/QtyStepper'
 import { uuid } from '../lib/ids'
 import { getStore } from '../store'
 import { clearCart, setCartQty, useCart } from '../store/cart'
-import { useSettings } from '../store/settings'
+import { useFamilyId } from '../store/family'
 import type { WishRequest } from '../types'
 
 export function KidCart() {
   const cart = useCart()
-  const settings = useSettings()
+  const familyId = useFamilyId()
   const nav = useNavigate()
   const [note, setNote] = useState('')
   const [busy, setBusy] = useState(false)
@@ -18,14 +18,14 @@ export function KidCart() {
   const total = cart.reduce((n, i) => n + i.qty, 0)
 
   async function send() {
-    if (!settings.familyId || cart.length === 0) return
+    if (!familyId || cart.length === 0) return
     setBusy(true)
     setErr(null)
     const now = new Date().toISOString()
     const req: WishRequest = {
       id: uuid(),
-      family_id: settings.familyId,
-      kid_name: settings.kidName || 'こども',
+      family_id: familyId,
+      kid_name: '',
       note: note.trim(),
       items: cart,
       status: 'pending',
@@ -49,18 +49,18 @@ export function KidCart() {
     <main className="page kid">
       <header className="kid-header">
         <Link className="btn btn-ghost" to="/kid">
-          ← もどる
+          ← 戻る
         </Link>
-        <h1>🛒 かご（{total}こ）</h1>
+        <h1>カート（{total} 個）</h1>
       </header>
 
       {cart.length === 0 ? (
-        <p className="empty">かごは からっぽ。<Link to="/kid">パーツをさがす</Link></p>
+        <p className="empty">カートは空です。<Link to="/kid">パーツを探す</Link></p>
       ) : (
         <ul className="cart-list">
           {cart.map((i) => (
             <li key={`${i.part_num}|${i.color_id}`} className="cart-row">
-              <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} alt={i.part_name_ja} />
+              <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
               <div className="cart-info">
                 <strong>{i.part_name_ja}</strong>
                 <span className="muted">
@@ -76,12 +76,12 @@ export function KidCart() {
       {cart.length > 0 && (
         <div className="stack">
           <label>
-            ひとこと（なにをつくる？）
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例: おおきなおしろをつくりたい！" rows={2} />
+            メモ（何を作る？）
+            <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例: 変形するロボットを作りたい" rows={2} />
           </label>
           {err && <p className="error">{err}</p>}
           <button className="btn btn-big btn-kid" onClick={() => void send()} disabled={busy}>
-            📨 おうちの人に おねがいする
+            保護者にリクエストを送る
           </button>
         </div>
       )}
@@ -92,14 +92,14 @@ export function KidCart() {
 export function KidSent() {
   return (
     <main className="page kid center">
-      <div className="big-emoji">📨✨</div>
-      <h1>おねがいを おくったよ！</h1>
-      <p>おうちの人が みてくれるのを まっててね。</p>
+      <div className="big-emoji">📨</div>
+      <h1>リクエストを送りました</h1>
+      <p>保護者が確認したら、履歴に結果が表示されます。</p>
       <Link className="btn btn-big btn-kid" to="/kid">
-        もっと さがす
+        パーツを探す
       </Link>
       <Link className="btn btn-ghost" to="/kid/history">
-        おねがいの けっかを みる
+        リクエスト履歴を見る
       </Link>
     </main>
   )

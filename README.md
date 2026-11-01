@@ -31,8 +31,8 @@
 
 ```
 src/
-  pages/        Setup / Kid / PartPicker / KidCart / KidHistory / Parent / ParentRequest / ParentSettings
-  store/        settings(端末設定) / cart / localStore / supabaseStore / useRequests
+  pages/        Kid / PartPicker / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
+  store/        settings(端末設定) / family(ファミリー自動作成) / cart / localStore / supabaseStore / useRequests
   lib/          bricklink(XML・CSV生成) / push(Web Push 購読) / images / ids / config
   catalog/      catalog.json（パーツ・色・カテゴリ）と検索ヘルパー
   sw.ts         Service Worker（プリキャッシュ + push 通知）
@@ -56,7 +56,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで開き、「おうちの人」でファミリーコードと PIN を作成 → 設定から「こどもモードにする」 → パーツを選んで「おねがい」 → `#/parent` を開いて PIN を入れて承認、の順で一通り試せます。
+ブラウザで開くと、いきなり子ども用の「ほしいもの」画面です。パーツを選んで「おねがい」 → 画面下の「おうちの人はこちら」 → 初回だけ PIN を決める → 承認、の順で一通り試せます。PIN は親画面を開くときだけ必要で、タブを閉じるまでは再入力不要です。
 
 ### 2. カタログを本物にする（15 分 + ダウンロード時間）
 
@@ -84,7 +84,7 @@ npm run dev
    VITE_SUPABASE_URL=https://xxxx.supabase.co
    VITE_SUPABASE_ANON_KEY=eyJ...
    ```
-4. 親スマホ・子タブレットの両方で同じ URL を開き、同じファミリーコードを使う
+4. 子タブレットで「おうちの人はこちら」→ PIN を決めると親画面にファミリーコードが出る。親スマホで同じ URL を開き「おうちの人はこちら」→ 設定 →「別の端末とつなぐ」にそのコードと PIN を入れる
 
 認可は「`x-family-code` ヘッダ = 行の `family_id`」を RLS で突き合わせる方式です。ファミリーコード（6 文字）を知っていれば誰でもその家族のリストを読み書きできる、ゆるい保護です。中身はレゴの欲しい物リストなので MVP として許容していますが、気になる場合は Supabase Auth に置き換えてください。
 
@@ -117,7 +117,7 @@ iPhone は **ホーム画面に追加（PWA としてインストール）して
 
 ## 親の注文手順（BrickLink）
 
-1. 親画面でおねがいを開き、数量を調整して PIN で「承認して注文へ」
+1. 親画面でおねがいを開き、数量を調整して「承認して注文へ」
 2. 「Wanted List XML をダウンロード」または「XML をコピー」
 3. 「BrickLink のアップロード画面を開く」→ Upload タブに XML を貼り付け → 新しい Wanted List として保存
 4. Wanted List 一覧 → そのリストの **Buy All** → 店舗の組み合わせが自動提案されるのでカートへ → BrickLink で決済

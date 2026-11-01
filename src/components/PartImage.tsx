@@ -1,34 +1,44 @@
 import { useState } from 'react'
 import { partImageFallbackUrl, partImageUrl } from '../lib/images'
+import { PartGlyph } from './PartGlyph'
 
 interface Props {
   partNum: string
   colorId: number
   elementId: string | null
   rgb?: string
+  isTrans?: boolean
+  category?: string
   alt: string
   className?: string
 }
 
-/** 画像が無い色のときは色付きのプレースホルダに落とす */
-export function PartImage({ partNum, colorId, elementId, rgb, alt, className }: Props) {
+/**
+ * 下に簡易イラスト（PartGlyph）、上に Rebrickable の写真。写真が読めた時だけ写真を見せる。
+ * CDN が遮断された環境（claude.ai の artifact など）でもイラストで色と形が分かる。
+ */
+export function PartImage({ partNum, colorId, elementId, rgb = 'A0A5A9', isTrans, category = 'basic', alt, className }: Props) {
   const [stage, setStage] = useState<0 | 1 | 2>(0)
+  const [loaded, setLoaded] = useState(false)
   const part = { num: partNum }
-  if (stage === 2) {
-    return (
-      <div className={`part-img placeholder ${className ?? ''}`} style={{ background: rgb ? `#${rgb}` : '#ddd' }} aria-label={alt}>
-        <span>{partNum}</span>
-      </div>
-    )
-  }
-  const src = stage === 0 ? partImageUrl(part, colorId, elementId) : partImageFallbackUrl(part, colorId)
+  const src = stage === 0 ? partImageUrl(part, colorId, elementId) : stage === 1 ? partImageFallbackUrl(part, colorId) : null
   return (
-    <img
-      className={`part-img ${className ?? ''}`}
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setStage((s) => (s === 0 && elementId ? 1 : 2))}
-    />
+    <div className={`part-img ${className ?? ''}`} role="img" aria-label={alt}>
+      <PartGlyph category={category} rgb={rgb} isTrans={isTrans} />
+      {src && (
+        <img
+          src={src}
+          alt=""
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          className={loaded ? 'is-loaded' : ''}
+          onLoad={() => setLoaded(true)}
+          onError={() => {
+            setLoaded(false)
+            setStage((s) => (s === 0 && elementId ? 1 : 2))
+          }}
+        />
+      )}
+    </div>
   )
 }
