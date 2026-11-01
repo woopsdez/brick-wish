@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../components/Icon'
-import { JoinQr } from '../components/JoinQr'
+import { ConnectParent } from '../components/ConnectParent'
 import { Loading } from '../components/Loading'
 import { StatusBadge } from '../components/StatusBadge'
 import { spentThisMonth, yen } from '../lib/budget'
@@ -74,9 +74,9 @@ export function Parent() {
         </div>
       )}
 
-      {hasSupabase && familyId && <JoinQr familyId={familyId} collapsed={settings.parentDevice} />}
+      {hasSupabase && familyId && !settings.parentDevice && <ConnectParent familyId={familyId} />}
 
-      {hasPush && push !== 'subscribed' && (
+      {hasPush && push === 'prompt' && (
         <div className="callout">
           {push === 'prompt' && (
             <>
@@ -87,8 +87,6 @@ export function Parent() {
               </button>
             </>
           )}
-          {push === 'denied' && '通知がブロックされています。ブラウザの設定から許可してください。'}
-          {push === 'unsupported' && 'このブラウザは Web Push に対応していません。iPhone はホーム画面に追加（PWA）してから開いてください。'}
         </div>
       )}
       {!hasSupabase && <div className="callout muted">ローカルモード：この端末の「ほしいパーツ」画面から送られたリクエストだけが表示されます。</div>}
