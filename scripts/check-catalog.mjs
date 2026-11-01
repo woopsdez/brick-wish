@@ -39,7 +39,7 @@ for (const file of shopFiles) {
     if (!/^[0-9a-z]+-\d{3}$/i.test(key)) errors.push(`${name}: shop key ${key} is not 品番-色ID`)
     if (it.available && (it.price_yen == null || it.price_yen <= 0)) errors.push(`${name}: shop item ${key} available but no price`)
   }
-  console.log(`${name}: ${Object.keys(shop.items).length} items (${mapped} matched to catalog)${shop.sample ? ' [SAMPLE]' : ' [real, local only]'}`)
+  console.log(`${name}: ${Object.keys(shop.items).length} items (${mapped} matched to catalog)${shop.sample ? ' [SAMPLE]' : ' [real]'}`)
 }
 
 console.log(`catalog: ${catalog.parts.length} parts, ${catalog.colors.length} colors`)
