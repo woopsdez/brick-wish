@@ -19,17 +19,17 @@ import type { CartItem, WishRequest } from '../types'
 export function ParentRequest() {
   const { id } = useParams()
   const familyId = useFamilyId()
-  const { requests, loading } = useRequests(familyId)
+  const { requests, loading, reload } = useRequests(familyId)
   const req = requests.find((r) => r.id === id)
 
   if (loading && !req) return <main className="page parent"><Loading /></main>
   if (!req) return <main className="page parent">見つかりません。<Link to="/parent">一覧へ</Link></main>
-  return <Detail key={req.id + req.updated_at} req={req} requests={requests} />
+  return <Detail key={req.id + req.updated_at} req={req} requests={requests} reload={reload} />
 }
 
 const categoryDesc = new Map(catalog.categories.map((c) => [c.id, `${c.name_ja}：${c.description ?? ''}`]))
 
-function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }) {
+function Detail({ req, requests, reload }: { req: WishRequest; requests: WishRequest[]; reload: () => Promise<void> }) {
   const nav = useNavigate()
   const familyId = useFamilyId()
   const { family } = useFamily(familyId)
@@ -50,6 +50,8 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
     try {
       await getStore().update(req.family_id, req.id, { status, items, parent_note: parentNote.trim(), approved_by: status === 'approved' ? 'parent' : null, total_yen: total })
       if (status === 'rejected') nav('/parent')
+      // 変更の Broadcast は送った本人には届かないので、自分で取り直して画面を進める
+      else await reload()
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
     } finally {
@@ -59,9 +61,12 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
 
   async function markOrdered() {
     setBusy(true)
+    setErr(null)
     try {
       await getStore().update(req.family_id, req.id, { status: 'ordered' })
       nav('/parent')
+    } catch (e) {
+      setErr(e instanceof Error ? e.message : String(e))
     } finally {
       setBusy(false)
     }
@@ -161,13 +166,13 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
         </p>
       )}
 
+      {err && <p className="error">{err}</p>}
       {editable && (
         <section className="decide">
           <label>
             子どもへのメッセージ（任意）
             <input value={parentNote} onChange={(e) => setParentNote(e.target.value)} placeholder="例: 赤いのは今あるやつ使おう" />
           </label>
-          {err && <p className="error">{err}</p>}
           <div className="row">
             <button className="btn btn-big" disabled={busy || items.length === 0} onClick={() => void decide('approved')}>
               <Icon name="check" size={18} />
