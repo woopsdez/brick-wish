@@ -68,12 +68,17 @@ scripts/
   build-all-parts.mjs 「ぜんぶ」タブ用の全パーツ索引 public/all-parts.json を Rebrickable の CSV から生成
   check-catalog.mjs   catalog / shop-map の整合チェック（npm test）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
+e2e/
+  request-flow.spec.ts  送信 → 承認・見送り・自動承認 → 注文済み
+  connect.spec.ts       端末の選択、偽のカメラ映像での QR 読み取り、カメラ拒否時のコード入力
+  stub-supabase.mjs     テスト用の Supabase スタブ
 supabase/
   migrations/0001_init.sql        テーブル・RLS
   migrations/0002_budget.sql      月予算・見積もり合計の列
   migrations/0003_pay_month.sql   払う月の列（来月に回す）
   functions/notify-parent/        Web Push 送信 Edge Function
-.github/workflows/pages.yml       GitHub Pages デプロイ
+.github/workflows/pages.yml       GitHub Pages デプロイ（E2E が通ったときだけ）
+.github/workflows/e2e.yml         E2E テスト
 ```
 
 ## セットアップ
@@ -144,6 +149,19 @@ VAPID 鍵は生成済み（公開鍵は Actions の `VITE_VAPID_PUBLIC_KEY`、�
 3. URL は `https://<user>.github.io/brick-wish/`。woopsdez は user サイトに独自ドメインを当てているので、実際の公開 URL は https://mikiishijima.com/brick-wish/（github.io はそこへ転送される）。`notify-parent` の `APP_URL` もこの値
 
 ワークフローは `BASE_PATH=/<repo名>/` でビルドします。独自ドメイン直下に置くなら `/` に変えてください。
+
+## E2E テスト
+
+```bash
+npx playwright install --only-shell chromium   # 初回だけ
+npm run test:e2e
+```
+
+送信・承認・見送り・自動承認・つなぐ（QR とコード入力）を、子どもと親の 2 端末に分けて画面操作で確かめます。接続先は `e2e/stub-supabase.mjs` で、本番の Supabase には通信しません（`.env.local` があっても環境変数で上書きし、外への通信は遮断します）。
+
+スタブは送信者本人に Broadcast を配信しません。Supabase の既定の挙動で、ローカルモードでは再現しない不具合の原因になったためです。REST と Realtime はアプリが使う範囲だけを実装しているので、アプリが新しい列や API を使うときはスタブも合わせて直します。
+
+GitHub Actions では PR ごとと、main の公開前に走ります。失敗すると公開されません。
 
 ## 親の手順
 

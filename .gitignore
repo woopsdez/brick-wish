@@ -39,3 +39,8 @@ public/all-parts.json
 
 # supabase CLI link metadata
 supabase/.temp/
+
+# Playwright
+dist-e2e
+test-results
+playwright-report
