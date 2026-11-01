@@ -6,7 +6,7 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { ANY_COLOR_ID, detectFormat, findColorByName, parsePartsList, rowToCartItem } from '../src/lib/partsImport.ts'
+import { ANY_COLOR_ID, UNKNOWN_COLOR_ID, detectFormat, findColorByName, katakanaColorToEnglish, parsePartsList, rowToCartItem } from '../src/lib/partsImport.ts'
 import type { Catalog } from '../src/types.ts'
 
 const here = dirname(fileURLToPath(import.meta.url))
@@ -132,6 +132,61 @@ test('CSV: 空行・引用符', () => {
   const rows = parsePartsList('Part,Color,Quantity\n"14417","0","4"\n\n', ctx)
   assert.equal(rows.length, 1)
   assert.equal(rows[0].qty, 4)
+})
+
+test('カタカナ色名: brickmecha 表記', () => {
+  assert.equal(katakanaColorToEnglish('ライトブルーイッシュグレー'), 'lightbluishgray')
+  assert.equal(katakanaColorToEnglish('ダークブルーイッシュグレー'), 'darkbluishgray')
+  assert.equal(katakanaColorToEnglish('トランスクリア'), 'transclear')
+  assert.equal(katakanaColorToEnglish('サンドブルー'), 'sandblue')
+  assert.equal(katakanaColorToEnglish('ほげ色'), null)
+  assert.equal(findColorByName(ctx, 'ライトブルーイッシュグレー')?.id, 71)
+  assert.equal(findColorByName(ctx, 'ダークブルー')?.id, 272)
+  assert.equal(findColorByName(ctx, 'レッド')?.id, 4)
+  assert.equal(findColorByName(ctx, 'ブラック')?.id, 0)
+  assert.equal(findColorByName(ctx, 'レディッシュブラウン')?.id, 70)
+  assert.equal(findColorByName(ctx, 'ブライトライトオレンジ')?.id, 191)
+  assert.equal(findColorByName(ctx, 'サンドブルー'), null) // カタログに無い色
+})
+
+test('brickmecha の表をコピーした実データ（作例 #403、24 種類 / 43 個）', () => {
+  const text = readFileSync(resolve(here, 'fixtures/brickmecha-moc403.txt'), 'utf8')
+  assert.equal(detectFormat(text), 'table')
+  const rows = parsePartsList(text, ctx)
+  assert.equal(rows.length, 24)
+  assert.equal(rows.reduce((n, r) => n + r.qty, 0), 43)
+  assert.equal(rows.filter((r) => r.error).length, 0)
+  assert.equal(rows.filter((r) => r.colorText).length, 0, '全色が解決される')
+  assert.deepEqual([rows[0].num, rows[0].color?.id, rows[0].qty], ['3021', 272, 1])
+  assert.deepEqual([rows[3].num, rows[3].color?.id, rows[3].qty], ['3024', 71, 1])
+  assert.deepEqual([rows[10].num, rows[10].color?.id, rows[10].qty], ['6141', 71, 4])
+  assert.deepEqual([rows[21].num, rows[21].color?.id, rows[21].qty], ['54200', 0, 3])
+  // カタログ外の 4 番号はそのまま通る
+  assert.deepEqual(
+    rows.filter((r) => !r.part).map((r) => r.num),
+    ['4032a', '15573', '26047', '26047', '36840'],
+  )
+})
+
+test('表のコピー: alt 行が無い（番号だけの行 → 色<TAB>数量）', () => {
+  const rows = parsePartsList('パーツ番号\tカラー\t数量\n3021\nダークブルー\t1\t\nBrickLink\n楽天\n63868\nレッド\t2\t\n', ctx)
+  assert.equal(detectFormat('3021\nダークブルー\t1\t\n'), 'table')
+  assert.deepEqual(
+    rows.map((r) => [r.num, r.color?.id ?? null, r.qty]),
+    [
+      ['3021', 272, 1],
+      ['63868', 4, 2],
+    ],
+  )
+})
+
+test('解決できない色名は元の文字列を残す（UNKNOWN_COLOR_ID）', () => {
+  const rows = parsePartsList('LEGO 3024 サンドブルー\n3024\nサンドブルー\t2\t\n', ctx)
+  assert.equal(rows[0].colorText, 'サンドブルー')
+  const item = rowToCartItem(rows[0])
+  assert.equal(item.color_id, UNKNOWN_COLOR_ID)
+  assert.equal(item.color_name, 'サンドブルー')
+  assert.equal(item.bl_color_id, null)
 })
 
 test('rowToCartItem: カタログのパーツは BrickLink ID と element を引き継ぐ', () => {

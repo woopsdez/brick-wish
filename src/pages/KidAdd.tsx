@@ -159,7 +159,7 @@ function ByList() {
             setText(e.target.value)
             setRows(null)
           }}
-          placeholder={'1 行に 1 パーツ：番号 色 数量\n14417 黒 4\n3070b Dark Bluish Gray x6\n99780\n\nBrickLink の Wanted List XML や Rebrickable の CSV もそのまま貼れます'}
+          placeholder={'brickmecha のパーツリストの表を範囲選択してコピー → ここに貼り付け\n\nまたは 1 行に 1 パーツ：番号 色 数量\n14417 黒 4\n3070b Dark Bluish Gray x6\n99780\n\nBrickLink の Wanted List XML や Rebrickable の CSV もそのまま貼れます'}
           spellCheck={false}
         />
       </label>

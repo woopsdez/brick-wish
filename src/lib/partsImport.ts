@@ -8,6 +8,12 @@ import type { CartItem, CatalogColor, CatalogPart } from '../types'
  *  - xml   : BrickLink Wanted List XML（<ITEM><ITEMID>…<COLOR>…<MINQTY>…）。COLOR は BrickLink 色 ID
  *  - csv   : ヘッダ付き CSV。Rebrickable の "Part,Color,Quantity"（Color は Rebrickable 色 ID）や
  *            "ItemID,ColorID,Qty" 系。ヘッダに bl / bricklink を含む色列は BrickLink 色 ID として読む
+ *  - table : brickmecha.net のパーツリスト表をブラウザでコピーしたもの。1 パーツが複数行になる:
+ *              LEGO 3021 ダークブルー   ← 画像の alt
+ *              3021
+ *              ダークブルー<TAB>1<TAB>  ← 色と数量
+ *              BrickLink / 楽天         ← ボタン
+ *            alt 行が無くても「番号だけの行」→「色<TAB>数量」の並びで読む。色はカタカナ表記を英語に直して解決
  *  - lines : 1 行 1 パーツの自由形式。「14417 黒 4」「14417 x4 Black」「4x 14417 Dark Bluish Gray」など
  *
  * このモジュールは純粋関数だけで、カタログは引数で受け取る（scripts/test-parts-import.ts から node で直接テストするため）。
@@ -35,10 +41,16 @@ export interface ImportRow {
 
 /** 「色指定なし」を表す color_id。カタログの色 ID（Rebrickable）は 0 以上なので負数を使う */
 export const ANY_COLOR_ID = -1
+/** 色名はあるがカタログで解決できなかった（color_name に元の文字列を残し、XML では色指定なし） */
+export const UNKNOWN_COLOR_ID = -2
 export const ANY_COLOR_RGB = 'E6E6E6'
 
 export function isAnyColor(item: Pick<CartItem, 'color_id'>): boolean {
   return item.color_id === ANY_COLOR_ID
+}
+
+export function isUnknownColor(item: Pick<CartItem, 'color_id'>): boolean {
+  return item.color_id === UNKNOWN_COLOR_ID
 }
 
 /** BrickLink / LEGO のパーツ番号らしい文字列か（例: 14417, 3070b, 3829c01, x1234） */
@@ -46,19 +58,78 @@ export function looksLikePartNum(s: string): boolean {
   return /^[a-z]{0,2}\d{2,7}[a-z]{0,4}\d{0,3}$/i.test(s) && /\d{2,}/.test(s)
 }
 
-export type ImportFormat = 'xml' | 'csv' | 'lines'
+export type ImportFormat = 'xml' | 'csv' | 'table' | 'lines'
+
+const ALT_LINE = /^LEGO\s+([0-9A-Za-z]+)\s+(.+?)\s*$/i
+/** 「色<TAB>数量<TAB>…」の行 */
+const COLOR_QTY_LINE = /^([^\t]*)\t\s*(\d{1,3})\s*(?:\t.*)?$/
 
 export function detectFormat(text: string): ImportFormat {
   const t = text.trim()
   if (/<\s*ITEM\b/i.test(t) && /<\s*ITEMID\b/i.test(t)) return 'xml'
-  const first = t.split(/\r?\n/).find((l) => l.trim()) ?? ''
+  const lines = t.split(/\r?\n/)
+  if (lines.some((l) => ALT_LINE.test(l))) return 'table'
+  // 「番号だけの行」の直後に「色<TAB>数量」が来る並びが 1 組でもあれば表のコピー
+  for (let i = 0; i + 1 < lines.length; i++) {
+    if (looksLikePartNum(lines[i].trim()) && COLOR_QTY_LINE.test(lines[i + 1])) return 'table'
+  }
+  const first = lines.find((l) => l.trim()) ?? ''
   if (/[,\t]/.test(first) && !/\d{3,}/.test(first.split(/[,\t]/)[0] ?? '') && /part|item|colou?r|qty|quantity/i.test(first)) return 'csv'
   return 'lines'
 }
 
 export function parsePartsList(text: string, ctx: ImportContext): ImportRow[] {
-  const fmt = detectFormat(text)
-  const rows = fmt === 'xml' ? parseXml(text, ctx) : fmt === 'csv' ? parseCsv(text, ctx) : parseLines(text, ctx)
+  switch (detectFormat(text)) {
+    case 'xml':
+      return parseXml(text, ctx)
+    case 'csv':
+      return parseCsv(text, ctx)
+    case 'table':
+      return parseTable(text, ctx)
+    default:
+      return parseLines(text, ctx)
+  }
+}
+
+// ---------------------------------------------------------------- 表のコピー（brickmecha など）
+
+function parseTable(text: string, ctx: ImportContext): ImportRow[] {
+  const rows: ImportRow[] = []
+  let pending: { num: string; colorText: string | null; source: string } | null = null
+  const flush = (qty: number, colorFromRow: string | null) => {
+    if (!pending) return
+    const colorText = pending.colorText ?? colorFromRow
+    const color = colorText ? findColorByName(ctx, colorText) : null
+    rows.push(finish(ctx, pending.source, pending.num, qty, color, colorText && !color ? colorText : null))
+    pending = null
+  }
+  for (const raw of text.split(/\r?\n/)) {
+    const line = raw.replace(/\s+$/, '')
+    if (!line.trim()) continue
+    const alt = ALT_LINE.exec(line)
+    if (alt) {
+      flush(1, null)
+      pending = { num: alt[1], colorText: alt[2].trim(), source: line.trim() }
+      continue
+    }
+    const bare = line.trim()
+    if (looksLikePartNum(bare)) {
+      if (pending && pending.num.toLowerCase() === bare.toLowerCase()) continue
+      flush(1, null)
+      pending = { num: bare, colorText: null, source: bare }
+      continue
+    }
+    const cq = COLOR_QTY_LINE.exec(line)
+    if (cq && pending) {
+      const colorCell = cq[1].trim()
+      if (!pending.colorText && colorCell) pending.source = `${pending.source} ${colorCell}`
+      flush(parseInt(cq[2], 10), colorCell || null)
+      continue
+    }
+    // 見出し・ボタン（BrickLink / 楽天 / 購入）・合計行などは無視
+  }
+  flush(1, null)
+  if (rows.length === 0) rows.push(empty(text.slice(0, 40), 'パーツの行が見つかりません'))
   return rows
 }
 
@@ -300,6 +371,65 @@ const COLOR_ALIASES: Record<string, string> = {
   brightlightorange: 'brightlightorange',
 }
 
+/**
+ * カタカナ表記の色名（brickmecha の「ライトブルーイッシュグレー」など）を英語の語に置き換える。
+ * 長い語から順に置換するので「ブルーイッシュ」が「ブルー」より先に当たる
+ */
+const KATAKANA_WORDS: Array<[string, string]> = ([
+  ['ブルーイッシュ', 'bluish'],
+  ['レディッシュ', 'reddish'],
+  ['イエローイッシュ', 'yellowish'],
+  ['ミディアム', 'medium'],
+  ['ブライト', 'bright'],
+  ['ホワイト', 'white'],
+  ['ブラック', 'black'],
+  ['イエロー', 'yellow'],
+  ['グリーン', 'green'],
+  ['オレンジ', 'orange'],
+  ['ブラウン', 'brown'],
+  ['シルバー', 'silver'],
+  ['ゴールド', 'gold'],
+  ['パープル', 'purple'],
+  ['トランス', 'trans'],
+  ['フラット', 'flat'],
+  ['アズール', 'azure'],
+  ['ラベンダー', 'lavender'],
+  ['マゼンタ', 'magenta'],
+  ['ライト', 'light'],
+  ['ダーク', 'dark'],
+  ['ブルー', 'blue'],
+  ['グレー', 'gray'],
+  ['グレイ', 'gray'],
+  ['レッド', 'red'],
+  ['ピンク', 'pink'],
+  ['ライム', 'lime'],
+  ['パール', 'pearl'],
+  ['クリア', 'clear'],
+  ['ネオン', 'neon'],
+  ['サンド', 'sand'],
+  ['オリーブ', 'olive'],
+  ['タン', 'tan'],
+] as Array<[string, string]>).sort((a, b) => b[0].length - a[0].length)
+
+const KATAKANA_ALIASES: Record<string, string> = {
+  gray: 'lightbluishgray',
+  brown: 'reddishbrown',
+  silver: 'flatsilver',
+  gold: 'pearlgold',
+  pink: 'brightpink',
+  purple: 'darkpurple',
+  clear: 'transclear',
+  transblue: 'transdarkblue',
+}
+
+export function katakanaColorToEnglish(s: string): string | null {
+  let out = s.replace(/[\s・-]/g, '')
+  for (const [ja, en] of KATAKANA_WORDS) out = out.split(ja).join(en)
+  if (/[^a-z]/i.test(out)) return null
+  const key = out.toLowerCase()
+  return KATAKANA_ALIASES[key] ?? key
+}
+
 export function normalizeColorName(s: string): string {
   return s
     .toLowerCase()
@@ -322,6 +452,13 @@ export function findColorByName(ctx: ImportContext, name: string): CatalogColor 
   for (const c of ctx.colors) {
     if (normalizeColorName(c.name_ja) === key || c.name_ja === raw) return c
   }
+  // カタカナ表記（ライトブルーイッシュグレー → lightbluishgray）
+  const kana = katakanaColorToEnglish(raw)
+  if (kana) {
+    for (const c of ctx.colors) {
+      if (normalizeColorName(c.name) === kana) return c
+    }
+  }
   // 「Trans Clear」「trans-clear」などの表記ゆれ / 前方一致（Dark Bluish Gray ⊃ Dark Bluish）
   for (const c of ctx.colors) {
     const n = normalizeColorName(c.name)
@@ -336,13 +473,15 @@ export function rowToCartItem(row: ImportRow): CartItem {
   const part = row.part
   const color = row.color
   const element = part && color ? (part.colors.find((c) => c.color_id === color.id)?.element_id ?? null) : null
+  // 色名はあるが解決できない → 元の文字列を残して親が BrickLink で選べるようにする
+  const unknown = !color && row.colorText
   return {
     part_num: part?.num ?? row.num,
     part_name: part?.name ?? `Part ${row.num}`,
     part_name_ja: part?.name_ja ?? `パーツ ${row.num}`,
     bl_id: part ? (part.bl_id ?? part.num) : row.num,
-    color_id: color?.id ?? ANY_COLOR_ID,
-    color_name: color?.name_ja ?? '色指定なし',
+    color_id: color?.id ?? (unknown ? UNKNOWN_COLOR_ID : ANY_COLOR_ID),
+    color_name: color?.name_ja ?? (unknown ? row.colorText! : '色指定なし'),
     color_rgb: color?.rgb ?? ANY_COLOR_RGB,
     bl_color_id: color?.bl_id ?? null,
     element_id: element,

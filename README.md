@@ -32,11 +32,11 @@
 作例サイトのパーツリストはカタログの 167 種で収まらないので、子ども画面の「＋ 番号・リスト」から次の 2 通りで追加できます（`src/pages/KidAdd.tsx`、解析は `src/lib/partsImport.ts`）。
 
 - **番号で 1 個ずつ**: BrickLink / LEGO のパーツ番号（例 `14417`、`3070b`）と色、数量。番号は Rebrickable の画像で軽く確認できる（画像が出れば実在。出なくても BrickLink には存在することがある）
-- **リストを貼り付け**: BrickLink Wanted List XML、Rebrickable の `Part,Color,Quantity` CSV、または 1 行 1 パーツの自由形式（`14417 黒 4` / `3070b Dark Bluish Gray x6` / `4x 14418 Red`）。色は英語名・BrickLink 略称（DBG, LBG, Dk. Bluish Gray）・日本語（黒、濃いグレー、ダークグレー）を解決。読めない行は取り込まず、理由を表示
+- **リストを貼り付け**: 作例サイトのパーツリスト表をブラウザで範囲選択してコピーしたもの（「番号の行」＋「色<TAB>数量」の行の並び。brickmecha の表はこの形）、BrickLink Wanted List XML、Rebrickable の `Part,Color,Quantity` CSV、または 1 行 1 パーツの自由形式（`14417 黒 4` / `3070b Dark Bluish Gray x6` / `4x 14418 Red`）。色は英語名・BrickLink 略称（DBG, LBG, Dk. Bluish Gray）・日本語（黒、濃いグレー）・カタカナ（ライトブルーイッシュグレー）を解決。カタログに無い色名は文字列のまま残し、親画面で BrickLink 側の色選択を促す。読めない行は取り込まず、理由を表示
 
 カタログ外の番号は名前が「パーツ 14417」のようになり、BrickLink の番号としてそのまま XML に出ます。親画面の「BrickLink で写真と相場を見る」で実物を確認してください。検索欄に番号を入れてカタログに無い場合も、同じ導線が出ます。
 
-> ⚠ 例として挙がった [brickmecha.net の作例 #403](https://brickmecha.net/index.php?moc-no=403&lng=ja&min_parts=10&max_parts=100) は、この開発環境からサイトに到達できず **ページ構造・パーツ表記は未確認** です。サイト側がパーツ番号を BrickLink 形式で表示している前提で、番号のコピペか手入力を想定しています。別形式（独自表記や画像のみ）なら `partsImport.ts` のパーサーに追加が必要です。
+brickmecha の作例 #403 のパーツリスト（24 種類 / 43 個）を実際にコピーしたものを `scripts/fixtures/brickmecha-moc403.txt` に置き、`npm test` で 24 件すべてが番号・色・数量つきで読めることを確認しています（サイト自体はこの開発環境から到達できないため、ページ構造はコピー結果からの推定）。そのうち 4 番号（4032a, 15573, 26047, 36840）はカタログに無く、BrickLink の番号としてそのまま通ります。
 
 解析のテスト: `npm test`（`scripts/test-parts-import.ts`、Node 22.18 以降で .ts を直接実行）。
 
