@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { familyCode } from '../lib/ids'
 import { getStore } from './index'
-import { loadSettings, saveSettings, useSettings } from './settings'
+import { loadSettings, saveSettings, setParentUnlocked, useSettings } from './settings'
+import type { FamilyInfo } from './types'
 
 let creating: Promise<string> | null = null
 let ensured: string | null = null
@@ -43,4 +44,17 @@ export function useFamilyId(): string | null {
     void ensureFamilyId().then(setId)
   }, [settings.familyId])
   return id
+}
+
+/**
+ * 別の端末（親スマホ）から既存の家族にコードでつなぐ。PIN は要らない（サーバーの認可はコードだけなので、PIN を求めても安全性は変わらない）。
+ * この端末を「親の端末」として記憶し、以後は親画面を PIN なしで開く。
+ */
+export async function joinFamily(code: string): Promise<FamilyInfo> {
+  const fam = await getStore().getFamily(code)
+  if (!fam) throw new Error('そのコードの家族は見つかりません')
+  saveSettings({ familyId: code, localPinHash: fam.pin_hash ?? null, parentDevice: true })
+  setParentUnlocked(true)
+  ensured = code
+  return fam
 }

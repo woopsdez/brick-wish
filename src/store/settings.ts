@@ -5,11 +5,13 @@ export interface DeviceSettings {
   familyId: string | null
   /** ローカルモード時の親PIN（SHA-256）。Supabase モードでは families テーブル側を使う */
   localPinHash: string | null
+  /** コードや QR で既存の家族につないだ端末（親スマホ）。親画面を PIN なしで開く */
+  parentDevice: boolean
 }
 
 const KEY = 'bw:settings:v2'
 const UNLOCK_KEY = 'bw:parent-unlocked'
-const DEFAULT: DeviceSettings = { familyId: null, localPinHash: null }
+const DEFAULT: DeviceSettings = { familyId: null, localPinHash: null, parentDevice: false }
 const listeners = new Set<() => void>()
 
 export function loadSettings(): DeviceSettings {

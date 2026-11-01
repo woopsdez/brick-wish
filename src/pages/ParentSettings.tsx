@@ -9,6 +9,7 @@ import { getPushState, resubscribeParentPush, subscribeParentPush, type PushStat
 import { SHOP, shopMap } from '../lib/shop'
 import { getStore } from '../store'
 import { useFamily } from '../store/family-hooks'
+import { joinFamily as joinFamilyByCode } from '../store/family'
 import { saveSettings, setParentUnlocked, useSettings } from '../store/settings'
 
 function BudgetForm({ initialBudget, initialAuto, onSave }: { initialBudget: number; initialAuto: boolean; onSave: (n: number, auto: boolean) => Promise<void> }) {
@@ -37,7 +38,6 @@ export function ParentSettings() {
   const [pin, setPin] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
   const [joinCode, setJoinCode] = useState('')
-  const [joinPin, setJoinPin] = useState('')
   const [joinErr, setJoinErr] = useState<string | null>(null)
 
   async function saveBudget(n: number, auto: boolean) {
@@ -51,12 +51,11 @@ export function ParentSettings() {
     setJoinErr(null)
     const c = normalizeFamilyCode(joinCode)
     if (c.length !== 6) return setJoinErr('コードは 6 文字です')
-    const fam = await getStore().getFamily(c)
-    if (!fam) return setJoinErr('そのコードは見つかりません')
-    const h = await sha256Hex(joinPin)
-    if (fam.pin_hash && fam.pin_hash !== h) return setJoinErr('PIN が違います')
-    saveSettings({ familyId: c, localPinHash: fam.pin_hash ?? null })
-    setParentUnlocked(true)
+    try {
+      await joinFamilyByCode(c)
+    } catch (e) {
+      return setJoinErr(e instanceof Error ? e.message : String(e))
+    }
     // この端末が通知を許可済みなら、購読を新しい家族に付け替える（古い家族の行に残ると通知が来ない）
     let note = ''
     try {
@@ -151,9 +150,8 @@ export function ParentSettings() {
       {hasSupabase && (
         <section className="stack">
           <h2>別の端末とつなぐ</h2>
-          <p className="muted">子どものタブレットの親画面に出ているファミリーコードと、そこで決めた PIN を入れると、このスマホで承認できるようになります。</p>
+          <p className="muted">子どものタブレットの親画面に出ている QR をカメラで読むのがいちばん簡単です。読めないときは、そこに出ているファミリーコード（6 文字）を入れてください。PIN は要りません。</p>
           <input value={joinCode} onChange={(e) => setJoinCode(normalizeFamilyCode(e.target.value))} placeholder="ファミリーコード（6 文字）" autoCapitalize="characters" />
-          <input type="password" inputMode="numeric" value={joinPin} onChange={(e) => setJoinPin(e.target.value.replace(/\D/g, ''))} placeholder="PIN" />
           {joinErr && <p className="error">{joinErr}</p>}
           <button className="btn" onClick={() => void joinFamily()} disabled={joinCode.length !== 6}>
             つなぐ
@@ -163,6 +161,9 @@ export function ParentSettings() {
 
       <section className="stack">
         <h2>この端末</h2>
+        <label className="check">
+          <input type="checkbox" checked={settings.parentDevice} onChange={(e) => saveSettings({ parentDevice: e.target.checked })} /> 親の端末（親画面を PIN なしで開く）
+        </label>
         <button className="btn btn-ghost" onClick={() => { setParentUnlocked(false); location.hash = '#/kid' }}>
           <Icon name="lock" size={18} />
           ロックして子ども画面へ
