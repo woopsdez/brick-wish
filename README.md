@@ -19,17 +19,14 @@
 
 ## 価格・在庫データと、取得に必要なこと
 
-価格と在庫は shop-map（商品キー「品番-LEGO色ID3桁」→ 単価・在庫・Shopify variant id）から引く。ファイルは 2 つある：
-
-- `src/catalog/shop-map.json` … **サンプル価格**（`npm run shop-map:sample` で生成）。リポジトリに入っているのはこれだけで、画面にもサンプルである旨を出す
-- `src/catalog/shop-map.local.json` … ショップから取得した本物。**gitignore 対象**で、手元にあるときだけビルドがこちらを優先する（`src/lib/shop.ts`）。公開サイト（GitHub Pages）は main から CI でビルドされるので、本物が載ることはない
+価格と在庫は `src/catalog/shop-map.json`（商品キー「品番-LEGO色ID3桁」→ 単価・在庫・Shopify variant id）から引く。**中身は本物**（2026-11-01 取得、2,093 商品）で、公開ビルドにもそのまま載る。
 
 ```bash
-npm run shop-map:sample     # ダミー価格で shop-map.json を再生成（開発用）
-npm run shop-map            # ブリッカーズの /products/<品番-色ID>.js を 1 秒 1 件で読み shop-map.local.json に書く（scripts/.cache/shop にキャッシュ）。下の規約の件を読んでから
+npm run shop-map            # ブリッカーズの /products/<品番-色ID>.js を 1 秒 1 件で読み shop-map.json を更新（scripts/.cache/shop にキャッシュ）。更新は月 1 回程度
+npm run shop-map:sample     # ダミー価格で生成（開発用）
 ```
 
-**ブリッカーズの利用規約は自動取得を禁じている**（[利用規約](https://brickers.jp/policies/terms-of-service) 第4条、2026-11-01 確認）。禁止されているのは、(1) スクレイピング等の自動化された手段で価格情報・在庫情報などを取得・収集・解析すること、(3) 自動・手動を問わず価格データ等を大量に取得・保存・データベース化すること、(4) 取得した情報を自他のサービスのために利用・提供すること。第5条に IP ブロック・法的措置・損害賠償の記載がある。`npm run shop-map` は (1)(3) に、取得結果をアプリで表示することは (4) に当たるので、**先方の許可を得るまで実行しない**。取得済みのファイルはリポジトリに入れない（上記の gitignore）。許可を求めるときは「御社の在庫・価格を表示して御社のカートに誘導する家庭用アプリで、1 秒 1 件・キャッシュ前提・家庭内利用」と伝える。
+ブリッカーズの[利用規約](https://brickers.jp/policies/terms-of-service)第4条は自動取得と価格データの保存・自他サービスでの利用を禁じているが、このアプリ（価格・在庫を表示して同店のカートへ誘導する家庭用）については **2026-11-01 に先方の許可を得た**。取得は 1 秒 1 件・キャッシュ前提で、頻度は月 1 回程度にとどめる。`src/catalog/shop-map.local.json`（gitignore）があればビルドはそちらを優先するので、試しに取るときは `--local` を付ける。
 
 shop-map があると親画面に Shopify の[カート permalink](https://help.shopify.com/en/manual/checkout-settings/cart-permalink)（`/cart/variant:数量,…`）で「カートに全部入れる」ボタンが出る。無い／サンプルのときは「品番-色ID<TAB>数量」のリストをコピーして「ファイル・リストで注文」に貼る手順になる。
 
@@ -61,13 +58,13 @@ src/
   pages/        Kid / PartPicker / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
   store/        settings(端末設定) / family(ファミリー自動作成) / family-hooks(予算設定) / cart / localStore / supabaseStore / useRequests
   lib/          shop(ショップの価格・在庫・カートURL) / budget(月枠と自動承認の判定) / bricklink(XML・CSV生成) / push / images / ids / config
-  catalog/      catalog.json（パーツ・色・カテゴリ）/ shop-map.json（サンプル価格）/ shop-map.local.json（本物。gitignore、手元にあるときだけ優先）
+  catalog/      catalog.json（パーツ・色・カテゴリ）/ shop-map.json（ブリッカーズの価格・在庫、本物）/ shop-map.local.json（手元での上書き用、gitignore）
   sw.ts         Service Worker（プリキャッシュ + push 通知）
 scripts/
   curated-parts.mjs   ミニメカ向け厳選パーツリスト（カテゴリ・色・子ども向け名）
   build-catalog.mjs   厳選リストを Rebrickable のデータで検証し catalog.json を生成（要 API キー）
   starter-catalog.mjs 厳選リストから未検証のまま catalog.json を生成（現在同梱されているもの）
-  build-shop-map.mjs  ショップの商品 JSON を読んで shop-map.local.json を生成（--sample なら shop-map.json にダミー価格）
+  build-shop-map.mjs  ショップの商品 JSON を読んで shop-map.json を更新（--sample でダミー、--local で .local.json へ）
   build-all-parts.mjs 「ぜんぶ」タブ用の全パーツ索引 public/all-parts.json を Rebrickable の CSV から生成
   check-catalog.mjs   catalog / shop-map の整合チェック（npm test）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
@@ -106,37 +103,38 @@ npm run dev
 
 画像は Rebrickable の CDN（`cdn.rebrickable.com`）を直接参照しています。**ホットリンクの可否は未確認** なので、公開運用前に Rebrickable の利用規約を確認するか、画像を自サイトに同梱する処理を追加してください。
 
-### 3. 親スマホと同期する（Supabase, 30 分）
+### 3. 親スマホと同期する（Supabase）
 
-1. [Supabase](https://supabase.com/) でプロジェクト作成
-2. `supabase/migrations/0001_init.sql` を SQL Editor で実行
-3. `.env` に設定:
-   ```
-   VITE_SUPABASE_URL=https://xxxx.supabase.co
-   VITE_SUPABASE_ANON_KEY=eyJ...
-   ```
-4. 子タブレットで「おうちの人はこちら」→ PIN を決めると親画面にファミリーコードが出る。親スマホで同じ URL を開き「おうちの人はこちら」→ 設定 →「別の端末とつなぐ」にそのコードと PIN を入れる
+本番は Supabase プロジェクト `fsfmhklcvhhhdczpwgua`（Tokyo、組織 woopsdez）。migration 2 本適用済み、Edge Function `notify-parent` デプロイ済み（2026-11-01）。
 
-認可は「`x-family-code` ヘッダ = 行の `family_id`」を RLS で突き合わせる方式です。ファミリーコード（6 文字）を知っていれば誰でもその家族のリストを読み書きできる、ゆるい保護です。中身はレゴの欲しい物リストなので MVP として許容していますが、気になる場合は Supabase Auth に置き換えてください。
+- URL と anon key は GitHub Actions の Variables（`VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` / `VITE_VAPID_PUBLIC_KEY`）に登録済み。手元で同期を試すときは `.env.local`（gitignore）に同じ 3 つを書く
+- 新しい環境で作り直すときの手順（CLI、ブラウザでのログイン以外は無人で通る）:
+  ```bash
+  brew install supabase/tap/supabase
+  supabase login                                  # ブラウザで認証
+  supabase orgs create <org名>                     # 初回だけ
+  supabase projects create brick-wish --org-id <org id> --db-password <生成した強いパスワード> --region ap-northeast-1
+  supabase link --project-ref <ref>               # DB パスワードは SUPABASE_DB_PASSWORD 環境変数でも渡せる
+  supabase db push                                # supabase/migrations を適用
+  supabase projects api-keys --project-ref <ref>  # anon key
+  ```
+- 使い方: 子タブレットで「保護者の方はこちら」→ PIN を決めると親画面にファミリーコードが出る。親スマホで同じ URL を開き「保護者の方はこちら」→ 仮の PIN を決める → 設定 →「別の端末とつなぐ」にそのコードと PIN を入れる。以後はその家族のリクエストが両方の端末に出る（Broadcast で即時、保険で 30 秒ごとに再取得）
+- ローカルモードで使っていた端末が Supabase モードに切り替わると、ファミリー ID だけ手元にあって DB に行が無い。読み込み時に無ければ作る（`ensureFamily`）ので、そのまま使える
 
-### 4. 親スマホに通知する（Web Push, 30 分）
+認可は「`x-family-code` ヘッダ = 行の `family_id`」を RLS で突き合わせる方式です。ファミリーコード（6 文字、31 文字種）を知っていれば誰でもその家族のリストを読み書きできる、ゆるい保護です。アプリは支払い情報を持たず、お金が動くのはブリッカーズの画面で親が払うときだけなので、家庭用として許容しています。気になる場合は Supabase Auth に置き換えてください。
 
-1. VAPID 鍵を生成:
+### 4. 親スマホに通知する（Web Push）
+
+VAPID 鍵は生成済み（公開鍵は Actions の `VITE_VAPID_PUBLIC_KEY`、秘密鍵は Edge Function のシークレット）。`notify-parent` はデプロイ済みで、購読が無いときは `{sent:0}`、家族コードが違えば 400 を返すところまで確認済み。実機での受信は未確認。
+
+1. 親スマホで親画面を開き「通知を許可する」。iPhone は **ホーム画面に追加（PWA としてインストール）してから** 開かないと Web Push が使えない（iOS 16.4 以降）
+2. 鍵を作り直すとき:
    ```bash
    npx web-push generate-vapid-keys
-   ```
-2. `.env` に `VITE_VAPID_PUBLIC_KEY=<公開鍵>` を追加
-3. Edge Function をデプロイ:
-   ```bash
-   supabase link --project-ref <ref>
-   supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=mailto:you@example.com APP_URL=https://<user>.github.io/brick-wish/
+   supabase secrets set VAPID_PUBLIC_KEY=... VAPID_PRIVATE_KEY=... VAPID_SUBJECT=https://github.com/woopsdez/brick-wish APP_URL=https://woopsdez.github.io/brick-wish/
    supabase functions deploy notify-parent
    ```
-4. 親スマホで親画面を開き「🔔 通知を許可する」
-
-iPhone は **ホーム画面に追加（PWA としてインストール）してから** 開かないと Web Push が使えません（iOS 16.4 以降）。
-
-> ⚠ `notify-parent` はこの開発環境から Supabase に接続できなかったため **未デプロイ・未実行** です。`supabase functions serve` でローカル確認してから使ってください。
+   `VAPID_SUBJECT` は mailto: でも https: でもよい（連絡先としてプッシュサービスに渡る）
 
 ### 5. GitHub Pages に公開
 
@@ -162,14 +160,13 @@ iPhone は **ホーム画面に追加（PWA としてインストール）して
 - 暫定カタログの BrickLink 色 ID・色の存在は未検証（→ `npm run catalog`）
 - Rebrickable CDN 画像のホットリンク可否が未確認
 - 親子の認可がファミリーコードのみ（Supabase Auth 未対応）
-- `notify-parent` Edge Function は未デプロイ・未実行
+- Web Push の実機受信は未確認（関数のデプロイと応答までは確認済み）
 - Pick a Brick CSV は日本で使えるか未確認
 - BrickLink に「複数 Wanted List をまとめて買う」機能はあるが、アプリ側からの自動アップロードはできない（ログイン必須の Web フォームのみ）
 - 親画面の BrickLink リンク（`catalogitem.page?P=<番号>&C=<色ID>#T=P`）の `C=` / `#T=P` パラメータはこの開発環境から BrickLink に到達できず未検証。パーツページ自体は `P=` だけで開くはず
-- **同梱の shop-map.json はサンプル価格**。本物は shop-map.local.json（gitignore）に置く。Shopify の `.js` が返す price の単位は ×100 で確認済み、カート permalink が支払い画面に直行することも確認済み（2026-11-01、14417-199 = 18 円）。ブリッカーズの「ファイル・リストで注文」は告知ページが見つからず受け付け形式は未確認。利用規約は自動取得を禁じている（「価格・在庫データ」の節）ので、本物の再取得は先方の許可待ち
+- shop-map.json は 2026-11-01 取得の本物。Shopify の `.js` が返す price の単位は ×100 で確認済み、カート permalink が支払い画面に直行することも確認済み（14417-199 = 18 円）。ブリッカーズの「ファイル・リストで注文」は告知ページが見つからず受け付け形式は未確認。価格の更新は月 1 回程度（許可の条件、「価格・在庫データ」の節）
 - LEGO 色 ID は 1/26/194/199 以外が記憶ベース（`npm run catalog` で Rebrickable の値に上書き）
 - 自動承認の枠は「承認済み・注文済みの見積もり合計」で数える。ショップ側で価格が変わっていても、送信時点の見積もりで判定する
-- Web Push の文面（自動承認／承認待ち）は Edge Function を更新したが未デプロイ
 
 ## ライセンス
 

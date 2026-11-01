@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const catalog = JSON.parse(readFileSync(resolve(here, '../src/catalog/catalog.json'), 'utf8'))
-// shop-map.json はリポジトリに入るサンプル。shop-map.local.json は手元だけの本物（あれば一緒に検査）
+// shop-map.json がリポジトリに入る本物（許可済み）。shop-map.local.json は手元での上書き用（あれば一緒に検査）
 const shopFiles = ['shop-map.json', 'shop-map.local.json'].map((f) => resolve(here, '../src/catalog', f)).filter(existsSync)
 
 const errors = []
@@ -26,7 +26,6 @@ if (noLego.length) console.warn(`colors without LEGO id (shop lookup skipped): $
 for (const file of shopFiles) {
   const name = basename(file)
   const shop = JSON.parse(readFileSync(file, 'utf8'))
-  if (name === 'shop-map.json' && !shop.sample) errors.push(`${name} must stay sample data; real prices belong in shop-map.local.json (gitignored)`)
   let mapped = 0
   for (const p of catalog.parts) {
     for (const c of p.colors) {
