@@ -15,7 +15,8 @@
     "catalog": "node scripts/build-catalog.mjs",
     "catalog:starter": "node scripts/starter-catalog.mjs",
     "all-parts": "node scripts/build-all-parts.mjs",
-    "icons": "node scripts/make-icons.mjs"
+    "icons": "node scripts/make-icons.mjs",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.118.0",
@@ -26,6 +27,7 @@
     "react-router-dom": "^7.18.5"
   },
   "devDependencies": {
+    "@playwright/test": "^1.64.1",
     "@types/node": "^24.19.2",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19.3.0",
@@ -36,7 +38,8 @@
     "vite": "^8.3.5",
     "vite-plugin-pwa": "^2.0.0",
     "workbox-core": "^7.4.1",
-    "workbox-precaching": "^7.4.1"
+    "workbox-precaching": "^7.4.1",
+    "ws": "^8.22.1"
   },
   "description": "子どもがレゴパーツを選んでカートに入れ、親がスマホで承認して BrickLink の Wanted List に流す家庭用おねがいカート"
 }
