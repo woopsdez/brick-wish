@@ -7,11 +7,13 @@ export interface DeviceSettings {
   localPinHash: string | null
   /** コードや QR で既存の家族につないだ端末（親スマホ）。親画面を PIN なしで開く */
   parentDevice: boolean
+  /** つなぐ前に親画面で聞く端末の種類。QR は 'kid' の端末にだけ出す */
+  deviceRole: 'kid' | 'parent' | null
 }
 
 const KEY = 'bw:settings:v2'
 const UNLOCK_KEY = 'bw:parent-unlocked'
-const DEFAULT: DeviceSettings = { familyId: null, localPinHash: null, parentDevice: false }
+const DEFAULT: DeviceSettings = { familyId: null, localPinHash: null, parentDevice: false, deviceRole: null }
 const listeners = new Set<() => void>()
 
 export function loadSettings(): DeviceSettings {

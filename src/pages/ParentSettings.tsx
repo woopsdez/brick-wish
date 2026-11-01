@@ -92,10 +92,10 @@ export function ParentSettings() {
         {family && <BudgetForm key={`${family.monthly_budget_yen}|${family.auto_approve}`} initialBudget={family.monthly_budget_yen} initialAuto={family.auto_approve} onSave={saveBudget} />}
       </section>
 
-      {hasSupabase && settings.familyId && !settings.parentDevice && (
+      {hasSupabase && settings.familyId && !settings.parentDevice && settings.deviceRole === 'parent' && (
         <section className="stack">
           <h2>コードで入れる</h2>
-          <p className="muted small">リンクも QR も使えないときだけ。子の端末の「親スマホとつなぐ › QR」に出ているコード</p>
+          <p className="muted small">カメラが使えないときだけ。子どもの端末の QR の下に出ているコード</p>
           <div className="row">
             <input value={joinCode} onChange={(e) => setJoinCode(normalizeFamilyCode(e.target.value))} placeholder="6 文字" autoCapitalize="characters" aria-label="コード" />
             <button className="btn btn-ghost" onClick={() => void joinFamily()} disabled={joinCode.length !== 6}>

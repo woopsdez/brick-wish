@@ -254,6 +254,10 @@ input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 
 .connect p { margin: 0; }
 .connect p + p { margin-top: 4px; }
 .connect-label { font-weight: 700; }
+.connect-column { flex-direction: column; align-items: stretch; gap: 0; }
+.connect-choices { display: flex; gap: 8px; margin-top: 10px; }
+.connect-choices .btn { flex: 1 1 0; }
+.connect-redo { display: block; margin-top: 6px; padding: 0; background: none; border: 0; color: var(--muted, inherit); font: inherit; font-size: 13px; text-decoration: underline; cursor: pointer; text-align: left; }
 .join-qr-ph { width: 120px; height: 120px; background: var(--surface-2); }
 .budget-bar { height: 4px; border-radius: 2px; background: var(--line); overflow: hidden; margin-top: 8px; }
 .budget-bar span { display: block; height: 100%; background: var(--accent); }
