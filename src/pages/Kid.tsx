@@ -18,21 +18,21 @@ export function Kid() {
   return (
     <main className="page kid">
       <header className="kid-header">
-        <h1>🧱 ほしいもの</h1>
+        <h1>ほしいパーツ</h1>
         <div className="kid-header-actions">
           <Link className="btn btn-ghost" to="/kid/history">
-            📜 まえの おねがい
+            リクエスト履歴
           </Link>
-          <Link className="btn btn-cart" to="/kid/cart" aria-label="かごをみる">
-            🛒 かご <span className="count">{total}</span>
+          <Link className="btn btn-cart" to="/kid/cart" aria-label="カートを見る">
+            🛒 カート <span className="count">{total}</span>
           </Link>
         </div>
       </header>
 
-      <input className="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 なまえや ばんごうで さがす" />
+      <input className="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="パーツ名や番号で検索" />
 
       {!q.trim() && (
-        <nav className="cats" aria-label="しゅるい">
+        <nav className="cats" aria-label="カテゴリ">
           {catalog.categories.map((c) => (
             <button key={c.id} className={`cat ${c.id === cat ? 'active' : ''}`} onClick={() => setCat(c.id)}>
               <span className="emoji">{c.emoji}</span>
@@ -56,13 +56,13 @@ export function Kid() {
             </button>
           )
         })}
-        {parts.length === 0 && <p className="muted">みつからなかった…</p>}
+        {parts.length === 0 && <p className="muted">見つかりませんでした</p>}
       </section>
 
       {picking && <PartPicker part={picking} onClose={() => setPicking(null)} />}
 
       <footer className="kid-footer">
-        <Link to="/parent">👩‍👧 おうちの人はこちら</Link>
+        <Link to="/parent">保護者の方はこちら</Link>
       </footer>
     </main>
   )

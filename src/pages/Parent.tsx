@@ -22,7 +22,7 @@ export function Parent() {
   return (
     <main className="page parent">
       <header className="parent-header">
-        <h1>👩‍👧 承認待ち {pending.length > 0 && <span className="count">{pending.length}</span>}</h1>
+        <h1>承認待ち {pending.length > 0 && <span className="count">{pending.length}</span>}</h1>
         <div>
           <button className="btn btn-ghost" onClick={() => void reload()}>
             ↻ 更新
@@ -31,7 +31,7 @@ export function Parent() {
             ⚙️ 設定
           </Link>
           <Link className="btn btn-ghost" to="/kid" onClick={() => setParentUnlocked(false)}>
-            🔒 こども画面へ
+            🔒 子ども画面へ
           </Link>
         </div>
       </header>
@@ -57,7 +57,7 @@ export function Parent() {
           {push === 'unsupported' && 'このブラウザは Web Push に対応していません。iPhone はホーム画面に追加（PWA）してから開いてください。'}
         </div>
       )}
-      {!hasSupabase && <div className="callout muted">ローカルモード：この端末の「ほしいもの」画面から送られたおねがいだけが表示されます。</div>}
+      {!hasSupabase && <div className="callout muted">ローカルモード：この端末の「ほしいパーツ」画面から送られたリクエストだけが表示されます。</div>}
 
       {error && <p className="error">{error}</p>}
       {loading && <p className="muted">読み込み中…</p>}

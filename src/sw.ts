@@ -27,7 +27,7 @@ self.addEventListener('push', (event) => {
   const url = data.url ?? './#/parent'
   event.waitUntil(
     self.registration.showNotification(title, {
-      body: data.body ?? '子どもから新しいおねがいが届きました',
+      body: data.body ?? '子どもから新しいリクエストが届きました',
       icon: './icons/icon-192.png',
       badge: './icons/icon-192.png',
       tag: data.tag ?? 'brick-wish-request',

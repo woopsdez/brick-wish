@@ -1,11 +1,11 @@
 {
- "generated_at": "2026-11-01T04:31:20.696Z",
+ "generated_at": "2026-11-01T05:53:04.069Z",
  "source": "starter (curated list, unverified). Run scripts/build-catalog.mjs to verify against Rebrickable.",
  "colors": [
   {
    "id": 71,
    "name": "Light Bluish Gray",
-   "name_ja": "うすいグレー",
+   "name_ja": "薄いグレー",
    "rgb": "A0A5A9",
    "is_trans": false,
    "bl_id": 86
@@ -13,7 +13,7 @@
   {
    "id": 72,
    "name": "Dark Bluish Gray",
-   "name_ja": "こいグレー",
+   "name_ja": "濃いグレー",
    "rgb": "6C6E68",
    "is_trans": false,
    "bl_id": 85
@@ -21,7 +21,7 @@
   {
    "id": 0,
    "name": "Black",
-   "name_ja": "くろ",
+   "name_ja": "黒",
    "rgb": "05131D",
    "is_trans": false,
    "bl_id": 11
@@ -29,7 +29,7 @@
   {
    "id": 15,
    "name": "White",
-   "name_ja": "しろ",
+   "name_ja": "白",
    "rgb": "FFFFFF",
    "is_trans": false,
    "bl_id": 1
@@ -37,7 +37,7 @@
   {
    "id": 4,
    "name": "Red",
-   "name_ja": "あか",
+   "name_ja": "赤",
    "rgb": "C91A09",
    "is_trans": false,
    "bl_id": 5
@@ -45,7 +45,7 @@
   {
    "id": 1,
    "name": "Blue",
-   "name_ja": "あお",
+   "name_ja": "青",
    "rgb": "0055BF",
    "is_trans": false,
    "bl_id": 7
@@ -53,7 +53,7 @@
   {
    "id": 14,
    "name": "Yellow",
-   "name_ja": "きいろ",
+   "name_ja": "黄色",
    "rgb": "F2CD37",
    "is_trans": false,
    "bl_id": 3
@@ -69,7 +69,7 @@
   {
    "id": 2,
    "name": "Green",
-   "name_ja": "みどり",
+   "name_ja": "緑",
    "rgb": "237841",
    "is_trans": false,
    "bl_id": 6
@@ -77,7 +77,7 @@
   {
    "id": 10,
    "name": "Bright Green",
-   "name_ja": "あかるいみどり",
+   "name_ja": "明るい緑",
    "rgb": "4B9F4A",
    "is_trans": false,
    "bl_id": 36
@@ -85,7 +85,7 @@
   {
    "id": 27,
    "name": "Lime",
-   "name_ja": "きみどり",
+   "name_ja": "黄緑",
    "rgb": "BBE90B",
    "is_trans": false,
    "bl_id": 34
@@ -101,7 +101,7 @@
   {
    "id": 28,
    "name": "Dark Tan",
-   "name_ja": "こいベージュ",
+   "name_ja": "濃いベージュ",
    "rgb": "958A73",
    "is_trans": false,
    "bl_id": 69
@@ -109,7 +109,7 @@
   {
    "id": 70,
    "name": "Reddish Brown",
-   "name_ja": "ちゃいろ",
+   "name_ja": "茶色",
    "rgb": "582A12",
    "is_trans": false,
    "bl_id": 88
@@ -117,7 +117,7 @@
   {
    "id": 272,
    "name": "Dark Blue",
-   "name_ja": "こいあお",
+   "name_ja": "濃い青",
    "rgb": "0A3463",
    "is_trans": false,
    "bl_id": 63
@@ -125,7 +125,7 @@
   {
    "id": 73,
    "name": "Medium Blue",
-   "name_ja": "みずいろ",
+   "name_ja": "水色",
    "rgb": "5A93DB",
    "is_trans": false,
    "bl_id": 42
@@ -141,7 +141,7 @@
   {
    "id": 322,
    "name": "Medium Azure",
-   "name_ja": "うすアズール",
+   "name_ja": "薄いアズール",
    "rgb": "36AEBF",
    "is_trans": false,
    "bl_id": 156
@@ -149,7 +149,7 @@
   {
    "id": 288,
    "name": "Dark Green",
-   "name_ja": "こいみどり",
+   "name_ja": "濃い緑",
    "rgb": "184632",
    "is_trans": false,
    "bl_id": 80
@@ -157,7 +157,7 @@
   {
    "id": 320,
    "name": "Dark Red",
-   "name_ja": "こいあか",
+   "name_ja": "濃い赤",
    "rgb": "720E0F",
    "is_trans": false,
    "bl_id": 59
@@ -165,7 +165,7 @@
   {
    "id": 5,
    "name": "Dark Pink",
-   "name_ja": "こいピンク",
+   "name_ja": "濃いピンク",
    "rgb": "C870A0",
    "is_trans": false,
    "bl_id": 47
@@ -181,7 +181,7 @@
   {
    "id": 191,
    "name": "Bright Light Orange",
-   "name_ja": "うすいオレンジ",
+   "name_ja": "薄いオレンジ",
    "rgb": "F8BB3D",
    "is_trans": false,
    "bl_id": 110
@@ -189,7 +189,7 @@
   {
    "id": 85,
    "name": "Dark Purple",
-   "name_ja": "むらさき",
+   "name_ja": "紫",
    "rgb": "3F3691",
    "is_trans": false,
    "bl_id": 89
@@ -197,7 +197,7 @@
   {
    "id": 179,
    "name": "Flat Silver",
-   "name_ja": "ぎん",
+   "name_ja": "銀",
    "rgb": "898788",
    "is_trans": false,
    "bl_id": 95
@@ -205,7 +205,7 @@
   {
    "id": 297,
    "name": "Pearl Gold",
-   "name_ja": "きん",
+   "name_ja": "金",
    "rgb": "AA7F2E",
    "is_trans": false,
    "bl_id": 115
@@ -213,7 +213,7 @@
   {
    "id": 47,
    "name": "Trans-Clear",
-   "name_ja": "とうめい",
+   "name_ja": "透明",
    "rgb": "FCFCFC",
    "is_trans": true,
    "bl_id": 12
@@ -221,7 +221,7 @@
   {
    "id": 36,
    "name": "Trans-Red",
-   "name_ja": "とうめい・あか",
+   "name_ja": "透明・赤",
    "rgb": "C91A09",
    "is_trans": true,
    "bl_id": 17
@@ -229,7 +229,7 @@
   {
    "id": 41,
    "name": "Trans-Light Blue",
-   "name_ja": "とうめい・みずいろ",
+   "name_ja": "透明・水色",
    "rgb": "AEEFEC",
    "is_trans": true,
    "bl_id": 15
@@ -237,7 +237,7 @@
   {
    "id": 42,
    "name": "Trans-Neon Green",
-   "name_ja": "とうめい・きみどり",
+   "name_ja": "透明・黄緑",
    "rgb": "F8F184",
    "is_trans": true,
    "bl_id": 16
@@ -245,7 +245,7 @@
   {
    "id": 46,
    "name": "Trans-Yellow",
-   "name_ja": "とうめい・きいろ",
+   "name_ja": "透明・黄色",
    "rgb": "F5CD2F",
    "is_trans": true,
    "bl_id": 19
@@ -253,7 +253,7 @@
   {
    "id": 57,
    "name": "Trans-Orange",
-   "name_ja": "とうめい・オレンジ",
+   "name_ja": "透明・オレンジ",
    "rgb": "F08F1C",
    "is_trans": true,
    "bl_id": 98
@@ -262,31 +262,31 @@
  "categories": [
   {
    "id": "joint",
-   "name_ja": "かんせつ",
+   "name_ja": "関節",
    "emoji": "🦾",
-   "description": "ボールジョイント。うで・あし・くびを ぐるぐる うごかす"
+   "description": "ボールジョイント。腕・脚・首を自由に動かす"
   },
   {
    "id": "clip",
    "name_ja": "クリップ・バー",
    "emoji": "📎",
-   "description": "はさんで つなぐ。ゆびや ぶきの もちてにも"
+   "description": "はさんでつなぐ。指や武器の持ち手にも"
   },
   {
    "id": "hinge",
    "name_ja": "ヒンジ",
    "emoji": "🔧",
-   "description": "パタンと おれまがる。へんけいに つかう"
+   "description": "折り曲がる。変形ギミックに"
   },
   {
    "id": "snot",
-   "name_ja": "よこむき",
+   "name_ja": "横向き",
    "emoji": "↔️",
-   "description": "ポッチを よこに むける ブラケットや ブロック"
+   "description": "ポッチを横に向けるブラケットやブロック"
   },
   {
    "id": "small-plate",
-   "name_ja": "ちいさいプレート",
+   "name_ja": "小さいプレート",
    "emoji": "▫️",
    "description": "1×1、1×2、2×2 など"
   },
@@ -294,44 +294,44 @@
    "id": "small-tile",
    "name_ja": "タイル・スロープ",
    "emoji": "◢",
-   "description": "つるつる と ななめ。よろいや かお に"
+   "description": "つるつると斜め。装甲や顔に"
   },
   {
    "id": "round",
-   "name_ja": "まるいの",
+   "name_ja": "丸いパーツ",
    "emoji": "⚪",
-   "description": "め・ライト・かた に"
+   "description": "目・ライト・肩に"
   },
   {
    "id": "technic",
-   "name_ja": "テクニック（ちいさい）",
+   "name_ja": "テクニック（小）",
    "emoji": "⚙️",
-   "description": "ピン・アクスル・ちいさい リフトアーム"
+   "description": "ピン・アクスル・小さいリフトアーム"
   },
   {
    "id": "robot",
-   "name_ja": "ロボットのぶひん",
+   "name_ja": "ロボット部品",
    "emoji": "🤖",
-   "description": "うで・ぶき・アンテナ など ミニフィグの どうぐ"
+   "description": "腕・武器・アンテナなどミニフィグの道具"
   },
   {
    "id": "wheel",
    "name_ja": "タイヤ",
    "emoji": "🚗",
-   "description": "くるまに へんけい するなら"
+   "description": "車に変形するなら"
   },
   {
    "id": "basic",
-   "name_ja": "ふつうのブロック",
+   "name_ja": "基本ブロック",
    "emoji": "🧱",
-   "description": "どうたいや つなぎに"
+   "description": "胴体やつなぎに"
   }
  ],
  "parts": [
   {
    "num": "14417",
    "name": "Plate 1 x 2 with Small Tow Ball on Side",
-   "name_ja": "ボール（よこ）1×2",
+   "name_ja": "ボール（横）1×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -433,7 +433,7 @@
   {
    "num": "14418",
    "name": "Plate 1 x 2 with Small Tow Ball Socket on End",
-   "name_ja": "うけ（はし）1×2",
+   "name_ja": "受け（端）1×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -535,7 +535,7 @@
   {
    "num": "14704",
    "name": "Plate 1 x 2 with Small Tow Ball Socket on Side",
-   "name_ja": "うけ（よこ）1×2",
+   "name_ja": "受け（横）1×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -637,7 +637,7 @@
   {
    "num": "22888",
    "name": "Brick 1 x 1 with Small Tow Ball on Side",
-   "name_ja": "ボールつき ブロック 1×1",
+   "name_ja": "ボール付きブロック 1×1",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -739,7 +739,7 @@
   {
    "num": "22890",
    "name": "Brick 1 x 1 with Small Tow Ball Socket on Side",
-   "name_ja": "うけつき ブロック 1×1",
+   "name_ja": "受け付きブロック 1×1",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -841,7 +841,7 @@
   {
    "num": "2736",
    "name": "Technic Axle with Small Tow Ball",
-   "name_ja": "ボールつき アクスル",
+   "name_ja": "ボール付きアクスル",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -867,7 +867,7 @@
   {
    "num": "6628",
    "name": "Technic Pin with Friction and Small Tow Ball",
-   "name_ja": "ボールつき ピン",
+   "name_ja": "ボール付きピン",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -893,7 +893,7 @@
   {
    "num": "32474",
    "name": "Technic Ball Joint",
-   "name_ja": "テクニック ボール",
+   "name_ja": "テクニックボール",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -919,7 +919,7 @@
   {
    "num": "3614",
    "name": "Plate 1 x 2 with Tow Ball",
-   "name_ja": "ボール（おおきい）1×2",
+   "name_ja": "ボール（大）1×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -945,7 +945,7 @@
   {
    "num": "3176",
    "name": "Plate 3 x 2 with Hole",
-   "name_ja": "あなあき プレート 3×2",
+   "name_ja": "穴あきプレート 3×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -1047,7 +1047,7 @@
   {
    "num": "2817",
    "name": "Plate 2 x 2 with Pin Holes",
-   "name_ja": "ピンあな プレート 2×2",
+   "name_ja": "ピン穴プレート 2×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -1085,7 +1085,7 @@
   {
    "num": "11458",
    "name": "Plate 1 x 2 with Pin Hole on Top",
-   "name_ja": "ピンあな プレート 1×2",
+   "name_ja": "ピン穴プレート 1×2",
    "category": "joint",
    "bl_id": null,
    "colors": [
@@ -1187,7 +1187,7 @@
   {
    "num": "4085",
    "name": "Plate 1 x 1 with Clip Vertical",
-   "name_ja": "クリップ プレート（たて）1×1",
+   "name_ja": "クリッププレート（縦）1×1",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1289,7 +1289,7 @@
   {
    "num": "61252",
    "name": "Plate 1 x 1 with Clip Horizontal",
-   "name_ja": "クリップ プレート（よこ）1×1",
+   "name_ja": "クリッププレート（横）1×1",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1391,7 +1391,7 @@
   {
    "num": "15712",
    "name": "Tile 1 x 1 with Clip",
-   "name_ja": "クリップ タイル 1×1",
+   "name_ja": "クリップタイル 1×1",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1493,7 +1493,7 @@
   {
    "num": "60470",
    "name": "Plate 1 x 2 with 2 Clips Horizontal",
-   "name_ja": "クリップ2つ プレート 1×2",
+   "name_ja": "クリップ2つプレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1595,7 +1595,7 @@
   {
    "num": "63868",
    "name": "Plate 1 x 2 with Clip Horizontal on End",
-   "name_ja": "クリップ（はし）プレート 1×2",
+   "name_ja": "クリップ（端）プレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1697,7 +1697,7 @@
   {
    "num": "92280",
    "name": "Plate 1 x 2 with Clips Horizontal on Top",
-   "name_ja": "クリップ（うえ）プレート 1×2",
+   "name_ja": "クリップ（上）プレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1799,7 +1799,7 @@
   {
    "num": "11476",
    "name": "Plate 1 x 2 with Clip Horizontal on Side",
-   "name_ja": "クリップ（よこ）プレート 1×2",
+   "name_ja": "クリップ（横）プレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -1901,7 +1901,7 @@
   {
    "num": "4081",
    "name": "Plate 1 x 1 with Clip Light",
-   "name_ja": "ライトクリップ プレート 1×1",
+   "name_ja": "ライトクリッププレート 1×1",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2003,7 +2003,7 @@
   {
    "num": "2540",
    "name": "Plate 1 x 2 with Handle on Side",
-   "name_ja": "とって プレート 1×2",
+   "name_ja": "ハンドル付きプレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2105,7 +2105,7 @@
   {
    "num": "48336",
    "name": "Plate 1 x 2 with Handle on Side Closed Ends",
-   "name_ja": "とって（とじた）プレート 1×2",
+   "name_ja": "ハンドル（閉）プレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2207,7 +2207,7 @@
   {
    "num": "60478",
    "name": "Plate 1 x 2 with Handle on End",
-   "name_ja": "とって（はし）プレート 1×2",
+   "name_ja": "ハンドル（端）プレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2309,7 +2309,7 @@
   {
    "num": "3839",
    "name": "Plate 1 x 2 with Handles",
-   "name_ja": "とって2つ プレート 1×2",
+   "name_ja": "ハンドル2つプレート 1×2",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2411,7 +2411,7 @@
   {
    "num": "3484",
    "name": "Bar 1L with Clip",
-   "name_ja": "クリップつき バー 1L",
+   "name_ja": "クリップ付きバー 1L",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2807,7 +2807,7 @@
   {
    "num": "32828",
    "name": "Plate 1 x 1 Round with Bar and Clip Horizontal",
-   "name_ja": "まるプレート＋バー＋クリップ",
+   "name_ja": "丸プレート＋バー＋クリップ",
    "category": "clip",
    "bl_id": null,
    "colors": [
@@ -2909,7 +2909,7 @@
   {
    "num": "3937",
    "name": "Hinge Brick 1 x 2 Base",
-   "name_ja": "ヒンジ ブロック（した）",
+   "name_ja": "ヒンジブロック（下）",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3011,7 +3011,7 @@
   {
    "num": "3938",
    "name": "Hinge Brick 1 x 2 Top",
-   "name_ja": "ヒンジ ブロック（うえ）",
+   "name_ja": "ヒンジブロック（上）",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3113,7 +3113,7 @@
   {
    "num": "44301",
    "name": "Hinge Plate 1 x 2 Locking with 1 Finger on End",
-   "name_ja": "ロックヒンジ（ゆび1）1×2",
+   "name_ja": "ロックヒンジ（指1）1×2",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3215,7 +3215,7 @@
   {
    "num": "44302",
    "name": "Hinge Plate 1 x 2 Locking with 2 Fingers on End",
-   "name_ja": "ロックヒンジ（ゆび2）1×2",
+   "name_ja": "ロックヒンジ（指2）1×2",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3317,7 +3317,7 @@
   {
    "num": "44567",
    "name": "Hinge Plate 1 x 2 Locking with 1 Finger on Side",
-   "name_ja": "ロックヒンジ（よこ）1×2",
+   "name_ja": "ロックヒンジ（横）1×2",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3419,7 +3419,7 @@
   {
    "num": "30383",
    "name": "Hinge Plate 1 x 2 Locking with 2 Fingers on Side",
-   "name_ja": "ロックヒンジ（よこ・ゆび2）1×2",
+   "name_ja": "ロックヒンジ（横・指2）1×2",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3521,7 +3521,7 @@
   {
    "num": "2429",
    "name": "Hinge Plate 1 x 4 Swivel Base",
-   "name_ja": "ヒンジ プレート 1×4（した）",
+   "name_ja": "ヒンジプレート 1×4（下）",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3623,7 +3623,7 @@
   {
    "num": "2430",
    "name": "Hinge Plate 1 x 4 Swivel Top",
-   "name_ja": "ヒンジ プレート 1×4（うえ）",
+   "name_ja": "ヒンジプレート 1×4（上）",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3725,7 +3725,7 @@
   {
    "num": "3680",
    "name": "Turntable 2 x 2 Plate Base",
-   "name_ja": "ターンテーブル（した）",
+   "name_ja": "ターンテーブル（下）",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3751,7 +3751,7 @@
   {
    "num": "3679",
    "name": "Turntable 2 x 2 Plate Top",
-   "name_ja": "ターンテーブル（うえ）",
+   "name_ja": "ターンテーブル（上）",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3853,7 +3853,7 @@
   {
    "num": "60474",
    "name": "Plate 4 x 4 Round with Hole",
-   "name_ja": "まる プレート 4×4",
+   "name_ja": "丸プレート 4×4",
    "category": "hinge",
    "bl_id": null,
    "colors": [
@@ -3955,7 +3955,7 @@
   {
    "num": "99780",
    "name": "Bracket 1 x 2 - 1 x 2 Inverted",
-   "name_ja": "ブラケット（さかさ）",
+   "name_ja": "ブラケット（逆）",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -4363,7 +4363,7 @@
   {
    "num": "87087",
    "name": "Brick 1 x 1 with Stud on Side",
-   "name_ja": "よこポッチ ブロック 1×1",
+   "name_ja": "横ポッチブロック 1×1",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -4465,7 +4465,7 @@
   {
    "num": "47905",
    "name": "Brick 1 x 1 with Studs on 2 Sides",
-   "name_ja": "よこポッチ（2めん）1×1",
+   "name_ja": "横ポッチ（2面）1×1",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -4567,7 +4567,7 @@
   {
    "num": "4733",
    "name": "Brick 1 x 1 with Studs on 4 Sides",
-   "name_ja": "よこポッチ（4めん）1×1",
+   "name_ja": "横ポッチ（4面）1×1",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -4669,7 +4669,7 @@
   {
    "num": "4070",
    "name": "Brick 1 x 1 with Headlight",
-   "name_ja": "ヘッドライト ブロック",
+   "name_ja": "ヘッドライトブロック",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -4771,7 +4771,7 @@
   {
    "num": "11211",
    "name": "Brick 1 x 2 with Studs on Side",
-   "name_ja": "よこポッチ ブロック 1×2",
+   "name_ja": "横ポッチブロック 1×2",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -4873,7 +4873,7 @@
   {
    "num": "2877",
    "name": "Brick 1 x 2 with Grille",
-   "name_ja": "みぞ ブロック 1×2",
+   "name_ja": "溝ブロック 1×2",
    "category": "snot",
    "bl_id": null,
    "colors": [
@@ -5917,7 +5917,7 @@
   {
    "num": "2420",
    "name": "Plate 2 x 2 Corner",
-   "name_ja": "かど プレート 2×2",
+   "name_ja": "角プレート 2×2",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6019,7 +6019,7 @@
   {
    "num": "26601",
    "name": "Wedge Plate 2 x 2 Cut Corner",
-   "name_ja": "かどおち プレート 2×2",
+   "name_ja": "角落ちプレート 2×2",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6121,7 +6121,7 @@
   {
    "num": "2450",
    "name": "Wedge Plate 3 x 3 Cut Corner",
-   "name_ja": "かどおち プレート 3×3",
+   "name_ja": "角落ちプレート 3×3",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6223,7 +6223,7 @@
   {
    "num": "43722",
    "name": "Wedge Plate 2 x 2 Right",
-   "name_ja": "つばさ プレート 2×2（みぎ）",
+   "name_ja": "ウェッジプレート 2×2（右）",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6325,7 +6325,7 @@
   {
    "num": "43723",
    "name": "Wedge Plate 2 x 2 Left",
-   "name_ja": "つばさ プレート 2×2（ひだり）",
+   "name_ja": "ウェッジプレート 2×2（左）",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6427,7 +6427,7 @@
   {
    "num": "41769",
    "name": "Wedge Plate 4 x 2 Right",
-   "name_ja": "つばさ プレート 4×2（みぎ）",
+   "name_ja": "ウェッジプレート 4×2（右）",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6529,7 +6529,7 @@
   {
    "num": "41770",
    "name": "Wedge Plate 4 x 2 Left",
-   "name_ja": "つばさ プレート 4×2（ひだり）",
+   "name_ja": "ウェッジプレート 4×2（左）",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6631,7 +6631,7 @@
   {
    "num": "49668",
    "name": "Plate 1 x 1 with Tooth Horizontal",
-   "name_ja": "は つき プレート 1×1",
+   "name_ja": "歯付きプレート 1×1",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6733,7 +6733,7 @@
   {
    "num": "15070",
    "name": "Plate 1 x 1 with Tooth Vertical",
-   "name_ja": "は つき（たて）プレート 1×1",
+   "name_ja": "歯付き（縦）プレート 1×1",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6835,7 +6835,7 @@
   {
    "num": "35480",
    "name": "Plate 1 x 2 Rounded with 2 Open Studs",
-   "name_ja": "まるい プレート 1×2",
+   "name_ja": "丸いプレート 1×2",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -6937,7 +6937,7 @@
   {
    "num": "3794b",
    "name": "Plate 1 x 2 with 1 Stud with Groove",
-   "name_ja": "ジャンパー（みぞ）",
+   "name_ja": "ジャンパー（溝）",
    "category": "small-plate",
    "bl_id": null,
    "colors": [
@@ -7495,7 +7495,7 @@
   {
    "num": "2412b",
    "name": "Tile 1 x 2 Grille",
-   "name_ja": "みぞ タイル 1×2",
+   "name_ja": "溝タイル 1×2",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -7597,7 +7597,7 @@
   {
    "num": "25269",
    "name": "Tile 1 x 1 Quarter Round",
-   "name_ja": "よんぶんのいち タイル",
+   "name_ja": "1/4 丸タイル",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -7699,7 +7699,7 @@
   {
    "num": "24246",
    "name": "Tile 1 x 1 Half Circle",
-   "name_ja": "はんえん タイル",
+   "name_ja": "半円タイル",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -7801,7 +7801,7 @@
   {
    "num": "3070",
    "name": "Tile 1 x 1 (no groove)",
-   "name_ja": "タイル 1×1（ふるい）",
+   "name_ja": "タイル 1×1（旧）",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -7903,7 +7903,7 @@
   {
    "num": "54200",
    "name": "Slope 30 1 x 1 x 2/3 (Cheese)",
-   "name_ja": "チーズ スロープ",
+   "name_ja": "チーズスロープ",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8029,7 +8029,7 @@
   {
    "num": "85984",
    "name": "Slope 30 1 x 2 x 2/3",
-   "name_ja": "ひくい スロープ 1×2",
+   "name_ja": "低いスロープ 1×2",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8131,7 +8131,7 @@
   {
    "num": "11477",
    "name": "Slope Curved 2 x 1",
-   "name_ja": "カーブ スロープ 2×1",
+   "name_ja": "カーブスロープ 2×1",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8233,7 +8233,7 @@
   {
    "num": "50950",
    "name": "Slope Curved 3 x 1",
-   "name_ja": "カーブ スロープ 3×1",
+   "name_ja": "カーブスロープ 3×1",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8335,7 +8335,7 @@
   {
    "num": "15068",
    "name": "Slope Curved 2 x 2 x 2/3",
-   "name_ja": "カーブ スロープ 2×2",
+   "name_ja": "カーブスロープ 2×2",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8539,7 +8539,7 @@
   {
    "num": "3665",
    "name": "Slope Inverted 45 2 x 1",
-   "name_ja": "さかさ スロープ 2×1",
+   "name_ja": "逆スロープ 2×1",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8641,7 +8641,7 @@
   {
    "num": "92946",
    "name": "Slope 45 2 x 1 with Cutout",
-   "name_ja": "きりかき スロープ 2×1",
+   "name_ja": "切り欠きスロープ 2×1",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8743,7 +8743,7 @@
   {
    "num": "61409",
    "name": "Slope 18 2 x 1 x 2/3 with Grille",
-   "name_ja": "みぞ スロープ 2×1",
+   "name_ja": "溝スロープ 2×1",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8845,7 +8845,7 @@
   {
    "num": "3049",
    "name": "Slope 45 1 x 2 Double",
-   "name_ja": "やね スロープ 1×2",
+   "name_ja": "屋根スロープ 1×2",
    "category": "small-tile",
    "bl_id": null,
    "colors": [
@@ -8947,7 +8947,7 @@
   {
    "num": "4073",
    "name": "Plate 1 x 1 Round",
-   "name_ja": "まる プレート 1×1",
+   "name_ja": "丸プレート 1×1",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -9081,7 +9081,7 @@
   {
    "num": "85861",
    "name": "Plate 1 x 1 Round with Open Stud",
-   "name_ja": "まる プレート（あなあき）1×1",
+   "name_ja": "丸プレート（穴あき）1×1",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -9207,7 +9207,7 @@
   {
    "num": "98138",
    "name": "Tile 1 x 1 Round",
-   "name_ja": "まる タイル 1×1",
+   "name_ja": "丸タイル 1×1",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -9341,7 +9341,7 @@
   {
    "num": "14769",
    "name": "Tile 2 x 2 Round",
-   "name_ja": "まる タイル 2×2",
+   "name_ja": "丸タイル 2×2",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -9443,7 +9443,7 @@
   {
    "num": "3062b",
    "name": "Brick 1 x 1 Round",
-   "name_ja": "まる ブロック 1×1",
+   "name_ja": "丸ブロック 1×1",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -9695,7 +9695,7 @@
   {
    "num": "4032",
    "name": "Plate 2 x 2 Round",
-   "name_ja": "まる プレート 2×2",
+   "name_ja": "丸プレート 2×2",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -9899,7 +9899,7 @@
   {
    "num": "18674",
    "name": "Tile 2 x 2 Round with Open Stud",
-   "name_ja": "まる タイル（ポッチ1）2×2",
+   "name_ja": "丸タイル（ポッチ1）2×2",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -10001,7 +10001,7 @@
   {
    "num": "4740",
    "name": "Dish 2 x 2 Inverted",
-   "name_ja": "おさら 2×2",
+   "name_ja": "ディッシュ 2×2",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -10135,7 +10135,7 @@
   {
    "num": "3960",
    "name": "Dish 4 x 4 Inverted",
-   "name_ja": "おさら 4×4",
+   "name_ja": "ディッシュ 4×4",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -10261,7 +10261,7 @@
   {
    "num": "20482",
    "name": "Tile 1 x 1 Round with Pin",
-   "name_ja": "まる タイル＋ピン",
+   "name_ja": "丸タイル＋ピン",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -10387,7 +10387,7 @@
   {
    "num": "3941",
    "name": "Brick 2 x 2 Round",
-   "name_ja": "まる ブロック 2×2",
+   "name_ja": "丸ブロック 2×2",
    "category": "round",
    "bl_id": null,
    "colors": [
@@ -10489,7 +10489,7 @@
   {
    "num": "3700",
    "name": "Technic Brick 1 x 2 with Hole",
-   "name_ja": "テクニック ブロック 1×2",
+   "name_ja": "テクニックブロック 1×2",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10591,7 +10591,7 @@
   {
    "num": "32064",
    "name": "Technic Brick 1 x 2 with Axle Hole",
-   "name_ja": "アクスルあな ブロック 1×2",
+   "name_ja": "アクスル穴ブロック 1×2",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10693,7 +10693,7 @@
   {
    "num": "2780",
    "name": "Technic Pin with Friction",
-   "name_ja": "ピン（かたい）",
+   "name_ja": "ピン（固い）",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10737,7 +10737,7 @@
   {
    "num": "4274",
    "name": "Technic Pin 1/2",
-   "name_ja": "はんぶん ピン",
+   "name_ja": "ハーフピン",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10763,7 +10763,7 @@
   {
    "num": "3749",
    "name": "Technic Axle Pin",
-   "name_ja": "アクスル ピン",
+   "name_ja": "アクスルピン",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10785,7 +10785,7 @@
   {
    "num": "43093",
    "name": "Technic Axle Pin with Friction",
-   "name_ja": "アクスル ピン（かたい）",
+   "name_ja": "アクスルピン（固い）",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10891,7 +10891,7 @@
   {
    "num": "32123",
    "name": "Technic Bush 1/2",
-   "name_ja": "はんぶん ブッシュ",
+   "name_ja": "ハーフブッシュ",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -10913,7 +10913,7 @@
   {
    "num": "6632",
    "name": "Technic Liftarm Thin 1 x 3",
-   "name_ja": "うすい リフトアーム 1×3",
+   "name_ja": "薄いリフトアーム 1×3",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11015,7 +11015,7 @@
   {
    "num": "32449",
    "name": "Technic Liftarm Thin 1 x 4",
-   "name_ja": "うすい リフトアーム 1×4",
+   "name_ja": "薄いリフトアーム 1×4",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11321,7 +11321,7 @@
   {
    "num": "32140",
    "name": "Technic Liftarm Thick 2 x 4 L-Shape",
-   "name_ja": "L がた リフトアーム",
+   "name_ja": "L字リフトアーム",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11423,7 +11423,7 @@
   {
    "num": "6536",
    "name": "Technic Axle and Pin Connector Perpendicular",
-   "name_ja": "ちょっかく コネクタ",
+   "name_ja": "直角コネクタ",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11457,7 +11457,7 @@
   {
    "num": "32039",
    "name": "Technic Axle Connector with Axle Hole",
-   "name_ja": "アクスル コネクタ",
+   "name_ja": "アクスルコネクタ",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11491,7 +11491,7 @@
   {
    "num": "42003",
    "name": "Technic Axle and Pin Connector Perpendicular 3L with 2 Pin Holes",
-   "name_ja": "ピンあな コネクタ 3L",
+   "name_ja": "ピン穴コネクタ 3L",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11525,7 +11525,7 @@
   {
    "num": "32013",
    "name": "Technic Axle and Pin Connector Angled #1",
-   "name_ja": "かくど コネクタ #1",
+   "name_ja": "角度コネクタ #1",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11547,7 +11547,7 @@
   {
    "num": "32034",
    "name": "Technic Axle and Pin Connector Angled #2 - 180 degrees",
-   "name_ja": "かくど コネクタ #2",
+   "name_ja": "角度コネクタ #2",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11569,7 +11569,7 @@
   {
    "num": "32192",
    "name": "Technic Axle and Pin Connector Angled #4 - 135 degrees",
-   "name_ja": "かくど コネクタ #4",
+   "name_ja": "角度コネクタ #4",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11591,7 +11591,7 @@
   {
    "num": "32015",
    "name": "Technic Axle and Pin Connector Angled #5 - 112.5 degrees",
-   "name_ja": "かくど コネクタ #5",
+   "name_ja": "角度コネクタ #5",
    "category": "technic",
    "bl_id": null,
    "colors": [
@@ -11639,7 +11639,7 @@
   {
    "num": "30377",
    "name": "Arm Mechanical, Exo-Force / Bionicle",
-   "name_ja": "メカ アーム",
+   "name_ja": "メカアーム",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -11741,7 +11741,7 @@
   {
    "num": "98313",
    "name": "Arm Mechanical, Exo-Force / Bionicle, Thick Support",
-   "name_ja": "メカ アーム（ふとい）",
+   "name_ja": "メカアーム（太）",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -11843,7 +11843,7 @@
   {
    "num": "53989",
    "name": "Arm Mechanical, Exo-Force / Bionicle, Thin Support",
-   "name_ja": "メカ アーム（ほそい）",
+   "name_ja": "メカアーム（細）",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12033,7 +12033,7 @@
   {
    "num": "64644",
    "name": "Minifig Telescope",
-   "name_ja": "ぼうえんきょう",
+   "name_ja": "望遠鏡",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12079,7 +12079,7 @@
   {
    "num": "30162",
    "name": "Minifig Binoculars",
-   "name_ja": "そうがんきょう",
+   "name_ja": "双眼鏡",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12247,7 +12247,7 @@
   {
    "num": "4529",
    "name": "Minifig Saucepan",
-   "name_ja": "なべ",
+   "name_ja": "鍋",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12307,7 +12307,7 @@
   {
    "num": "6246",
    "name": "Minifig Tool Set",
-   "name_ja": "どうぐ セット",
+   "name_ja": "道具セット",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12333,7 +12333,7 @@
   {
    "num": "2479",
    "name": "Helicopter Rotor Holder",
-   "name_ja": "ローター ホルダー",
+   "name_ja": "ローターホルダー",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12359,7 +12359,7 @@
   {
    "num": "6141",
    "name": "Plate 1 x 1 Round (old)",
-   "name_ja": "まる プレート（ふるい）",
+   "name_ja": "丸プレート（旧）",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12461,7 +12461,7 @@
   {
    "num": "3626b",
    "name": "Minifig Head Plain",
-   "name_ja": "ミニフィグの あたま",
+   "name_ja": "ミニフィグの頭",
    "category": "robot",
    "bl_id": null,
    "colors": [
@@ -12649,7 +12649,7 @@
   {
    "num": "4624",
    "name": "Wheel 8mm D. x 6mm",
-   "name_ja": "ホイール（ちいさい）",
+   "name_ja": "ホイール（小）",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12683,7 +12683,7 @@
   {
    "num": "3641",
    "name": "Tyre 15mm D. x 6mm",
-   "name_ja": "タイヤ（ちいさい）",
+   "name_ja": "タイヤ（小）",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12697,7 +12697,7 @@
   {
    "num": "6014b",
    "name": "Wheel 11mm D. x 12mm",
-   "name_ja": "ホイール（ふつう）",
+   "name_ja": "ホイール（中）",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12731,7 +12731,7 @@
   {
    "num": "6015",
    "name": "Tyre 21mm D. x 12mm",
-   "name_ja": "タイヤ（ふつう）",
+   "name_ja": "タイヤ（中）",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12745,7 +12745,7 @@
   {
    "num": "4600",
    "name": "Plate 2 x 2 with Wheel Holders",
-   "name_ja": "タイヤつけ プレート 2×2",
+   "name_ja": "ホイールホルダー付きプレート 2×2",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12783,7 +12783,7 @@
   {
    "num": "2926",
    "name": "Plate 1 x 4 with Wheel Holders",
-   "name_ja": "タイヤつけ プレート 1×4",
+   "name_ja": "ホイールホルダー付きプレート 1×4",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12835,7 +12835,7 @@
   {
    "num": "30027b",
    "name": "Wheel 8mm D. x 9mm with Notched Hole",
-   "name_ja": "ホイール（ほそい）",
+   "name_ja": "ホイール（細）",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -12861,7 +12861,7 @@
   {
    "num": "30028",
    "name": "Tyre 14mm D. x 9mm",
-   "name_ja": "タイヤ（ほそい）",
+   "name_ja": "タイヤ（細）",
    "category": "wheel",
    "bl_id": null,
    "colors": [
@@ -13511,7 +13511,7 @@
   {
    "num": "2357",
    "name": "Brick 2 x 2 Corner",
-   "name_ja": "かど ブロック 2×2",
+   "name_ja": "角ブロック 2×2",
    "category": "basic",
    "bl_id": null,
    "colors": [
@@ -13613,7 +13613,7 @@
   {
    "num": "3245c",
    "name": "Brick 1 x 2 x 2",
-   "name_ja": "たかい ブロック 1×2",
+   "name_ja": "高いブロック 1×2",
    "category": "basic",
    "bl_id": null,
    "colors": [

@@ -49,7 +49,7 @@ Deno.serve(async (req) => {
   const items = (reqRow.items as Array<{ qty: number }>) ?? []
   const qty = items.reduce((n, i) => n + (i.qty ?? 0), 0)
   const payload = JSON.stringify({
-    title: 'こどもから おねがい',
+    title: '新しいリクエスト',
     body: `${items.length} 種類 / ${qty} 個${reqRow.note ? ` 「${reqRow.note}」` : ''}`,
     url: `${appUrl}#/parent/request/${reqRow.id}`,
     tag: `req-${reqRow.id}`,

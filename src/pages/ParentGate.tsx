@@ -62,7 +62,7 @@ export function ParentGate() {
   const isSet = state === 'set-pin'
   return (
     <main className="page center">
-      <h1>👩‍👧 おうちの人の画面</h1>
+      <h1>保護者の画面</h1>
       <p className="muted">{isSet ? '最初に、承認用の PIN（4 桁以上の数字）を決めてください' : 'PIN を入れてください'}</p>
       <form
         className="stack"
@@ -74,12 +74,12 @@ export function ParentGate() {
       >
         <input type="password" inputMode="numeric" className="code-input" value={pin} onChange={(e) => setPin(e.target.value.replace(/\D/g, ''))} placeholder="••••" autoFocus />
         {isSet && (
-          <input type="password" inputMode="numeric" className="code-input" value={pin2} onChange={(e) => setPin2(e.target.value.replace(/\D/g, ''))} placeholder="もういちど" />
+          <input type="password" inputMode="numeric" className="code-input" value={pin2} onChange={(e) => setPin2(e.target.value.replace(/\D/g, ''))} placeholder="もう一度" />
         )}
         {err && <p className="error">{err}</p>}
-        <button className="btn btn-big">{isSet ? 'きめる' : 'ひらく'}</button>
+        <button className="btn btn-big">{isSet ? '決める' : '開く'}</button>
         <Link className="btn btn-ghost" to="/kid" onClick={() => nav('/kid')}>
-          もどる
+          戻る
         </Link>
       </form>
     </main>

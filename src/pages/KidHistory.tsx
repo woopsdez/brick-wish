@@ -12,12 +12,12 @@ export function KidHistory() {
     <main className="page kid">
       <header className="kid-header">
         <Link className="btn btn-ghost" to="/kid">
-          ← もどる
+          ← 戻る
         </Link>
-        <h1>📜 おねがいの きろく</h1>
+        <h1>リクエスト履歴</h1>
       </header>
-      {loading && <p className="muted">よみこみ中…</p>}
-      {!loading && requests.length === 0 && <p className="empty">まだ おねがいは ないよ</p>}
+      {loading && <p className="muted">読み込み中…</p>}
+      {!loading && requests.length === 0 && <p className="empty">まだリクエストはありません</p>}
       <ul className="req-list">
         {requests.map((r) => (
           <li key={r.id} className={`req-card status-${r.status}`}>

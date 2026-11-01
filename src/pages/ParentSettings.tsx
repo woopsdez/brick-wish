@@ -101,12 +101,12 @@ export function ParentSettings() {
       <section className="stack">
         <h2>この端末</h2>
         <button className="btn btn-ghost" onClick={() => { setParentUnlocked(false); location.hash = '#/kid' }}>
-          🔒 ロックして こども画面へ
+          🔒 ロックして子ども画面へ
         </button>
         <button
           className="btn btn-danger"
           onClick={() => {
-            if (confirm('この端末の設定をすべて消しますか？（おねがいの履歴はローカルモードの場合のみ消えます）')) {
+            if (confirm('この端末の設定をすべて消しますか？（リクエスト履歴はローカルモードの場合のみ消えます）')) {
               localStorage.clear()
               sessionStorage.clear()
               location.hash = '#/'

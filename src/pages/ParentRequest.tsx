@@ -77,7 +77,7 @@ function Detail({ req }: { req: WishRequest }) {
       </header>
 
       <h1>
-        おねがい <span className="muted">({new Date(req.created_at).toLocaleString('ja-JP')})</span>
+        リクエスト <span className="muted">({new Date(req.created_at).toLocaleString('ja-JP')})</span>
       </h1>
       {req.note && <p className="note">「{req.note}」</p>}
 
@@ -103,7 +103,7 @@ function Detail({ req }: { req: WishRequest }) {
       {editable && (
         <section className="decide">
           <label>
-            子どもへのひとこと（任意）
+            子どもへのメッセージ（任意）
             <input value={parentNote} onChange={(e) => setParentNote(e.target.value)} placeholder="例: 赤いのは今あるやつ使おう" />
           </label>
           {err && <p className="error">{err}</p>}
@@ -112,7 +112,7 @@ function Detail({ req }: { req: WishRequest }) {
               ✅ 承認して注文へ
             </button>
             <button className="btn btn-big btn-danger" disabled={busy} onClick={() => void decide('rejected')}>
-              こんどね
+              今回は見送り
             </button>
           </div>
         </section>

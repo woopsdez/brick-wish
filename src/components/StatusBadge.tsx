@@ -1,10 +1,10 @@
 import type { RequestStatus } from '../types'
 
 export const STATUS_LABEL: Record<RequestStatus, string> = {
-  pending: 'まち',
-  approved: 'OK！',
-  rejected: 'こんどね',
-  ordered: 'ちゅうもんした',
+  pending: '確認待ち',
+  approved: 'OK',
+  rejected: '今回は見送り',
+  ordered: '注文済み',
 }
 
 export const STATUS_LABEL_PARENT: Record<RequestStatus, string> = {
