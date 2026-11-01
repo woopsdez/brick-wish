@@ -23,3 +23,20 @@ export async function sha256Hex(text: string): Promise<string> {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
   return Array.from(new Uint8Array(buf), (b) => b.toString(16).padStart(2, '0')).join('')
 }
+
+/** 親スマホをつなぐ QR の中身 */
+export function joinUrl(familyId: string): string {
+  return `${location.origin}${location.pathname}#/join/${familyId}`
+}
+
+/** このアプリの joinUrl ならコードを返す。それ以外の QR は null */
+export function parseJoinUrl(text: string): string | null {
+  try {
+    const u = new URL(text)
+    if (u.origin !== location.origin || u.pathname !== location.pathname) return null
+    const m = /^#\/join\/([A-Za-z0-9]{6})$/.exec(u.hash)
+    return m ? normalizeFamilyCode(m[1]) : null
+  } catch {
+    return null
+  }
+}

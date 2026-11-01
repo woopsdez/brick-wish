@@ -2,12 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Icon } from '../components/Icon'
 import { yen } from '../lib/budget'
-import { hasPush, hasSupabase } from '../lib/config'
-import { normalizeFamilyCode, sha256Hex } from '../lib/ids'
-import { getPushState, resubscribeParentPush, type PushState } from '../lib/push'
+import { hasPush } from '../lib/config'
+import { sha256Hex } from '../lib/ids'
+import { getPushState, type PushState } from '../lib/push'
 import { getStore } from '../store'
 import { useFamily } from '../store/family-hooks'
-import { joinFamily as joinFamilyByCode } from '../store/family'
 import { saveSettings, useSettings } from '../store/settings'
 
 function BudgetForm({ initialBudget, initialAuto, onSave }: { initialBudget: number; initialAuto: boolean; onSave: (n: number, auto: boolean) => Promise<void> }) {
@@ -36,32 +35,12 @@ export function ParentSettings() {
   const [push, setPush] = useState<PushState>('disabled')
   const [pin, setPin] = useState('')
   const [msg, setMsg] = useState<string | null>(null)
-  const [joinCode, setJoinCode] = useState('')
-  const [joinErr, setJoinErr] = useState<string | null>(null)
 
   async function saveBudget(n: number, auto: boolean) {
     if (!settings.familyId) return
     await getStore().setFamilyBudget(settings.familyId, n, auto)
     reload()
     setMsg(`自動承認枠を ${yen(n)} / 月${auto ? '' : '（オフ）'} にしました`)
-  }
-
-  async function joinFamily() {
-    setJoinErr(null)
-    const c = normalizeFamilyCode(joinCode)
-    if (c.length !== 6) return setJoinErr('コードは 6 文字です')
-    try {
-      await joinFamilyByCode(c)
-    } catch (e) {
-      return setJoinErr(e instanceof Error ? e.message : String(e))
-    }
-    // 通知を許可済みの端末なら、購読を新しい家族に付け替える
-    try {
-      setPush(await resubscribeParentPush(c))
-    } catch (e) {
-      console.warn('push resubscribe failed', e)
-    }
-    setMsg(`つなぎました（${c}）`)
   }
 
   useEffect(() => {
@@ -91,20 +70,6 @@ export function ParentSettings() {
         <h2>月の枠</h2>
         {family && <BudgetForm key={`${family.monthly_budget_yen}|${family.auto_approve}`} initialBudget={family.monthly_budget_yen} initialAuto={family.auto_approve} onSave={saveBudget} />}
       </section>
-
-      {hasSupabase && settings.familyId && !settings.parentDevice && settings.deviceRole === 'parent' && (
-        <section className="stack">
-          <h2>コードで入れる</h2>
-          <p className="muted small">カメラが使えないときだけ。子どもの端末の QR の下に出ているコード</p>
-          <div className="row">
-            <input value={joinCode} onChange={(e) => setJoinCode(normalizeFamilyCode(e.target.value))} placeholder="6 文字" autoCapitalize="characters" aria-label="コード" />
-            <button className="btn btn-ghost" onClick={() => void joinFamily()} disabled={joinCode.length !== 6}>
-              つなぐ
-            </button>
-          </div>
-          {joinErr && <p className="error">{joinErr}</p>}
-        </section>
-      )}
 
       {hasPush && push === 'denied' && (
         <section className="stack">
