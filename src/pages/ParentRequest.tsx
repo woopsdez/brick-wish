@@ -174,7 +174,7 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
     <section className="order">
       <h2>{SHOP.name}で支払う</h2>
       <p className="muted">
-        国内の専門店 1 店にまとめて注文します（決済 1 回、日本語、送料 {yen(SHOP.shippingYen)}、{yen(SHOP.freeShippingFromYen)} 以上で無料、PayPay・クレカ・後払い可）。
+        国内の専門店 1 店にまとめて注文します（決済 1 回、日本語、送料 {yen(SHOP.shippingYen)}、{yen(SHOP.freeShippingFromYen)} 以上で無料、{yen(SHOP.smallOrderBelowYen)} 未満は +{yen(SHOP.smallOrderFeeYen)}、PayPay・クレカ・後払い可）。
       </p>
       <ol className="steps">
         <li>

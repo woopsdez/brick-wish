@@ -18,9 +18,11 @@ export const SHOP = {
   name: shopMap.shop_name,
   baseUrl: shopMap.base_url.replace(/\/$/, ''),
   listOrderUrl: shopMap.list_order_url ?? shopMap.base_url,
-  /** 全国一律のゆうパケット送料と送料無料ライン（2026/11 時点の決済・配送ページより。変わり得る） */
+  /** ゆうパケット送料・送料無料ライン・500 円未満の少額手数料（2026/11/01 の決済・配送ページより。変わり得る） */
   shippingYen: 230,
   freeShippingFromYen: 3300,
+  smallOrderBelowYen: 500,
+  smallOrderFeeYen: 100,
   sample: shopMap.sample,
   fetchedAt: shopMap.fetched_at,
 }
@@ -79,6 +81,8 @@ export function orderListText(items: CartItem[]): string {
   return items.map((i) => `${i.shop_key ?? i.part_num}\t${i.qty}`).join('\n')
 }
 
+/** 送料（少額手数料込み）。商品合計 3,300 円以上は無料、500 円未満は送料に 100 円が足される */
 export function shippingFor(totalYen: number): number {
-  return totalYen >= SHOP.freeShippingFromYen ? 0 : SHOP.shippingYen
+  if (totalYen >= SHOP.freeShippingFromYen) return 0
+  return SHOP.shippingYen + (totalYen < SHOP.smallOrderBelowYen ? SHOP.smallOrderFeeYen : 0)
 }
