@@ -19,13 +19,13 @@ export default defineConfig({
       manifest: {
         name: 'Brick Wish',
         short_name: 'BrickWish',
-        description: '子どもがレゴパーツを選び、親が承認して BrickLink へ流す家庭用おねがいカート',
+        description: '子どもがレゴパーツを選び、親が承認して国内ショップで支払う家庭用おねがいカート',
         lang: 'ja',
         display: 'standalone',
         start_url: '.',
         scope: '.',
-        background_color: '#f3f3f3',
-        theme_color: '#ffd500',
+        background_color: '#141416',
+        theme_color: '#141416',
         icons: [
           { src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png' },
@@ -34,6 +34,8 @@ export default defineConfig({
       },
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,json}'],
+        // 全パーツ索引は大きいので事前キャッシュに入れず、「ぜんぶ」タブを開いたときに取りに行く
+        globIgnores: ['**/all-parts.json'],
       },
       devOptions: { enabled: false },
     }),

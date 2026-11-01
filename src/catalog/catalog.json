@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-01T05:53:04.069Z",
+ "generated_at": "2026-11-01T09:53:19.072Z",
  "source": "starter (curated list, unverified). Run scripts/build-catalog.mjs to verify against Rebrickable.",
  "colors": [
   {
@@ -8,7 +8,8 @@
    "name_ja": "薄いグレー",
    "rgb": "A0A5A9",
    "is_trans": false,
-   "bl_id": 86
+   "bl_id": 86,
+   "lego_id": 194
   },
   {
    "id": 72,
@@ -16,7 +17,8 @@
    "name_ja": "濃いグレー",
    "rgb": "6C6E68",
    "is_trans": false,
-   "bl_id": 85
+   "bl_id": 85,
+   "lego_id": 199
   },
   {
    "id": 0,
@@ -24,7 +26,8 @@
    "name_ja": "黒",
    "rgb": "05131D",
    "is_trans": false,
-   "bl_id": 11
+   "bl_id": 11,
+   "lego_id": 26
   },
   {
    "id": 15,
@@ -32,7 +35,8 @@
    "name_ja": "白",
    "rgb": "FFFFFF",
    "is_trans": false,
-   "bl_id": 1
+   "bl_id": 1,
+   "lego_id": 1
   },
   {
    "id": 4,
@@ -40,7 +44,8 @@
    "name_ja": "赤",
    "rgb": "C91A09",
    "is_trans": false,
-   "bl_id": 5
+   "bl_id": 5,
+   "lego_id": 21
   },
   {
    "id": 1,
@@ -48,7 +53,8 @@
    "name_ja": "青",
    "rgb": "0055BF",
    "is_trans": false,
-   "bl_id": 7
+   "bl_id": 7,
+   "lego_id": 23
   },
   {
    "id": 14,
@@ -56,7 +62,8 @@
    "name_ja": "黄色",
    "rgb": "F2CD37",
    "is_trans": false,
-   "bl_id": 3
+   "bl_id": 3,
+   "lego_id": 24
   },
   {
    "id": 25,
@@ -64,7 +71,8 @@
    "name_ja": "オレンジ",
    "rgb": "FE8A18",
    "is_trans": false,
-   "bl_id": 4
+   "bl_id": 4,
+   "lego_id": 106
   },
   {
    "id": 2,
@@ -72,7 +80,8 @@
    "name_ja": "緑",
    "rgb": "237841",
    "is_trans": false,
-   "bl_id": 6
+   "bl_id": 6,
+   "lego_id": 28
   },
   {
    "id": 10,
@@ -80,7 +89,8 @@
    "name_ja": "明るい緑",
    "rgb": "4B9F4A",
    "is_trans": false,
-   "bl_id": 36
+   "bl_id": 36,
+   "lego_id": 37
   },
   {
    "id": 27,
@@ -88,7 +98,8 @@
    "name_ja": "黄緑",
    "rgb": "BBE90B",
    "is_trans": false,
-   "bl_id": 34
+   "bl_id": 34,
+   "lego_id": 119
   },
   {
    "id": 19,
@@ -96,7 +107,8 @@
    "name_ja": "ベージュ",
    "rgb": "E4CD9E",
    "is_trans": false,
-   "bl_id": 2
+   "bl_id": 2,
+   "lego_id": 5
   },
   {
    "id": 28,
@@ -104,7 +116,8 @@
    "name_ja": "濃いベージュ",
    "rgb": "958A73",
    "is_trans": false,
-   "bl_id": 69
+   "bl_id": 69,
+   "lego_id": 138
   },
   {
    "id": 70,
@@ -112,7 +125,8 @@
    "name_ja": "茶色",
    "rgb": "582A12",
    "is_trans": false,
-   "bl_id": 88
+   "bl_id": 88,
+   "lego_id": 192
   },
   {
    "id": 272,
@@ -120,7 +134,8 @@
    "name_ja": "濃い青",
    "rgb": "0A3463",
    "is_trans": false,
-   "bl_id": 63
+   "bl_id": 63,
+   "lego_id": 140
   },
   {
    "id": 73,
@@ -128,7 +143,8 @@
    "name_ja": "水色",
    "rgb": "5A93DB",
    "is_trans": false,
-   "bl_id": 42
+   "bl_id": 42,
+   "lego_id": 102
   },
   {
    "id": 321,
@@ -136,7 +152,8 @@
    "name_ja": "アズール",
    "rgb": "078BC9",
    "is_trans": false,
-   "bl_id": 153
+   "bl_id": 153,
+   "lego_id": 321
   },
   {
    "id": 322,
@@ -144,7 +161,8 @@
    "name_ja": "薄いアズール",
    "rgb": "36AEBF",
    "is_trans": false,
-   "bl_id": 156
+   "bl_id": 156,
+   "lego_id": 322
   },
   {
    "id": 288,
@@ -152,7 +170,8 @@
    "name_ja": "濃い緑",
    "rgb": "184632",
    "is_trans": false,
-   "bl_id": 80
+   "bl_id": 80,
+   "lego_id": 141
   },
   {
    "id": 320,
@@ -160,7 +179,8 @@
    "name_ja": "濃い赤",
    "rgb": "720E0F",
    "is_trans": false,
-   "bl_id": 59
+   "bl_id": 59,
+   "lego_id": 154
   },
   {
    "id": 5,
@@ -168,7 +188,8 @@
    "name_ja": "濃いピンク",
    "rgb": "C870A0",
    "is_trans": false,
-   "bl_id": 47
+   "bl_id": 47,
+   "lego_id": 221
   },
   {
    "id": 29,
@@ -176,7 +197,8 @@
    "name_ja": "ピンク",
    "rgb": "E4ADC8",
    "is_trans": false,
-   "bl_id": 104
+   "bl_id": 104,
+   "lego_id": 222
   },
   {
    "id": 191,
@@ -184,7 +206,8 @@
    "name_ja": "薄いオレンジ",
    "rgb": "F8BB3D",
    "is_trans": false,
-   "bl_id": 110
+   "bl_id": 110,
+   "lego_id": 191
   },
   {
    "id": 85,
@@ -192,7 +215,8 @@
    "name_ja": "紫",
    "rgb": "3F3691",
    "is_trans": false,
-   "bl_id": 89
+   "bl_id": 89,
+   "lego_id": 268
   },
   {
    "id": 179,
@@ -200,7 +224,8 @@
    "name_ja": "銀",
    "rgb": "898788",
    "is_trans": false,
-   "bl_id": 95
+   "bl_id": 95,
+   "lego_id": 315
   },
   {
    "id": 297,
@@ -208,7 +233,8 @@
    "name_ja": "金",
    "rgb": "AA7F2E",
    "is_trans": false,
-   "bl_id": 115
+   "bl_id": 115,
+   "lego_id": 297
   },
   {
    "id": 47,
@@ -216,7 +242,8 @@
    "name_ja": "透明",
    "rgb": "FCFCFC",
    "is_trans": true,
-   "bl_id": 12
+   "bl_id": 12,
+   "lego_id": 40
   },
   {
    "id": 36,
@@ -224,7 +251,8 @@
    "name_ja": "透明・赤",
    "rgb": "C91A09",
    "is_trans": true,
-   "bl_id": 17
+   "bl_id": 17,
+   "lego_id": 41
   },
   {
    "id": 41,
@@ -232,7 +260,8 @@
    "name_ja": "透明・水色",
    "rgb": "AEEFEC",
    "is_trans": true,
-   "bl_id": 15
+   "bl_id": 15,
+   "lego_id": 42
   },
   {
    "id": 42,
@@ -240,7 +269,8 @@
    "name_ja": "透明・黄緑",
    "rgb": "F8F184",
    "is_trans": true,
-   "bl_id": 16
+   "bl_id": 16,
+   "lego_id": 49
   },
   {
    "id": 46,
@@ -248,7 +278,8 @@
    "name_ja": "透明・黄色",
    "rgb": "F5CD2F",
    "is_trans": true,
-   "bl_id": 19
+   "bl_id": 19,
+   "lego_id": 44
   },
   {
    "id": 57,
@@ -256,7 +287,8 @@
    "name_ja": "透明・オレンジ",
    "rgb": "F08F1C",
    "is_trans": true,
-   "bl_id": 98
+   "bl_id": 98,
+   "lego_id": 182
   }
  ],
  "categories": [
@@ -2907,6 +2939,516 @@
    "score": 65
   },
   {
+   "num": "26047",
+   "name": "Plate 1 x 1 Round with Bar Handle",
+   "name_ja": "バー付き丸プレート 1×1",
+   "category": "clip",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 90
+  },
+  {
+   "num": "60897",
+   "name": "Plate 1 x 1 with Clip Vertical (Thick Open O Clip)",
+   "name_ja": "クリッププレート（縦・太）1×1",
+   "category": "clip",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 85
+  },
+  {
+   "num": "2555",
+   "name": "Tile 1 x 1 with Clip",
+   "name_ja": "クリップタイル 1×1（旧）",
+   "category": "clip",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 60
+  },
+  {
+   "num": "2432",
+   "name": "Tile 1 x 2 with Handle",
+   "name_ja": "ハンドル付きタイル 1×2",
+   "category": "clip",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 75
+  },
+  {
+   "num": "30350b",
+   "name": "Tile 1 x 2 with Open O Clip",
+   "name_ja": "クリップ付きタイル 1×2",
+   "category": "clip",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
    "num": "3937",
    "name": "Hinge Brick 1 x 2 Base",
    "name_ja": "ヒンジブロック（下）",
@@ -3951,6 +4493,516 @@
     }
    ],
    "score": 40
+  },
+  {
+   "num": "30552",
+   "name": "Hinge Cylinder 1 x 2 Locking with 1 Finger and Axle Hole",
+   "name_ja": "ヒンジ筒（指1）1×2",
+   "category": "hinge",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 75
+  },
+  {
+   "num": "30553",
+   "name": "Hinge Cylinder 1 x 2 Locking with 2 Fingers",
+   "name_ja": "ヒンジ筒（指2）1×2",
+   "category": "hinge",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 75
+  },
+  {
+   "num": "30541",
+   "name": "Hinge Brick 1 x 2 Locking with 1 Finger Vertical End",
+   "name_ja": "ロックヒンジブロック（指1）1×2",
+   "category": "hinge",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "30365",
+   "name": "Hinge Brick 1 x 2 Locking with 2 Fingers Vertical End",
+   "name_ja": "ロックヒンジブロック（指2）1×2",
+   "category": "hinge",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "60471",
+   "name": "Hinge Plate 1 x 2 Locking with 2 Fingers on Top",
+   "name_ja": "ロックヒンジ（上・指2）1×2",
+   "category": "hinge",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 65
   },
   {
    "num": "99780",
@@ -5175,6 +6227,720 @@
     }
    ],
    "score": 80
+  },
+  {
+   "num": "15573",
+   "name": "Plate 1 x 2 with 1 Stud with Groove and Bottom Stud Holder (Jumper)",
+   "name_ja": "ジャンパー 1×2（新）",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 92
+  },
+  {
+   "num": "36840",
+   "name": "Bracket 1 x 1 - 1 x 1 Inverted",
+   "name_ja": "ブラケット 1×1（逆）",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 85
+  },
+  {
+   "num": "99207",
+   "name": "Bracket 1 x 2 - 2 x 2 Inverted",
+   "name_ja": "ブラケット 1×2-2×2（逆）",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 80
+  },
+  {
+   "num": "42446",
+   "name": "Bracket 1 x 1 - 1 x 1 (Minifig Neck Bracket)",
+   "name_ja": "ネックブラケット 1×1",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 80
+  },
+  {
+   "num": "32028",
+   "name": "Plate 1 x 2 with Door Rail",
+   "name_ja": "レール付きプレート 1×2",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "6231",
+   "name": "Panel 1 x 1 x 1 Corner",
+   "name_ja": "コーナーパネル 1×1",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 60
+  },
+  {
+   "num": "4865b",
+   "name": "Panel 1 x 2 x 1",
+   "name_ja": "パネル 1×2×1",
+   "category": "snot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 55
   },
   {
    "num": "3024",
@@ -7035,6 +8801,414 @@
     }
    ],
    "score": 50
+  },
+  {
+   "num": "24299",
+   "name": "Wedge Plate 2 x 2 Left (Pointed)",
+   "name_ja": "尖りプレート 2×2（左）",
+   "category": "small-plate",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "24307",
+   "name": "Wedge Plate 2 x 2 Right (Pointed)",
+   "name_ja": "尖りプレート 2×2（右）",
+   "category": "small-plate",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "29120",
+   "name": "Wedge Plate 2 x 1 Left",
+   "name_ja": "尖りプレート 2×1（左）",
+   "category": "small-plate",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 65
+  },
+  {
+   "num": "29119",
+   "name": "Wedge Plate 2 x 1 Right",
+   "name_ja": "尖りプレート 2×1（右）",
+   "category": "small-plate",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 65
   },
   {
    "num": "3070b",
@@ -8945,6 +11119,720 @@
    "score": 50
   },
   {
+   "num": "26603",
+   "name": "Tile 2 x 3",
+   "name_ja": "タイル 2×3",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 55
+  },
+  {
+   "num": "28192",
+   "name": "Slope 45 2 x 1 with Cutout without Stud",
+   "name_ja": "切り欠きスロープ 2×1（ポッチなし）",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 65
+  },
+  {
+   "num": "61678",
+   "name": "Slope Curved 4 x 1",
+   "name_ja": "カーブスロープ 4×1",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 65
+  },
+  {
+   "num": "93273",
+   "name": "Slope Curved 4 x 1 Double",
+   "name_ja": "カーブスロープ 4×1（両）",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 60
+  },
+  {
+   "num": "60481",
+   "name": "Slope 65 2 x 1 x 2",
+   "name_ja": "急スロープ 2×1×2",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 55
+  },
+  {
+   "num": "3660",
+   "name": "Slope Inverted 45 2 x 2",
+   "name_ja": "逆スロープ 2×2",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 55
+  },
+  {
+   "num": "4287",
+   "name": "Slope Inverted 33 3 x 1",
+   "name_ja": "逆スロープ 3×1",
+   "category": "small-tile",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 55
+  },
+  {
    "num": "4073",
    "name": "Plate 1 x 1 Round",
    "name_ja": "丸プレート 1×1",
@@ -9693,8 +12581,8 @@
    "score": 80
   },
   {
-   "num": "4032",
-   "name": "Plate 2 x 2 Round",
+   "num": "4032a",
+   "name": "Plate 2 x 2 Round with Axle Hole",
    "name_ja": "丸プレート 2×2",
    "category": "round",
    "bl_id": null,
@@ -11637,6 +14525,468 @@
    "score": 40
   },
   {
+   "num": "6541",
+   "name": "Technic Brick 1 x 1 with Hole",
+   "name_ja": "テクニックブロック 1×1",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 85
+  },
+  {
+   "num": "18654",
+   "name": "Technic Liftarm 1 x 1 Thick",
+   "name_ja": "リフトアーム 1×1",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 75
+  },
+  {
+   "num": "43857",
+   "name": "Technic Liftarm Thick 1 x 2",
+   "name_ja": "リフトアーム 1×2",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 15,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 25,
+     "element_id": null
+    },
+    {
+     "color_id": 2,
+     "element_id": null
+    },
+    {
+     "color_id": 10,
+     "element_id": null
+    },
+    {
+     "color_id": 27,
+     "element_id": null
+    },
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 28,
+     "element_id": null
+    },
+    {
+     "color_id": 70,
+     "element_id": null
+    },
+    {
+     "color_id": 272,
+     "element_id": null
+    },
+    {
+     "color_id": 73,
+     "element_id": null
+    },
+    {
+     "color_id": 321,
+     "element_id": null
+    },
+    {
+     "color_id": 288,
+     "element_id": null
+    },
+    {
+     "color_id": 320,
+     "element_id": null
+    },
+    {
+     "color_id": 5,
+     "element_id": null
+    },
+    {
+     "color_id": 29,
+     "element_id": null
+    },
+    {
+     "color_id": 191,
+     "element_id": null
+    },
+    {
+     "color_id": 85,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "32002",
+   "name": "Technic Pin 3/4",
+   "name_ja": "ピン 3/4",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 19,
+     "element_id": null
+    },
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "32054",
+   "name": "Technic Pin Long with Friction and Stop Bush",
+   "name_ja": "長いピン（ストッパー）",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    },
+    {
+     "color_id": 71,
+     "element_id": null
+    }
+   ],
+   "score": 65
+  },
+  {
+   "num": "62462",
+   "name": "Technic Pin Connector Round 2L with Slot",
+   "name_ja": "ピンコネクタ 2L",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    }
+   ],
+   "score": 70
+  },
+  {
+   "num": "32184",
+   "name": "Technic Axle and Pin Connector Perpendicular 3L with Center Pin Hole",
+   "name_ja": "直角コネクタ 3L（中央穴）",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 4,
+     "element_id": null
+    },
+    {
+     "color_id": 14,
+     "element_id": null
+    },
+    {
+     "color_id": 1,
+     "element_id": null
+    }
+   ],
+   "score": 65
+  },
+  {
+   "num": "32073",
+   "name": "Technic Axle 5",
+   "name_ja": "アクスル 5",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    }
+   ],
+   "score": 65
+  },
+  {
+   "num": "3706",
+   "name": "Technic Axle 6",
+   "name_ja": "アクスル 6",
+   "category": "technic",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 71,
+     "element_id": null
+    },
+    {
+     "color_id": 72,
+     "element_id": null
+    }
+   ],
+   "score": 60
+  },
+  {
    "num": "30377",
    "name": "Arm Mechanical, Exo-Force / Bionicle",
    "name_ja": "メカアーム",
@@ -12468,10 +15818,6 @@
     {
      "color_id": 14,
      "element_id": null
-    },
-    {
-     "color_id": 78,
-     "element_id": null
     }
    ],
    "score": 40
@@ -12645,6 +15991,32 @@
     }
    ],
    "score": 40
+  },
+  {
+   "num": "64567",
+   "name": "Minifig Lightsaber Hilt",
+   "name_ja": "ライトセーバーの柄",
+   "category": "robot",
+   "bl_id": null,
+   "colors": [
+    {
+     "color_id": 179,
+     "element_id": null
+    },
+    {
+     "color_id": 0,
+     "element_id": null
+    },
+    {
+     "color_id": 297,
+     "element_id": null
+    },
+    {
+     "color_id": 71,
+     "element_id": null
+    }
+   ],
+   "score": 65
   },
   {
    "num": "4624",

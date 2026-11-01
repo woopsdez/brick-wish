@@ -51,6 +51,15 @@ export function buildPickABrickCsv(items: CartItem[]): { csv: string; skipped: C
   return { csv: rows.join('\n'), skipped }
 }
 
+/**
+ * BrickLink カタログのパーツページ。#T=P で価格ガイド（Price Guide）タブ、C= で色を指定。
+ * 親が「このパーツは何か・だいたいいくらか」を見るためのリンク
+ */
+export function bricklinkCatalogUrl(blId: string, blColorId: number | null): string {
+  const base = `https://www.bricklink.com/v2/catalog/catalogitem.page?P=${encodeURIComponent(blId)}`
+  return blColorId != null ? `${base}&C=${blColorId}#T=P` : `${base}#T=P`
+}
+
 function esc(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }

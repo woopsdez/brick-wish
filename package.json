@@ -7,10 +7,14 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
+    "test": "node scripts/check-catalog.mjs",
+    "shop-map": "node scripts/build-shop-map.mjs",
+    "shop-map:sample": "node scripts/build-shop-map.mjs --sample",
     "preview": "vite preview",
     "build:pages": "BASE_PATH=/brick-wish/ npm run build",
     "catalog": "node scripts/build-catalog.mjs",
     "catalog:starter": "node scripts/starter-catalog.mjs",
+    "all-parts": "node scripts/build-all-parts.mjs",
     "icons": "node scripts/make-icons.mjs"
   },
   "dependencies": {

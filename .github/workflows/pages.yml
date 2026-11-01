@@ -25,6 +25,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      # 「ぜんぶ」タブの全パーツ索引。Rebrickable の CSV から生成し、リポジトリには入れない
+      - run: npm run all-parts
       - run: npm run build
         env:
           # プロジェクトサイト (https://<user>.github.io/<repo>/) 用。独自ドメインなら "/" に変える

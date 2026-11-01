@@ -9,6 +9,8 @@ export interface CatalogColor {
   is_trans: boolean
   /** BrickLink color id。不明なら null（Wanted List では色指定なしになる） */
   bl_id: number | null
+  /** LEGO 社の色 ID（1=白, 26=黒, 194=薄いグレー …）。国内ショップの商品キー「品番-色ID」に使う。不明なら null */
+  lego_id: number | null
 }
 
 export interface CatalogCategory {
@@ -47,6 +49,28 @@ export interface Catalog {
   parts: CatalogPart[]
 }
 
+/** 国内ショップ（ブリッカーズ）側の 1 商品。キーは「品番-LEGO色ID3桁」（例 3024-026） */
+export interface ShopItem {
+  /** Shopify の variant id。カート permalink に使う。不明なら null */
+  variant_id: number | null
+  /** 税込単価（円）。不明なら null */
+  price_yen: number | null
+  available: boolean
+  url: string
+}
+
+export interface ShopMap {
+  shop_id: string
+  shop_name: string
+  base_url: string
+  /** 一括注文（リスト貼り付け）ページ。不明なら null でトップへ */
+  list_order_url: string | null
+  fetched_at: string
+  /** true のときは scripts/build-shop-map.mjs --sample で作ったダミー価格 */
+  sample: boolean
+  items: Record<string, ShopItem>
+}
+
 /** カートに入れる 1 行 */
 export interface CartItem {
   part_num: string
@@ -60,6 +84,10 @@ export interface CartItem {
   element_id: string | null
   /** 簡易イラスト用のカテゴリ */
   category?: string
+  /** ショップの商品キー（品番-色ID）。無ければ null */
+  shop_key?: string | null
+  /** カートに入れた時点の税込単価（円）。在庫なし・価格不明なら null */
+  unit_yen?: number | null
   qty: number
 }
 
@@ -73,6 +101,12 @@ export interface WishRequest {
   items: CartItem[]
   status: RequestStatus
   parent_note: string
+  /** 送信時点の見積もり合計（円、送料別）。価格不明のパーツがあれば null */
+  total_yen?: number | null
+  /** 自動承認（月予算内）か親の手動承認か */
+  approved_by?: 'auto' | 'parent' | null
+  /** 全行がショップにあるときの「カートに全部入れる」URL（Shopify cart permalink）。通知のリンク先に使う */
+  cart_url?: string | null
   created_at: string
   updated_at: string
 }
