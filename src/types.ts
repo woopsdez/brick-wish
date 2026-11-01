@@ -58,6 +58,8 @@ export interface CartItem {
   color_rgb: string
   bl_color_id: number | null
   element_id: string | null
+  /** 簡易イラスト用のカテゴリ */
+  category?: string
   qty: number
 }
 

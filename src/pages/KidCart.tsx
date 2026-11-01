@@ -60,7 +60,7 @@ export function KidCart() {
         <ul className="cart-list">
           {cart.map((i) => (
             <li key={`${i.part_num}|${i.color_id}`} className="cart-row">
-              <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} alt={i.part_name_ja} />
+              <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
               <div className="cart-info">
                 <strong>{i.part_name_ja}</strong>
                 <span className="muted">

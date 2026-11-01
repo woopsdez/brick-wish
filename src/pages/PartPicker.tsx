@@ -25,6 +25,7 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
       color_rgb: sel.color.rgb,
       bl_color_id: sel.color.bl_id,
       element_id: sel.pc.element_id,
+      category: part.category,
       qty,
     })
     setAdded(true)
@@ -39,7 +40,7 @@ export function PartPicker({ part, onClose }: { part: CatalogPart; onClose: () =
         </button>
         <div className="picker-top">
           {sel?.color && (
-            <PartImage partNum={part.num} colorId={sel.color.id} elementId={sel.pc.element_id} rgb={sel.color.rgb} alt={part.name_ja} className="big" />
+            <PartImage partNum={part.num} colorId={sel.color.id} elementId={sel.pc.element_id} rgb={sel.color.rgb} isTrans={sel.color.is_trans} category={part.category} alt={part.name_ja} className="big" />
           )}
           <div>
             <h2>{part.name_ja}</h2>

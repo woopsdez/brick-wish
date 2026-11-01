@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { catalog, partsInCategory, searchParts } from '../catalog'
+import { catalog, getColor, partsInCategory, searchParts } from '../catalog'
 import { PartImage } from '../components/PartImage'
 import { useCart } from '../store/cart'
 import type { CatalogPart } from '../types'
@@ -41,16 +41,13 @@ export function Kid() {
           ))}
         </nav>
       )}
-      {!q.trim() && catalog.categories.find((c) => c.id === cat)?.description && (
-        <p className="cat-desc">{catalog.categories.find((c) => c.id === cat)?.description}</p>
-      )}
 
       <section className="grid">
         {parts.map((p) => {
           const c0 = p.colors[0]
           return (
             <button key={p.num} className="tile" onClick={() => setPicking(p)}>
-              <PartImage partNum={p.num} colorId={c0?.color_id ?? 15} elementId={c0?.element_id ?? null} alt={p.name_ja} />
+              <PartImage partNum={p.num} colorId={c0?.color_id ?? 15} elementId={c0?.element_id ?? null} rgb={getColor(c0?.color_id ?? 15)?.rgb} isTrans={getColor(c0?.color_id ?? 15)?.is_trans} category={p.category} alt={p.name_ja} />
               <span className="tile-name">{p.name_ja}</span>
               <span className="tile-num">{p.num}</span>
             </button>

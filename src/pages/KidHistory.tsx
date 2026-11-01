@@ -29,7 +29,7 @@ export function KidHistory() {
             {r.parent_note && <p className="parent-note">💬 {r.parent_note}</p>}
             <div className="thumbs">
               {r.items.slice(0, 8).map((i) => (
-                <PartImage key={`${i.part_num}|${i.color_id}`} partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} alt={i.part_name_ja} />
+                <PartImage key={`${i.part_num}|${i.color_id}`} partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
               ))}
               {r.items.length > 8 && <span className="more">+{r.items.length - 8}</span>}
             </div>
