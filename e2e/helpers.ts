@@ -61,27 +61,45 @@ export async function openParent(browser: Browser, code: string) {
   return device
 }
 
-/** 価格の分かる最初のパーツを指定の個数カートに入れて、カート画面へ進む */
-export async function fillCart(kid: Page, qty: number) {
-  await kid.locator('.tile:not(.soldout)').first().click()
+/** パーツをカートに入れる。unknownPrice なら在庫なしの色（価格が分からない行）を選ぶ */
+export async function addPart(kid: Page, { qty, tile = 0, unknownPrice = false }: { qty: number; tile?: number; unknownPrice?: boolean }) {
+  await kid.locator('.tile:not(.soldout)').nth(tile).click()
   const dialog = kid.getByRole('dialog')
+  if (unknownPrice) await dialog.locator('.swatch-wrap.soldout .swatch').first().click()
   await dialog.locator('input[type=number]').fill(String(qty))
   await dialog.getByRole('button', { name: 'カートに入れる' }).click()
   await expect(dialog).toBeHidden()
+}
+
+export async function openCart(kid: Page) {
   await kid.getByRole('link', { name: /カートを見る/ }).click()
-  await expect(kid.getByRole('heading', { name: new RegExp(`カート（${qty} 個）`) })).toBeVisible()
+  await expect(kid.getByRole('heading', { name: /カート（/ })).toBeVisible()
 }
 
 /** 枠を超える個数。どのパーツでも ¥1,000 の枠を超える */
 export const OVER_BUDGET_QTY = 999
 
-/** 枠を超える分を送り、親の承認待ちにする */
-export async function sendOverBudget(kid: Page, note: string) {
-  await fillCart(kid, OVER_BUDGET_QTY)
-  await expect(kid.getByText('保護者の承認が必要です')).toBeVisible()
-  await kid.getByLabel('メモ（何を作る？）').fill(note)
-  await kid.getByRole('button', { name: '保護者にリクエストを送る' }).click()
-  await expect(kid.getByRole('heading', { name: 'リクエストを送りました' })).toBeVisible()
+export const sendButton = (kid: Page) => kid.getByRole('button', { name: '送る', exact: true })
+
+export async function send(kid: Page, note?: string) {
+  if (note) await kid.getByLabel('メモ（何を作る？）').fill(note)
+  await sendButton(kid).click()
+  await expect(kid.getByRole('heading', { name: '送りました' })).toBeVisible()
+}
+
+/** 枠に入る分を 1 つ送る */
+export async function sendThisMonth(kid: Page, note: string) {
+  await addPart(kid, { qty: 1 })
+  await openCart(kid)
+  await send(kid, note)
+}
+
+/** 枠を超える分を「来月に回す」にして送る */
+export async function sendNextMonth(kid: Page, note: string) {
+  await addPart(kid, { qty: OVER_BUDGET_QTY })
+  await openCart(kid)
+  await kid.getByRole('button', { name: '来月に回す' }).click()
+  await send(kid, note)
 }
 
 export const requestCard = (page: Page, note: string): Locator => page.locator('.req-card', { hasText: note })

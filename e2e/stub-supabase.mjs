@@ -14,7 +14,7 @@ const PORT = Number(process.env.STUB_PORT ?? 54399)
 
 const COLUMNS = {
   families: ['code', 'pin_hash', 'monthly_budget_yen', 'auto_approve', 'created_at'],
-  requests: ['id', 'family_id', 'kid_name', 'note', 'items', 'status', 'parent_note', 'total_yen', 'approved_by', 'cart_url', 'created_at', 'updated_at'],
+  requests: ['id', 'family_id', 'kid_name', 'note', 'items', 'status', 'parent_note', 'total_yen', 'approved_by', 'cart_url', 'pay_month', 'created_at', 'updated_at'],
 }
 const RLS_COLUMN = { families: 'code', requests: 'family_id' }
 const STATUSES = ['pending', 'approved', 'rejected', 'ordered']
@@ -27,6 +27,7 @@ function validate(table, row) {
   if (table === 'families' && !/^[A-Z0-9]{6}$/.test(row.code)) return { status: 400, code: '23514', message: 'families_code_check' }
   if (table === 'requests' && !STATUSES.includes(row.status)) return { status: 400, code: '23514', message: 'requests_status_check' }
   if (table === 'requests' && !db.families.some((f) => f.code === row.family_id)) return { status: 409, code: '23503', message: 'requests_family_id_fkey' }
+  if (table === 'requests' && row.pay_month != null && !/^[0-9]{4}-[0-9]{2}$/.test(row.pay_month)) return { status: 400, code: '23514', message: 'requests_pay_month_check' }
   return null
 }
 

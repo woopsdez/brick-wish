@@ -69,7 +69,7 @@ scripts/
   check-catalog.mjs   catalog / shop-map の整合チェック（npm test）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
 e2e/
-  request-flow.spec.ts  送信 → 承認・見送り・自動承認 → 注文済み
+  request-flow.spec.ts  送信 → 支払う・来月に回す・今払う・見送り → 注文済み
   connect.spec.ts       端末の選択、偽のカメラ映像での QR 読み取り、カメラ拒否時のコード入力
   stub-supabase.mjs     テスト用の Supabase スタブ
 supabase/
@@ -157,7 +157,7 @@ npx playwright install --only-shell chromium   # 初回だけ
 npm run test:e2e
 ```
 
-送信・承認・見送り・自動承認・つなぐ（QR とコード入力）を、子どもと親の 2 端末に分けて画面操作で確かめます。接続先は `e2e/stub-supabase.mjs` で、本番の Supabase には通信しません（`.env.local` があっても環境変数で上書きし、外への通信は遮断します）。
+枠内の送信、来月に回す、今払う、見送り、価格未確認の確認、つなぐ（QR とコード入力）を、子どもと親の 2 端末に分けて画面操作で確かめます。接続先は `e2e/stub-supabase.mjs` で、本番の Supabase には通信しません（`.env.local` があっても環境変数で上書きし、外への通信は遮断します）。
 
 スタブは送信者本人に Broadcast を配信しません。Supabase の既定の挙動で、ローカルモードでは再現しない不具合の原因になったためです。REST と Realtime はアプリが使う範囲だけを実装しているので、アプリが新しい列や API を使うときはスタブも合わせて直します。
 

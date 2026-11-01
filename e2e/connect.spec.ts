@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises'
 import { chromium, expect, test, type Browser, type Page } from '@playwright/test'
-import { expectNoLeak, LIVE, newDevice, openKid, requestCard, sendOverBudget } from './helpers'
+import { expectNoLeak, LIVE, newDevice, openKid, requestCard, sendThisMonth } from './helpers'
 
 const PIN = '1234'
 
@@ -54,8 +54,8 @@ async function expectConnected(kid: Page, parent: Page, note: string) {
   await expect(parent.getByText('この端末はどっち？')).toHaveCount(0)
   await expect(parent.getByText('子どもの端末の QR を映す')).toHaveCount(0)
   await kid.getByRole('link', { name: '子ども画面へ' }).click()
-  await sendOverBudget(kid, note)
-  await expect(requestCard(parent, note).locator('.badge')).toHaveText('承認待ち', LIVE)
+  await sendThisMonth(kid, note)
+  await expect(requestCard(parent, note).locator('.badge')).toHaveText('未払い', LIVE)
 }
 
 async function withBrowser(args: string[], run: (browser: Browser) => Promise<void>) {
