@@ -50,12 +50,11 @@ Deno.serve(async (req) => {
   const qty = items.reduce((n, i) => n + (i.qty ?? 0), 0)
   const auto = reqRow.status === 'approved' && reqRow.approved_by === 'auto'
   const total = reqRow.total_yen != null ? `¥${Number(reqRow.total_yen).toLocaleString('ja-JP')} ` : ''
-  // 枠内でカート URL があるときは、通知のタップ先をショップのカート（支払い画面）そのものにする
-  const cartUrl = typeof reqRow.cart_url === 'string' && /^https:\/\//.test(reqRow.cart_url) ? reqRow.cart_url : null
   const payload = JSON.stringify({
-    title: auto ? `今月の分 ${total}→ タップして支払い` : '価格の確認があります',
+    title: auto ? `今月の分 ${total}が届きました` : '価格の確認があります',
     body: `${items.length} 種類 / ${qty} 個${reqRow.note ? ` 「${reqRow.note}」` : ''}`,
-    url: auto && cartUrl ? cartUrl : `${appUrl}#/parent/request/${reqRow.id}`,
+    // 枠内の分は一覧へ。他のリクエストとまとめて 1 回で払えるようにする
+    url: auto ? `${appUrl}#/parent` : `${appUrl}#/parent/request/${reqRow.id}`,
     tag: `req-${reqRow.id}`,
   })
 
