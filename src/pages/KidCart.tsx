@@ -4,15 +4,38 @@ import { Icon } from '../components/Icon'
 import { KidNav } from '../components/KidNav'
 import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
-import { decideApproval, estimateTotal, yen } from '../lib/budget'
+import { monthKey, nextMonthKey, planCart, yen } from '../lib/budget'
 import { uuid } from '../lib/ids'
 import { SHOP, cartPermalink, priceStatus } from '../lib/shop'
 import { getStore } from '../store'
-import { clearCart, setCartQty, useCart } from '../store/cart'
+import { cartKey, removeFromCart, setCartNextMonth, setCartQty, useCart } from '../store/cart'
 import { useFamily } from '../store/family-hooks'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
-import type { WishRequest } from '../types'
+import type { CartItem, WishRequest } from '../types'
+
+function CartLine({ item, canDefer }: { item: CartItem; canDefer: boolean }) {
+  const i = item
+  return (
+    <li className={`cart-row ${i.next_month ? 'is-next-month' : ''}`}>
+      <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
+      <div className="cart-info">
+        <strong>{i.part_name_ja}</strong>
+        <span className="muted">
+          <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
+          {' · '}
+          {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : priceStatus(i.part_num, i.color_id) === 'soldout' ? <em className="warn">在庫なし · 保護者が確認</em> : '価格は保護者が確認'}
+        </span>
+        {canDefer && (
+          <button type="button" className="line-action" onClick={() => setCartNextMonth(i, !i.next_month)}>
+            {i.next_month ? '今月に戻す' : '来月に回す'}
+          </button>
+        )}
+      </div>
+      <QtyStepper value={i.qty} onChange={(n) => setCartQty(i, n)} min={0} />
+    </li>
+  )
+}
 
 export function KidCart() {
   const cart = useCart()
@@ -24,39 +47,53 @@ export function KidCart() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState<string | null>(null)
   const total = cart.reduce((n, i) => n + i.qty, 0)
-  const { total: subtotal } = useMemo(() => estimateTotal(cart), [cart])
-  const decision = useMemo(() => decideApproval(family, requests, cart), [family, requests, cart])
-  const hasUnchecked = cart.some((i) => i.unit_yen == null && priceStatus(i.part_num, i.color_id) !== 'soldout')
+  const plan = useMemo(() => planCart(family, requests, cart), [family, requests, cart])
 
   async function send() {
     if (!familyId || cart.length === 0) return
     setBusy(true)
     setErr(null)
     try {
-      // 送信直前に最新の予算・履歴で判定し直す（別端末で承認済みが増えている可能性）
+      // 送信直前に最新の枠で確かめる（別の端末で使っている可能性）
       const fam = await getStore().getFamily(familyId)
       const all = await getStore().list(familyId)
-      const d = decideApproval(fam, all, cart)
-      const now = new Date().toISOString()
-      const req: WishRequest = {
-        id: uuid(),
-        family_id: familyId,
-        kid_name: '',
-        note: note.trim(),
-        items: cart,
-        status: d.status,
-        approved_by: d.approved_by,
-        total_yen: d.total_yen,
-        // サンプル価格のときは variant id が偽物なので URL を持たせない
-        cart_url: SHOP.sample ? null : cartPermalink(cart).url,
-        parent_note: '',
-        created_at: now,
-        updated_at: now,
+      const p = planCart(fam, all, cart)
+      if (p.over > 0) {
+        setErr(`今月の枠が変わりました。あと ${yen(p.remaining)} です`)
+        return
       }
-      await getStore().create(req)
-      await getStore().notifyParent(req.family_id, req.id)
-      clearCart()
-      nav('/kid/sent', { replace: true, state: { auto: d.status === 'approved', total: d.total_yen } })
+      const now = new Date().toISOString()
+      const toRequest = (lines: CartItem[], fields: Pick<WishRequest, 'status' | 'approved_by' | 'total_yen' | 'pay_month'>): WishRequest => {
+        const items = lines.map(({ next_month: _omit, ...rest }) => rest)
+        return {
+          id: uuid(),
+          family_id: familyId,
+          kid_name: '',
+          note: note.trim(),
+          items,
+          // サンプル価格のときは variant id が偽物なので URL を持たせない
+          cart_url: SHOP.sample ? null : cartPermalink(items).url,
+          parent_note: '',
+          created_at: now,
+          updated_at: now,
+          ...fields,
+        }
+      }
+      // 親が今すぐ動く分だけ通知する。来月の分は通知しない
+      const batches = [
+        { lines: p.current, notify: true, fields: { status: 'approved', approved_by: 'auto', total_yen: p.currentTotal, pay_month: monthKey() } as const },
+        { lines: p.unknown, notify: true, fields: { status: 'pending', approved_by: null, total_yen: null, pay_month: null } as const },
+        { lines: p.next, notify: false, fields: { status: 'pending', approved_by: null, total_yen: p.nextTotal, pay_month: nextMonthKey() } as const },
+      ]
+      for (const b of batches) {
+        if (b.lines.length === 0) continue
+        const req = toRequest(b.lines, b.fields)
+        await getStore().create(req)
+        // 途中で失敗しても、送れた行を送り直さない
+        removeFromCart(b.lines)
+        if (b.notify) await getStore().notifyParent(req.family_id, req.id)
+      }
+      nav('/kid/sent', { replace: true, state: { current: p.current.length ? p.currentTotal : null, next: p.next.length ? p.nextTotal : null, unknown: p.unknown.length } })
     } catch (e) {
       setErr(e instanceof Error ? e.message : String(e))
     } finally {
@@ -81,52 +118,41 @@ export function KidCart() {
         <p className="empty">カートは空です。<Link to="/kid">パーツを探す</Link></p>
       ) : (
         <ul className="cart-list">
-          {cart.map((i) => (
-            <li key={`${i.part_num}|${i.color_id}`} className="cart-row">
-              <PartImage partNum={i.part_num} colorId={i.color_id} elementId={i.element_id} rgb={i.color_rgb} category={i.category} alt={i.part_name_ja} />
-              <div className="cart-info">
-                <strong>{i.part_name_ja}</strong>
-                <span className="muted">
-                  <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
-                  {' · '}
-                  {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : priceStatus(i.part_num, i.color_id) === 'soldout' ? <em className="warn">在庫なし</em> : '価格は保護者が確認'}
-                </span>
-              </div>
-              <QtyStepper value={i.qty} onChange={(n) => setCartQty(i, n)} min={0} />
-            </li>
+          {[...plan.current, ...plan.unknown, ...plan.next].map((i) => (
+            <CartLine key={cartKey(i)} item={i} canDefer={i.unit_yen != null} />
           ))}
         </ul>
       )}
 
       {cart.length > 0 && (
         <div className="stack">
-          <section className={`budget-box ${decision.status === 'approved' ? 'ok' : 'needs-parent'}`}>
+          <section className={`budget-box ${plan.over > 0 ? 'needs-parent' : 'ok'}`}>
             <div className="budget-row">
-              <span>小計（送料別）</span>
-              <strong>{subtotal != null ? yen(subtotal) : '価格不明あり'}</strong>
+              <span>今月の分（送料別）</span>
+              <strong>{yen(plan.currentTotal)}</strong>
             </div>
-            {family && family.auto_approve && family.monthly_budget_yen > 0 && (
+            <div className="budget-row muted">
+              <span>今月の枠の残り</span>
+              <span className="num">
+                {yen(plan.remaining)} / {yen(plan.budget)}
+              </span>
+            </div>
+            {plan.next.length > 0 && (
               <div className="budget-row muted">
-                <span>今月の自動承認枠の残り</span>
-                <span className="num">
-                  {yen(decision.remaining)} / {yen(family.monthly_budget_yen)}
-                </span>
+                <span>来月の分</span>
+                <span className="num">{yen(plan.nextTotal)}</span>
               </div>
             )}
-            <p className="budget-verdict">
-              {decision.status === 'approved' && '枠内なので、送るとすぐ OK になります。保護者は支払いだけ'}
-              {decision.status === 'pending' && decision.reason === 'over_budget' && `今月の枠を ${yen((decision.total_yen ?? 0) - decision.remaining)} 超えるので、保護者の承認が必要です`}
-              {decision.status === 'pending' && decision.reason === 'unknown_price' && (hasUnchecked ? '価格が未確認のパーツがあるので、保護者が商品ページで確かめてから OK します' : `${SHOP.name}に在庫がないパーツがあるので、保護者の確認が必要です`)}
-              {decision.status === 'pending' && decision.reason === 'off' && '保護者の承認が必要です'}
-            </p>
+            {plan.over > 0 && <p className="budget-verdict">{yen(plan.over)} オーバーです。「来月に回す」か、個数を減らしてください</p>}
+            {plan.unknown.length > 0 && <p className="muted small">価格がわからないパーツは保護者が確認します</p>}
           </section>
           <label>
             メモ（何を作る？）
             <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例: 変形するロボットを作りたい" rows={2} />
           </label>
           {err && <p className="error">{err}</p>}
-          <button className="btn btn-big btn-kid" onClick={() => void send()} disabled={busy}>
-            {decision.status === 'approved' ? 'OK にして注文へ進める' : '保護者にリクエストを送る'}
+          <button className="btn btn-big btn-kid" onClick={() => void send()} disabled={busy || plan.over > 0}>
+            送る
           </button>
         </div>
       )}
@@ -136,19 +162,16 @@ export function KidCart() {
 }
 
 export function KidSent() {
-  const { state } = useLocation() as { state?: { auto?: boolean; total?: number | null } }
-  const auto = Boolean(state?.auto)
+  const { state } = useLocation() as { state?: { current?: number | null; next?: number | null; unknown?: number } }
   return (
     <main className="page kid center">
-      <div className={`sent-mark ${auto ? '' : 'pending'}`} aria-hidden="true">
-        <Icon name={auto ? 'check' : 'send'} size={32} />
+      <div className="sent-mark" aria-hidden="true">
+        <Icon name="check" size={32} />
       </div>
-      <h1>{auto ? 'OK！注文に進みます' : 'リクエストを送りました'}</h1>
-      <p>
-        {auto
-          ? `今月の枠内（${state?.total != null ? yen(state.total) : ''}）なので承認は不要です。保護者が支払うと届きます。`
-          : '保護者が確認したら、履歴に結果が表示されます。'}
-      </p>
+      <h1>送りました</h1>
+      {state?.current != null && <p>今月の分 {yen(state.current)}。保護者が支払うと届きます。</p>}
+      {state?.next != null && <p>来月の分 {yen(state.next)}。来月になったら保護者が支払います。</p>}
+      {(state?.unknown ?? 0) > 0 && <p>価格がわからないパーツは、保護者が確認します。</p>}
       <Link className="btn btn-big btn-kid" to="/kid">
         パーツを探す
       </Link>

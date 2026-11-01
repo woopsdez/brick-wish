@@ -4,7 +4,7 @@ import { Icon } from '../components/Icon'
 import { ConnectParent } from '../components/ConnectParent'
 import { Loading } from '../components/Loading'
 import { StatusBadge } from '../components/StatusBadge'
-import { spentThisMonth, yen } from '../lib/budget'
+import { requestView, spentThisMonth, yen } from '../lib/budget'
 import { hasPush, hasSupabase } from '../lib/config'
 import { getPushState, subscribeParentPush, type PushState } from '../lib/push'
 import { useFamily } from '../store/family-hooks'
@@ -24,8 +24,9 @@ export function Parent() {
     void getPushState().then(setPush)
   }, [])
 
-  const toPay = requests.filter((r) => r.status === 'approved')
-  const pending = requests.filter((r) => r.status === 'pending')
+  const toPay = requests.filter((r) => requestView(r) === 'approved')
+  const pending = requests.filter((r) => requestView(r) === 'pending')
+  const nextMonth = requests.filter((r) => requestView(r) === 'next_month')
   const others = requests.filter((r) => r.status === 'rejected' || r.status === 'ordered')
   const spent = spentThisMonth(requests)
   const open = pending.length + toPay.length
@@ -57,7 +58,7 @@ export function Parent() {
       {family && (
         <div className="family-code">
           <div className="budget-row">
-            <span>今月の自動承認枠（送料別）</span>
+            <span>今月の枠（送料別）</span>
             <span className="num">
               {yen(spent)} / {yen(family.monthly_budget_yen)}
             </span>
@@ -66,7 +67,6 @@ export function Parent() {
             <span style={{ width: `${pct}%` }} />
           </div>
           <div className="row small" style={{ marginTop: 8 }}>
-            {!family.auto_approve && <span className="muted small">自動承認はオフ</span>}
             <Link to="/parent/settings" className="muted small">
               枠を変更
             </Link>
@@ -94,7 +94,7 @@ export function Parent() {
       {error && <p className="error">{error}</p>}
       {loading && <Loading inline />}
 
-      <h2>支払い待ち {toPay.length > 0 && <span className="count">{toPay.length}</span>}</h2>
+      <h2>支払う {toPay.length > 0 && <span className="count">{toPay.length}</span>}</h2>
       {toPay.length === 0 && !loading && <p className="empty small-empty">ありません</p>}
       <ul className="req-list">
         {toPay.map((r) => (
@@ -102,13 +102,27 @@ export function Parent() {
         ))}
       </ul>
 
-      <h2>承認待ち {pending.length > 0 && <span className="count">{pending.length}</span>}</h2>
-      {pending.length === 0 && !loading && <p className="empty small-empty">ありません</p>}
-      <ul className="req-list">
-        {pending.map((r) => (
-          <RequestRow key={r.id} r={r} />
-        ))}
-      </ul>
+      {pending.length > 0 && (
+        <>
+          <h2>確認が必要 <span className="count">{pending.length}</span></h2>
+          <ul className="req-list">
+            {pending.map((r) => (
+              <RequestRow key={r.id} r={r} />
+            ))}
+          </ul>
+        </>
+      )}
+
+      {nextMonth.length > 0 && (
+        <>
+          <h2>来月の分</h2>
+          <ul className="req-list">
+            {nextMonth.map((r) => (
+              <RequestRow key={r.id} r={r} />
+            ))}
+          </ul>
+        </>
+      )}
 
       {others.length > 0 && (
         <>
@@ -131,7 +145,7 @@ function RequestRow({ r }: { r: WishRequest }) {
       <Link to={`/parent/request/${r.id}`} className="req-link">
         <div className="req-head">
           <strong>{r.total_yen != null ? yen(r.total_yen) : '価格不明あり'}</strong>
-          <StatusBadge status={r.status} parent auto={r.approved_by === 'auto'} />
+          <StatusBadge status={requestView(r)} parent />
         </div>
         <div className="muted small">
           {r.items.length} 種類 / {qty} 個 · {new Date(r.created_at).toLocaleString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })}

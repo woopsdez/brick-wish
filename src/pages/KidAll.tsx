@@ -40,7 +40,7 @@ export function KidAll() {
         <CartButton />
       </header>
 
-      <p className="cat-desc">カタログに無いふつうのパーツを、番号か英語の名前で探せます。価格は保護者が{SHOP.name}で確かめるので、送ると「承認待ち」になります。</p>
+      <p className="cat-desc">カタログに無いふつうのパーツを、番号か英語の名前で探せます。価格は保護者が{SHOP.name}で確かめるので、送ると保護者の確認に回ります。</p>
 
       <div className="search-wrap">
         <Icon name="search" size={18} />

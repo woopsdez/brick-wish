@@ -89,6 +89,8 @@ export interface CartItem {
   /** カートに入れた時点の税込単価（円）。在庫なし・価格不明なら null */
   unit_yen?: number | null
   qty: number
+  /** カートの中で子どもが「来月に回す」にした行 */
+  next_month?: boolean
 }
 
 export type RequestStatus = 'pending' | 'approved' | 'rejected' | 'ordered'
@@ -103,10 +105,12 @@ export interface WishRequest {
   parent_note: string
   /** 送信時点の見積もり合計（円、送料別）。価格不明のパーツがあれば null */
   total_yen?: number | null
-  /** 自動承認（月予算内）か親の手動承認か */
+  /** auto = 月の枠で買う分 / parent = 親が「今払う」にした枠の外の分 */
   approved_by?: 'auto' | 'parent' | null
   /** 全行がショップにあるときの「カートに全部入れる」URL（Shopify cart permalink）。通知のリンク先に使う */
   cart_url?: string | null
+  /** 払う月（YYYY-MM）。pending でこの列があれば来月に回した分 */
+  pay_month?: string | null
   created_at: string
   updated_at: string
 }

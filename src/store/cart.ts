@@ -37,6 +37,19 @@ export function setCartQty(item: Pick<CartItem, 'part_num' | 'color_id'>, qty: n
   save(items)
 }
 
+export function setCartNextMonth(item: Pick<CartItem, 'part_num' | 'color_id'>, nextMonth: boolean) {
+  const items = loadCart()
+  const i = items.find((x) => cartKey(x) === cartKey(item))
+  if (!i) return
+  i.next_month = nextMonth
+  save(items)
+}
+
+export function removeFromCart(lines: CartItem[]) {
+  const sent = new Set(lines.map(cartKey))
+  save(loadCart().filter((i) => !sent.has(cartKey(i))))
+}
+
 export function clearCart() {
   save([])
 }
