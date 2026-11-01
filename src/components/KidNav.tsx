@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { useCart } from '../store/cart'
 import { Icon } from './Icon'
 
-/** 子ども画面の下タブ: パーツ / カート / 履歴 */
+/** 子ども画面の下タブ: パーツ / カート / 履歴 / ぜんぶ */
 export function KidNav() {
   const cart = useCart()
   const count = cart.reduce((n, i) => n + i.qty, 0)
@@ -21,6 +21,10 @@ export function KidNav() {
         <NavLink to="/kid/history" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
           <Icon name="clock" size={22} />
           履歴
+        </NavLink>
+        <NavLink to="/kid/all" className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}>
+          <Icon name="search" size={22} />
+          ぜんぶ
         </NavLink>
       </div>
     </nav>

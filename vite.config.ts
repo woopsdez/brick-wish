@@ -34,6 +34,8 @@ export default defineConfig({
       },
       injectManifest: {
         globPatterns: ['**/*.{js,css,html,svg,png,json}'],
+        // 全パーツ索引は大きいので事前キャッシュに入れず、「ぜんぶ」タブを開いたときに取りに行く
+        globIgnores: ['**/all-parts.json'],
       },
       devOptions: { enabled: false },
     }),

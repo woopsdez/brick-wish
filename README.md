@@ -45,6 +45,15 @@ shop-map があると親画面に Shopify の[カート permalink](https://help.
 
 色には LEGO 社の色 ID（`lego_id`、国内ショップの商品キー用）を持たせています。1（白）・26（黒）・194（薄いグレー）・199（濃いグレー）はブリッカーズの商品 URL で確認済み、残りは記憶ベースで `npm run catalog` が Rebrickable の `external_ids.LEGO` で上書きします。
 
+## 「ぜんぶ」タブ（全パーツ索引）
+
+厳選カタログに無いふつうのパーツは、下タブ右端の「ぜんぶ」で探す。番号か英語名で検索し、色を選んでカートへ。索引は `public/all-parts.json`（Rebrickable の CSV から `npm run all-parts` で生成。起動時には読まず、タブを開いたときだけ取りに行く）。**このファイルはリポジトリに入れない**（gitignore）。手元では `npm run all-parts` で作り、GitHub Pages へのデプロイでは CI が同じスクリプトを走らせて作る。Rebrickable のデータ利用条件はダウンロードページが bot 検証で読めず未確認なので、公開前に確認すること（画面には出典リンクを出している）。
+
+- 収録: 2015 年以降のセットに 2 回以上入ったパーツ。印刷・ステッカー・ミニフィグ・デュプロなどは除外。色は catalog.json の 32 色（LEGO 色 ID が分かる色）だけ
+- 名前は英語のまま（日本語名は持たない）。カテゴリ名だけ日本語
+- **価格は持たない**。カートに入れると「価格未確認」になり、自動承認はされず保護者の承認待ちになる。保護者画面には「品番-色ID」から組んだブリッカーズの商品ページへのリンクが出るので、そこで価格と在庫を見て承認する。「カートに全部入れる」は variant id が無いので使えず、商品ページから手で入れる
+- ブリッカーズへの自動アクセスは増えない（リンクだけ）。Rebrickable のデータを同梱して配布してよいかは利用条件を確認すること
+
 ## 構成
 
 ```
@@ -59,6 +68,7 @@ scripts/
   build-catalog.mjs   厳選リストを Rebrickable のデータで検証し catalog.json を生成（要 API キー）
   starter-catalog.mjs 厳選リストから未検証のまま catalog.json を生成（現在同梱されているもの）
   build-shop-map.mjs  ショップの商品 JSON を読んで shop-map.local.json を生成（--sample なら shop-map.json にダミー価格）
+  build-all-parts.mjs 「ぜんぶ」タブ用の全パーツ索引 public/all-parts.json を Rebrickable の CSV から生成
   check-catalog.mjs   catalog / shop-map の整合チェック（npm test）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
 supabase/

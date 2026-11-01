@@ -33,3 +33,6 @@ scripts/.cache
 
 # real shop prices fetched from the shop (never commit; see README「価格・在庫データ」)
 src/catalog/shop-map.local.json
+
+# generated from Rebrickable CSVs by `npm run all-parts` (CI builds it; data terms unverified, so it is not committed)
+public/all-parts.json

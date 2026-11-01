@@ -1,5 +1,6 @@
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { Kid } from './pages/Kid'
+import { KidAll } from './pages/KidAll'
 import { KidCart, KidSent } from './pages/KidCart'
 import { KidHistory } from './pages/KidHistory'
 import { Parent } from './pages/Parent'
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/kid/cart" element={<KidCart />} />
         <Route path="/kid/sent" element={<KidSent />} />
         <Route path="/kid/history" element={<KidHistory />} />
+        <Route path="/kid/all" element={<KidAll />} />
         <Route element={<ParentGate />}>
           <Route path="/parent" element={<Parent />} />
           <Route path="/parent/request/:id" element={<ParentRequest />} />

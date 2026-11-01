@@ -9,7 +9,7 @@ import { StatusBadge } from '../components/StatusBadge'
 import { bricklinkCatalogUrl, buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
 import { estimateTotal, spentThisMonth, yen } from '../lib/budget'
 import { BRICKLINK_WANTED_LIST_URL, BRICKLINK_WANTED_UPLOAD_URL } from '../lib/config'
-import { SHOP, cartPermalink, orderListText, productUrl, shippingFor } from '../lib/shop'
+import { SHOP, cartPermalink, orderListText, priceStatus, productUrl, shippingFor } from '../lib/shop'
 import { getStore } from '../store'
 import { useFamily } from '../store/family-hooks'
 import { useFamilyId } from '../store/family'
@@ -102,7 +102,9 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
       {editable && (
         <p className="callout">
           {unknown.length > 0
-            ? `${unknown.length} 件は${SHOP.name}に在庫がないため自動承認できませんでした。数量を 0 にして外すか、BrickLink で買うか決めてください。`
+            ? unknown.some((u) => priceStatus(u.part_num, u.color_id) !== 'soldout')
+              ? `${unknown.length} 件は価格が未確認のため自動承認できませんでした。商品ページで価格と在庫を見て、数量を決めてください。`
+              : `${unknown.length} 件は${SHOP.name}に在庫がないため自動承認できませんでした。数量を 0 にして外すか、BrickLink で買うか決めてください。`
             : remaining != null
               ? `今月の自動承認枠の残り ${yen(remaining)} を超えるため、承認が必要です。`
               : '承認が必要です。'}
@@ -121,7 +123,7 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
               </strong>
               <span className="muted">
                 <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name} ·{' '}
-                {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : <em className="warn">{SHOP.name}に在庫なし</em>}
+                {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : priceStatus(i.part_num, i.color_id) === 'soldout' ? <em className="warn">{SHOP.name}に在庫なし</em> : <em className="warn">価格未確認 · 商品ページで見る</em>}
               </span>
               {i.category && categoryDesc.has(i.category) && i.category !== 'basic' && <span className="muted small">{categoryDesc.get(i.category)}</span>}
               <span className="row small">
@@ -187,7 +189,10 @@ function Detail({ req, requests }: { req: WishRequest; requests: WishRequest[] }
 function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: CartItem[]; req: WishRequest; busy: boolean; onOrdered: () => void; copied: string | null; copy: (label: string, text: string) => Promise<void> }) {
   const { url: permalink, missing } = cartPermalink(items)
   const inShop = items.filter((i) => !missing.includes(i))
-  const xml = buildWantedListXml(missing.length ? missing : items, { condition: null })
+  // 価格未確認（「ぜんぶ」タブ）の行は商品ページから手で入れる。ショップに無いと分かっている行だけ BrickLink へ
+  const unchecked = missing.filter((i) => priceStatus(i.part_num, i.color_id) !== 'soldout')
+  const absent = missing.filter((i) => !unchecked.includes(i))
+  const xml = buildWantedListXml(absent.length ? absent : items, { condition: null })
   const { total } = estimateTotal(inShop)
   const live = permalink != null && !SHOP.sample
   return (
@@ -205,12 +210,12 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
             </a>
           ) : (
             <>
-              <button className="btn btn-big" disabled title={SHOP.sample ? '本物の価格データ（npm run shop-map）を取り込むと有効になります' : `${SHOP.name}に無い行があります`}>
+              <button className="btn btn-big" disabled title={SHOP.sample ? '本物の価格データ（npm run shop-map）を取り込むと有効になります' : unchecked.length ? '価格未確認の行があります' : `${SHOP.name}に無い行があります`}>
                 <Icon name="cart" size={18} />
               カートに全部入れる
               </button>
               <span className="muted small">
-                {SHOP.sample ? '価格がサンプルの間は無効です。本物のデータを取り込むと、このボタン 1 つでカートが埋まった状態の支払い画面が開きます。' : `${SHOP.name}に無い行を外すか、下の BrickLink に回してください。`}
+                {SHOP.sample ? '価格がサンプルの間は無効です。本物のデータを取り込むと、このボタン 1 つでカートが埋まった状態の支払い画面が開きます。' : unchecked.length ? '価格未確認の行があります。下の商品ページから手で入れてください。' : `${SHOP.name}に無い行を外すか、下の BrickLink に回してください。`}
               </span>
             </>
           )}
@@ -231,6 +236,27 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
           )}
         </li>
       </ol>
+      {unchecked.length > 0 && (
+        <details className="fallback" open>
+          <summary>価格未確認の {unchecked.length} 件は商品ページから入れる</summary>
+          <ul className="muted small">
+            {unchecked.map((i) => (
+              <li key={`${i.part_num}|${i.color_id}`}>
+                {i.part_name_ja} {i.color_name} × {i.qty}
+                {i.shop_key && (
+                  <>
+                    {' · '}
+                    <a className="ext" href={productUrl(i.shop_key)} target="_blank" rel="noopener noreferrer">
+                      商品ページ <Icon name="external" size={14} />
+                    </a>
+                  </>
+                )}
+              </li>
+            ))}
+          </ul>
+          <p className="muted small">{SHOP.name}に無ければ、下の BrickLink に回してください。</p>
+        </details>
+      )}
       {!live && inShop.length > 0 && (
         <details className="fallback">
           <summary>手動で入れる場合（注文リストをコピー）</summary>
@@ -246,14 +272,14 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
         </details>
       )}
 
-      {missing.length > 0 && (
+      {absent.length > 0 && (
         <details className="fallback" open>
           <summary>
-            {SHOP.name}に無い {missing.length} 件を BrickLink（海外）で買う
+            {SHOP.name}に無い {absent.length} 件を BrickLink（海外）で買う
           </summary>
           <p className="muted small">BrickLink は世界中の個人店が出品するサイトで、店ごとに決済と送料がかかり、英語で、海外発送に 2〜3 週間かかります。急がなければ次回に回すのも手です。</p>
           <ul className="muted small">
-            {missing.map((i) => (
+            {absent.map((i) => (
               <li key={`${i.part_num}|${i.color_id}`}>
                 {i.part_name_ja} {i.color_name} × {i.qty}
               </li>
@@ -262,7 +288,7 @@ function OrderSection({ items, req, busy, onOrdered, copied, copy }: { items: Ca
           <BrickLinkSteps xml={xml} reqId={req.id} copied={copied} copy={copy} />
         </details>
       )}
-      {missing.length === 0 && (
+      {absent.length === 0 && (
         <details className="fallback">
           <summary>BrickLink（海外）で買う場合</summary>
           <BrickLinkSteps xml={buildWantedListXml(items, { condition: null })} reqId={req.id} copied={copied} copy={copy} />

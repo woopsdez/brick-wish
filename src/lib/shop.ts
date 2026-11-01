@@ -1,4 +1,4 @@
-import { getColor } from '../catalog'
+import { catalog, getColor } from '../catalog'
 import sampleMap from '../catalog/shop-map.json'
 import type { CartItem, CatalogPart, ShopItem, ShopMap } from '../types'
 
@@ -45,6 +45,22 @@ export function shopItemFor(num: string, colorId: number): ShopItem | null {
 export function unitPrice(num: string, colorId: number): number | null {
   const it = shopItemFor(num, colorId)
   return it && it.available && it.price_yen != null ? it.price_yen : null
+}
+
+const curatedNums = new Set(catalog.parts.map((p) => p.num))
+
+/**
+ * 価格の状態。
+ *  known     = 価格あり
+ *  soldout   = ショップに無い／売り切れ（厳選カタログの部品×色はすべて取得済みなので、無ければ扱いが無い）
+ *  unchecked = 取得していない（「ぜんぶ」タブのパーツ。商品ページで確認する）
+ */
+export function priceStatus(num: string, colorId: number): 'known' | 'soldout' | 'unchecked' {
+  const key = shopKeyFor(num, colorId)
+  if (!key) return 'unchecked'
+  const it = shopMap.items[key]
+  if (it) return it.available && it.price_yen != null ? 'known' : 'soldout'
+  return curatedNums.has(num) ? 'soldout' : 'unchecked'
 }
 
 /** タイル表示用：その部品で買える色の最安値 */

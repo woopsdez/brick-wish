@@ -6,7 +6,7 @@ import { PartImage } from '../components/PartImage'
 import { QtyStepper } from '../components/QtyStepper'
 import { decideApproval, estimateTotal, yen } from '../lib/budget'
 import { uuid } from '../lib/ids'
-import { SHOP, cartPermalink } from '../lib/shop'
+import { SHOP, cartPermalink, priceStatus } from '../lib/shop'
 import { getStore } from '../store'
 import { clearCart, setCartQty, useCart } from '../store/cart'
 import { useFamily } from '../store/family-hooks'
@@ -26,6 +26,7 @@ export function KidCart() {
   const total = cart.reduce((n, i) => n + i.qty, 0)
   const { total: subtotal } = useMemo(() => estimateTotal(cart), [cart])
   const decision = useMemo(() => decideApproval(family, requests, cart), [family, requests, cart])
+  const hasUnchecked = cart.some((i) => i.unit_yen == null && priceStatus(i.part_num, i.color_id) !== 'soldout')
 
   async function send() {
     if (!familyId || cart.length === 0) return
@@ -88,7 +89,7 @@ export function KidCart() {
                 <span className="muted">
                   <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
                   {' · '}
-                  {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : <em className="warn">在庫なし</em>}
+                  {i.unit_yen != null ? `${yen(i.unit_yen)} × ${i.qty} = ${yen(i.unit_yen * i.qty)}` : priceStatus(i.part_num, i.color_id) === 'soldout' ? <em className="warn">在庫なし</em> : '価格は保護者が確認'}
                 </span>
               </div>
               <QtyStepper value={i.qty} onChange={(n) => setCartQty(i, n)} min={0} />
@@ -115,7 +116,7 @@ export function KidCart() {
             <p className="budget-verdict">
               {decision.status === 'approved' && '枠内なので、送るとすぐ OK になります。保護者は支払いだけ'}
               {decision.status === 'pending' && decision.reason === 'over_budget' && `今月の枠を ${yen((decision.total_yen ?? 0) - decision.remaining)} 超えるので、保護者の承認が必要です`}
-              {decision.status === 'pending' && decision.reason === 'unknown_price' && `${SHOP.name}に在庫がないパーツがあるので、保護者の確認が必要です`}
+              {decision.status === 'pending' && decision.reason === 'unknown_price' && (hasUnchecked ? '価格が未確認のパーツがあるので、保護者が商品ページで確かめてから OK します' : `${SHOP.name}に在庫がないパーツがあるので、保護者の確認が必要です`)}
               {decision.status === 'pending' && decision.reason === 'off' && '保護者の承認が必要です'}
             </p>
           </section>
