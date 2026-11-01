@@ -109,9 +109,9 @@ iPhone は **ホーム画面に追加（PWA としてインストール）して
 
 ### 5. GitHub Pages に公開
 
-1. リポジトリ Settings → Pages → Source を「GitHub Actions」に
+1. `main` に push するとワークフローがビルドして `gh-pages` ブランチに成果物を push する。初回は GitHub が自動で Pages を「gh-pages ブランチから配信」に設定する（されていなければ Settings → Pages → Source: Deploy from a branch → gh-pages / root）
 2. Settings → Secrets and variables → Actions → **Variables** に `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` / `VITE_VAPID_PUBLIC_KEY` を登録（いずれも公開されて問題ない値。未登録ならローカルモードで動く）
-3. `main` に push するとデプロイ。URL は `https://<user>.github.io/brick-wish/`
+3. URL は `https://<user>.github.io/brick-wish/`
 
 ワークフローは `BASE_PATH=/<repo名>/` でビルドします。独自ドメイン直下に置くなら `/` に変えてください。
 
