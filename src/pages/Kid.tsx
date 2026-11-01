@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { catalog, getColor, partsInCategory, searchParts } from '../catalog'
 import { PartImage } from '../components/PartImage'
-import { looksLikePartNum } from '../lib/partsImport'
 import { useCart } from '../store/cart'
 import type { CatalogPart } from '../types'
 import { PartPicker } from './PartPicker'
@@ -16,17 +15,12 @@ export function Kid() {
   const query = q.trim()
   const parts = useMemo(() => (query ? searchParts(query) : partsInCategory(cat)), [cat, query])
   const total = cart.reduce((n, i) => n + i.qty, 0)
-  // 番号っぽい検索語でカタログに完全一致が無ければ、番号のまま追加できる導線を出す
-  const offerNumber = query && looksLikePartNum(query) && !parts.some((p) => p.num.toLowerCase() === query.toLowerCase())
 
   return (
     <main className="page kid">
       <header className="kid-header">
         <h1>ほしいパーツ</h1>
         <div className="kid-header-actions">
-          <Link className="btn btn-ghost" to="/kid/add">
-            ＋ 番号・リスト
-          </Link>
           <Link className="btn btn-ghost" to="/kid/history">
             履歴
           </Link>
@@ -49,15 +43,6 @@ export function Kid() {
         </nav>
       )}
 
-      {offerNumber && (
-        <div className="cta">
-          <span>カタログに無い番号でも頼めます。</span>
-          <Link className="btn" to={`/kid/add?num=${encodeURIComponent(query)}`}>
-            「{query}」を番号として追加
-          </Link>
-        </div>
-      )}
-
       <section className="grid">
         {parts.map((p) => {
           const c0 = p.colors[0]
@@ -70,16 +55,7 @@ export function Kid() {
           )
         })}
       </section>
-      {parts.length === 0 && (
-        <div className="empty">
-          <p>カタログには見つかりませんでした</p>
-          {!offerNumber && (
-            <Link className="btn btn-ghost" to="/kid/add">
-              番号やリストで追加する
-            </Link>
-          )}
-        </div>
-      )}
+      {parts.length === 0 && <p className="empty">見つかりませんでした</p>}
 
       {picking && <PartPicker part={picking} onClose={() => setPicking(null)} />}
 

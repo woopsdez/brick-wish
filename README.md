@@ -2,7 +2,7 @@
 
 レゴでミニメカを作る中高生が、公式ショップに無い関節や 1×1 などの小さいパーツを選んで「リクエスト」し、レゴに詳しくない親がスマホで中身を確認して承認すると、そのまま BrickLink の Wanted List に流して「Buy All」でまとめ買いできる家庭用アプリ。
 
-- **ビルダー（子ども）画面**: ミニメカ向け厳選カタログから選ぶ / BrickLink の番号を直接入力 / パーツリストを貼り付け（BrickLink XML・Rebrickable CSV・1 行 1 パーツ）。カタログに無い番号もそのまま頼める。
+- **ビルダー（子ども）画面**: ミニメカ向け厳選カタログをカテゴリで眺めて、タップ → 色と数量 → カート。検索はパーツ名/番号。
 - **親画面**: 承認待ち一覧 → 各パーツの説明と BrickLink の写真・相場リンク、初めての人向けの手順説明 → 数量を調整して承認/見送り → BrickLink Wanted List XML を出力。
 - **同期**: Supabase を設定すると親スマホと子タブレットが同期し、Web Push で親に通知。未設定なら 1 台の端末内で完結する「ローカルモード」。
 - **ホスティング**: 静的サイト（PWA）。GitHub Pages 用のワークフロー同梱。
@@ -27,26 +27,15 @@
 
 リストを増減したいときは `scripts/curated-parts.mjs` を編集 → `npm run catalog:starter`（即時・未検証）または `npm run catalog`（要 API キー・検証つき）。
 
-### カタログに無いパーツ（brickmecha などの作例を作るとき）
-
-作例サイトのパーツリストはカタログの 167 種で収まらないので、子ども画面の「＋ 番号・リスト」から次の 2 通りで追加できます（`src/pages/KidAdd.tsx`、解析は `src/lib/partsImport.ts`）。
-
-- **番号で 1 個ずつ**: BrickLink / LEGO のパーツ番号（例 `14417`、`3070b`）と色、数量。番号は Rebrickable の画像で軽く確認できる（画像が出れば実在。出なくても BrickLink には存在することがある）
-- **リストを貼り付け**: 作例サイトのパーツリスト表をブラウザで範囲選択してコピーしたもの（「番号の行」＋「色<TAB>数量」の行の並び。brickmecha の表はこの形）、BrickLink Wanted List XML、Rebrickable の `Part,Color,Quantity` CSV、または 1 行 1 パーツの自由形式（`14417 黒 4` / `3070b Dark Bluish Gray x6` / `4x 14418 Red`）。色は英語名・BrickLink 略称（DBG, LBG, Dk. Bluish Gray）・日本語（黒、濃いグレー）・カタカナ（ライトブルーイッシュグレー）を解決。カタログに無い色名は文字列のまま残し、親画面で BrickLink 側の色選択を促す。読めない行は取り込まず、理由を表示
-
-カタログ外の番号は名前が「パーツ 14417」のようになり、BrickLink の番号としてそのまま XML に出ます。親画面の「BrickLink で写真と相場を見る」で実物を確認してください。検索欄に番号を入れてカタログに無い場合も、同じ導線が出ます。
-
-brickmecha の作例 #403 のパーツリスト（24 種類 / 43 個）を実際にコピーしたものを `scripts/fixtures/brickmecha-moc403.txt` に置き、`npm test` で 24 件すべてが番号・色・数量つきで読めることを確認しています（サイト自体はこの開発環境から到達できないため、ページ構造はコピー結果からの推定）。そのうち 4 番号（4032a, 15573, 26047, 36840）はカタログに無く、BrickLink の番号としてそのまま通ります。
-
-解析のテスト: `npm test`（`scripts/test-parts-import.ts`、Node 22.18 以降で .ts を直接実行）。
+子どもの体験は「カタログを眺めてタップする」に限定しています（作例サイトのリストをコピペする機能は、方向違いとして外しました）。その分、カタログに載っていないと頼めないので、厳選リストの網羅性が肝心です。参考にした作例（brickmecha #403、24 種類）では 4 番号（4032a, 15573, 26047, 36840）が未収録でした。
 
 ## 構成
 
 ```
 src/
-  pages/        Kid / PartPicker / KidAdd(番号・リスト追加) / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
+  pages/        Kid / PartPicker / KidCart / KidHistory / ParentGate / Parent / ParentRequest / ParentSettings
   store/        settings(端末設定) / family(ファミリー自動作成) / cart / localStore / supabaseStore / useRequests
-  lib/          bricklink(XML・CSV生成・カタログURL) / partsImport(リスト解析) / push(Web Push 購読) / images / ids / config
+  lib/          bricklink(XML・CSV生成・カタログURL) / push(Web Push 購読) / images / ids / config
   catalog/      catalog.json（パーツ・色・カテゴリ）と検索ヘルパー
   sw.ts         Service Worker（プリキャッシュ + push 通知）
 scripts/
@@ -54,7 +43,6 @@ scripts/
   build-catalog.mjs   厳選リストを Rebrickable のデータで検証し catalog.json を生成（要 API キー）
   starter-catalog.mjs 厳選リストから未検証のまま catalog.json を生成（現在同梱されているもの）
   make-icons.mjs      favicon.svg から PWA アイコン PNG を生成
-  test-parts-import.ts  partsImport の単体テスト（npm test）
 supabase/
   migrations/0001_init.sql        テーブル・RLS
   functions/notify-parent/        Web Push 送信 Edge Function
@@ -70,7 +58,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで開くと、いきなり子ども用の「ほしいパーツ」画面です。カタログから選ぶか「＋ 番号・リスト」で番号を入れて → カートから「保護者にリクエストを送る」 → 画面下の「保護者の方はこちら」 → 初回だけ PIN を決める → 承認、の順で一通り試せます。PIN は親画面を開くときだけ必要で、タブを閉じるまでは再入力不要です。
+ブラウザで開くと、いきなり子ども用の「ほしいパーツ」画面です。カタログからタップして → カートから「保護者にリクエストを送る」 → 画面下の「保護者の方はこちら」 → 初回だけ PIN を決める → 承認、の順で一通り試せます。PIN は親画面を開くときだけ必要で、タブを閉じるまでは再入力不要です。
 
 ### 2. カタログを本物にする（15 分 + ダウンロード時間）
 
@@ -148,8 +136,7 @@ XML の仕様: [BrickLink Help – Wanted List Upload](https://www.bricklink.com
 - Pick a Brick CSV は日本で使えるか未確認
 - BrickLink に「複数 Wanted List をまとめて買う」機能はあるが、アプリ側からの自動アップロードはできない（ログイン必須の Web フォームのみ）
 - 親画面の BrickLink リンク（`catalogitem.page?P=<番号>&C=<色ID>#T=P`）の `C=` / `#T=P` パラメータはこの開発環境から BrickLink に到達できず未検証。パーツページ自体は `P=` だけで開くはず
-- カタログ外の番号は存在確認をしない（BrickLink のアップロード時に「Item not found」になる可能性がある）。価格データも無いので合計金額は BrickLink のカートで確認
-- brickmecha.net のパーツ表記は未確認（上記）
+- 価格データを持たないので、承認時点で合計金額が分からない（BrickLink のカートで初めて分かる）
 
 ## ライセンス
 

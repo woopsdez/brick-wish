@@ -7,7 +7,6 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "test": "node scripts/test-parts-import.ts",
     "preview": "vite preview",
     "build:pages": "BASE_PATH=/brick-wish/ npm run build",
     "catalog": "node scripts/build-catalog.mjs",

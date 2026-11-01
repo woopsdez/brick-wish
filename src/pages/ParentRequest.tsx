@@ -6,7 +6,6 @@ import { QtyStepper } from '../components/QtyStepper'
 import { StatusBadge } from '../components/StatusBadge'
 import { bricklinkCatalogUrl, buildPickABrickCsv, buildWantedListXml, downloadText, mergeItems } from '../lib/bricklink'
 import { BRICKLINK_WANTED_LIST_URL, BRICKLINK_WANTED_UPLOAD_URL } from '../lib/config'
-import { isAnyColor, isUnknownColor } from '../lib/partsImport'
 import { getStore } from '../store'
 import { useFamilyId } from '../store/family'
 import { useRequests } from '../store/useRequests'
@@ -35,7 +34,7 @@ function Detail({ req }: { req: WishRequest }) {
 
   const xml = useMemo(() => buildWantedListXml(items, { condition: null }), [items])
   const totalQty = items.reduce((n, i) => n + i.qty, 0)
-  const missingColor = items.filter((i) => i.bl_color_id == null && !isAnyColor(i))
+  const missingColor = items.filter((i) => i.bl_color_id == null)
   const editable = req.status === 'pending'
 
   async function decide(status: 'approved' | 'rejected') {
@@ -99,8 +98,7 @@ function Detail({ req }: { req: WishRequest }) {
               <strong>{i.part_name_ja}</strong>
               <span className="muted">
                 {i.part_name} · 番号 {i.bl_id} · <span className="dot" style={{ background: `#${i.color_rgb}` }} /> {i.color_name}
-                {isUnknownColor(i) && <em className="warn"> （この色名はアプリが知らないので、BrickLink で色を選んでください）</em>}
-                {!isAnyColor(i) && !isUnknownColor(i) && i.bl_color_id == null && <em className="warn"> 色ID不明</em>}
+                {i.bl_color_id == null && <em className="warn"> 色ID不明</em>}
               </span>
               {i.category && categoryDesc.has(i.category) && i.category !== 'basic' && <span className="muted small">{categoryDesc.get(i.category)}</span>}
               <a className="ext" href={bricklinkCatalogUrl(i.bl_id, i.bl_color_id)} target="_blank" rel="noopener noreferrer">

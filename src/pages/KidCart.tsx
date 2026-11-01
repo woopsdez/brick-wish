@@ -55,9 +55,7 @@ export function KidCart() {
       </header>
 
       {cart.length === 0 ? (
-        <p className="empty">
-          カートは空です。<Link to="/kid">パーツを探す</Link> / <Link to="/kid/add">番号・リストで追加</Link>
-        </p>
+        <p className="empty">カートは空です。<Link to="/kid">パーツを探す</Link></p>
       ) : (
         <ul className="cart-list">
           {cart.map((i) => (
@@ -78,8 +76,8 @@ export function KidCart() {
       {cart.length > 0 && (
         <div className="stack">
           <label>
-            メモ（何を作る？ 作例の URL もここに）
-            <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例: brickmecha の #403 を作りたい https://brickmecha.net/..." rows={2} />
+            メモ（何を作る？）
+            <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="例: 変形するロボットを作りたい" rows={2} />
           </label>
           {err && <p className="error">{err}</p>}
           <button className="btn btn-big btn-kid" onClick={() => void send()} disabled={busy}>
